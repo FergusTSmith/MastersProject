@@ -1,25 +1,24 @@
 <script setup>
-
+import { classBody } from '@babel/types';
+console.log(classBody);
 </script>
 
 <template>
-   <div id="app">
+<div id="app">
     <div v-if="IntroPage" id="Intro-Page" stle="width: 450px" ref="Intro-Page">
-    <div id="Heading">
-      <h2>TrackHunt</h2>
-      <img class="main-logo" src="static/Logo.png" alt="TrackHunt Logo"/>
+      <Transition>
+      <h2 v-if="IntroPage">TrackHunt</h2>
+      </Transition>
+      <Transition><img v-if="IntroPage" class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/></Transition>
       <h5>Who is watching you?</h5>
-      <br/><br/>
+      <Transition><button v-if="IntroPage" @click="introToLogin">Login</button></Transition>
+      <Transition><button v-if="IntroPage" @click="NoAccount">No-Login Mode</button></Transition>
+      <Transition><p v-if="IntroPage" class="HelpText">New to TrackHunt? Sign up <a>Here</a></p></Transition>
     </div>
-    <div id = "LoginSection">
-      <button @click="introToLogin">Login</button>
-      <p class="HelpText">New to TrackHunt? Sign up <a>Here</a></p>
-    </div>
-  </div>
 
   <div v-if="LoginPage" id = "Login-Page">
     <h2>TrackHunt</h2>
-    <img class="main-logo" src="Static/Logo.png" alt="TrackHunt Logo"/><br/>  
+    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>  
     <label>Username:</label>
     <input type="text"><br/>
     <label>Password:</label>
@@ -31,7 +30,7 @@
 
   <div v-if="PasswordPage" id = "Password-Reset">
     <h2>TrackHunt</h2>
-    <img class="main-logo" src="Static/Logo.png" alt="TrackHunt Logo"/><br/>  
+    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>  
     <h6>Password Reset Form</h6>
     <label>Email:</label>
     <input type="text"><br/>
@@ -44,7 +43,7 @@
 
   <div v-if="RegistrationPage" id = "Registration">
     <h2>TrackHunt</h2>
-    <img class="main-logo" src="Static/Logo.png" alt="TrackHunt Logo"/><br/>
+    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
     <h6>Sign Up Form</h6>
     <label>Username:</label>
     <input type="text"><br/>
@@ -58,10 +57,10 @@
 
   <div v-if="HomePage" id = "Home-Page">
     <h2>TrackHunt</h2>
-    <img class="main-logo" src="Static/Logo.png" alt="TrackHunt Logo"/><br/>
+    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
     <p class="HelpText">Welcome back!</p>
     <button @click="solomode" type="button">Play Solo</button><br/>
-    <button @click="leaderboards" type="button">Leader Boards</button>
+    <button @click="leaderboards" type="button">LeaderBoards</button>
     <button @click="joinlobby" type="button">Join Lobby</button><br/>
     <button @click="options" type="button">Options</button>
     <button @click="createLobby" type="button">Create Lobby</button>
@@ -69,7 +68,7 @@
 
   <div v-if="LeaderBoard"  id = "Leader-Board">
     <h2>TrackHunt</h2><br/>
-    <p class="HelpText">Leader Boards</p>
+    <p class="HelpText">LeaderBoards</p>
     <button class="Radio" type="button">Personal</button>
     <button class="Radio" type="button">World</button><br/>
 
@@ -84,7 +83,7 @@
 
   <div v-if="OptionsPage"  id="Options-Page">
     <h2>TrackHunt</h2>
-    <img class="main-logo" src="Static/Logo.png" alt="TrackHunt Logo"/><br/><button type="button">Light Mode</button><br/>
+    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/><button type="button">Light Mode</button><br/>
     <button type="button">Dark Mode</button><br/>
     <button type="button">Language</button><br/>
     <br/><br/>
@@ -93,18 +92,29 @@
 
   <div v-if="JoinLobbyPage" id="Join-Lobby">
     <h2>TrackHunt</h2>
-    <img class="main-logo" src="Static/Logo.png" alt="TrackHunt Logo"/><br/>
+    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
     <br/><br/>
     <label>Enter lobby ID:</label><br/>
-    <input type="text">
+    <input ref="LobbyID" type="text">
     <br/>
-    <button type="button">Join</button>
+    <button @click="enterLobby" type="button">Join</button>
+    <button @click="exitToHomePage" type="button">Back</button>
+  </div>
+    
+  <div v-if="NoLoginPage" id="NoLoginPage">
+    <h2>TrackHunt</h2>
+    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
+    <br/><br/>
+    <label>Enter a nickname for your session:</label><br/>
+    <input ref="nickname" type="text">
+    <br/>
+    <button @click="enterLobby" type="button">Join</button>
     <button @click="exitToHomePage" type="button">Back</button>
   </div>
 
-  <div v-if="CreateLobbyPage" id="Create-Lobby">
+  <div v-if="LobbyPage" id="Lobby">
     <h2>TrackHunt</h2>
-    <p class="HelpText">Lobby ID: 1234567</p>
+    <p class="HelpText">Lobby ID: {{ playersLobby }}</p>
     <!----Animation of the wheel turning ----->
 
     <p class="HelpText">Connected Players:</p>
@@ -117,7 +127,9 @@
     <button class="Radio" type="button">Classic</button>
     <button class="Radio" type="button">Bingo</button>
     <button class="Radio" type="button">Roulette</button>
-    <br/><br/>
+    <br/>
+    <!-----This should only be visible for the lobby leader: ---->
+    <button @click="closeLobby" type="button">Close Lobby</button>
     <button type="button">Begin Game</button>
     <button @click="exitToHomePage" type="button">Cancel</button>
   </div>
@@ -146,6 +158,27 @@
 
 <script>
 export default {
+  sockets: {
+    connect() {
+      console.log('no worries, goose')
+    },
+    disconnect() {
+      console.log("socket has been disconnected")
+    },
+    lobbySuccess(lobbyID) {
+      console.log("successfully connected to lobby")
+      this.playersLobby = lobbyID;
+      this.JoinLobbyPage = false;
+      this.LobbyPage = true;
+    },
+    lobbyFailure() {
+      console.log("there was an error when attempting to connect to the server")
+    },
+    testMessage(){
+      console.log("Test message was successful");
+    }
+
+  },
   data(){
     return {
       message: "This is a test",
@@ -158,8 +191,12 @@ export default {
       LeaderBoard: false,
       OptionsPage: false,
       JoinLobbyPage: false,
-      CreatelobbyPage: false,
+      LobbyPage: false,
       SoloPage: false,
+      NoLoginPage: false,
+      playersLobby: '',
+
+
 
       pages: [
 
@@ -167,6 +204,28 @@ export default {
     };
   },
   methods: {
+     NoAccount(){
+      this.IntroPage = false;
+      this.NoLoginPage = true;
+     },
+     
+     closeLobby(){
+        this.$socket.emit('closeLobby', this.playersLobby)
+        this.LobbyPage = false;
+        this.HomePage = true;
+     },
+     
+     enterLobby(){
+      //var lobbyID = document.getElementByID('JoinLobbyButton').innerHTML;
+     // this.$emit(lobbyID);
+     // console.log(lobbyID);
+      //this.JoinLobbyPage = false;
+      //this.CreateLobbyPage = true;
+
+      var lobbyID = this.$refs.LobbyID.value
+      this.$socket.emit('JoinLobby', lobbyID);
+
+    },
     introToLogin(){
       this.LoginPage = true
       this.IntroPage = false                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ;
@@ -196,33 +255,76 @@ export default {
       this.HomePage = false;
     },
     createLobby(){
-      this.CreateLobbyPage = true;
+      var newLobbyID = this.createNewLobbyID();
+      this.$socket.emit('CreateNewLobby', newLobbyID);
+      this.playersLobby = newLobbyID;
+      
+      this.LobbyPage = true;
       this.HomePage = false;
     },
     exitToHomePage(){
-      this.CreateLobbyPage = false;
+      this.LobbyPage = false;
       this.JoinLobbyPage = false;
       this.LeaderBoard = false;
       this.SoloPage = false;
       this.OptionsPage = false;
       this.HomePage = true;
+    },
+    createNewLobbyID(){
+     /* adapted from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript */
+     var id = ''
+    var allCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for(var i = 0; i < 7; i++){
+      id += allCharacters.charAt(Math.floor(Math.random() * allCharacters.length));
+    }
+    return id;
+    
     }
   }
 }
 </script>
 
 <style>
+/* Cormac's code but adjusted: */
+@font-face {
+    font-family: 'digitalFont';
+    src: url('./fonts/digital-7.ttf');
+}
+
+/* https://vuejs.org/guide/built-ins/transition.html#css-based-transitions */
+
+.v-enter-active,
+.v-leave-active{
+  transition: opacity 0.5s ease;
+}
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+
+li{
+  color: white;
+}
+p{
+  color: white;
+}
+label {
+  color: white;
+}
+h5{
+  color: white;
+}
+
 div {
   width: 200px;
   height: 200px;
-  background-color: CCC;
   text-align: center;
 }
 
 body {
   min-height: 300px;
   min-width: 200px;
-  background-color: gainsboro;
+  background-color: #181818;
   /*color: var(--color-text);
   background: var(--color-background); */
   transition: color 0.5s, background-color 0.5s;
@@ -236,6 +338,7 @@ body {
 }
 p.HelpText {
   font-size: 10px;
+  color: white;
 }
 
 li.PlayerList {
@@ -245,7 +348,9 @@ li.PlayerList {
 }
 
 h2 {
-  font-family: serif;
+  font-family: 'digitalFont';
+  font-size: 40px;
+  color: #20C20E;
 }
 
 
@@ -255,7 +360,7 @@ img.main-logo {
 }
 
 button {
-  background-color: teal;
+  background-color: #20C20E;
   color: white;
   text-align: center;
   margin-left: 5px;

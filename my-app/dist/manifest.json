@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "TrackerHunt",
-  "homepage_url": "http://localhost:3090/",
-  "description": "A multiplayer browser game",
+  "homepage_url": "http://localhost:4000/",
+  "description": "A multiplayer browser extension",
   "default_locale": "en",
   "permissions": [
     "activeTab",
@@ -10,25 +10,25 @@
     "*://*/*"
   ],
   "icons": {
-    "16": "icons/16.png",
-    "48": "icons/48.png",
-    "128": "icons/128.png"
+    "16": "staticimages/Smalllogo.png",
+    "48": "staticimages/Smalllogo.png",
+    "128": "staticimages/Smalllogo.png"
   },
   "background": {
     "scripts": [
       "js/background.js",
-      "js/client.js",
-      "js/socket.io.js"
+      "js/socket.io.js",
+      "js/client.js"
     ],
     "persistent": false
   },
   "devtools_page": "devtools.html",
   "browser_action": {
     "default_popup": "popup.html",
-    "default_title": "__MSG_extName__",
+    "default_title": "TrackerHunt",
     "default_icon": {
-      "19": "icons/19.png",
-      "38": "icons/38.png"
+      "19": "staticimages/Smalllogo.png",
+      "38": "staticimages/Smalllogo.png"
     }
   },
   "options_ui": {

@@ -4,7 +4,8 @@
   "description": "\"This is the server side for a chrome-extension based multiplayer game\"",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "devStart": "nodemon server.js"
   },
   "keywords": [
     "Server",
@@ -15,6 +16,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "express": "^4.18.1",
-    "socket.io": "^4.5.1"
+    "nodemon": "^2.0.18",
+    "socket.io": "^2.3.0"
   }
 }
