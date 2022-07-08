@@ -1,6 +1,8 @@
 <script setup>
 import { classBody } from '@babel/types';
+import { listenerCount } from 'process';
 console.log(classBody);
+console.log(listenerCount);
 </script>
 
 <template>
@@ -17,15 +19,15 @@ console.log(classBody);
     </div>
 
   <div v-if="LoginPage" id = "Login-Page">
-    <h2>TrackHunt</h2>
-    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>  
-    <label>Username:</label>
-    <input type="text"><br/>
-    <label>Password:</label>
-    <input type="password">
+    <Transition><h2 v-if="LoginPage" >TrackHunt</h2></Transition>
+    <Transition><img v-if="LoginPage" class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/></Transition><br/>  
+    <Transition><label v-if="LoginPage">Username:</label></Transition>
+    <Transition><input v-if="LoginPage" type="text"></Transition><br/>
+    <Transition><label  v-if="LoginPage">Password:</label></Transition>
+    <Transition><input  v-if="LoginPage" type="password"></Transition>
     <br/>
-    <button @click="loginToIntro" type="button">Cancel</button>
-    <button @click="login" type="button">Login</button>
+    <Transition><button v-if="LoginPage" @click="loginToIntro" type="button">Cancel</button></Transition>
+    <Transition><button v-if="LoginPage" @click="loginPageChange" type="button">Login</button></Transition>
   </div>
 
   <div v-if="PasswordPage" id = "Password-Reset">
@@ -108,8 +110,8 @@ console.log(classBody);
     <label>Enter a nickname for your session:</label><br/>
     <input ref="nickname" type="text">
     <br/>
-    <button @click="enterLobby" type="button">Join</button>
-    <button @click="exitToHomePage" type="button">Back</button>
+    <button @click="noLoginMode" type="button">Join</button>
+    <button @click="noLoginToIntro" type="button">Back</button>
   </div>
 
   <div v-if="LobbyPage" id="Lobby">
@@ -119,10 +121,10 @@ console.log(classBody);
 
     <p class="HelpText">Connected Players:</p>
     <ul>
-      <li class="PlayerList" id="Player1">1. </li>
-      <li class="PlayerList" id="Player2">2. </li>
-      <li class="PlayerList" id="Player3">3. </li>
-      <li class="PlayerList" id="Player4">4. </li>
+      <li class="PlayerList" id="Player1">1. {{ UsersInLobby[0] }}</li>
+      <li class="PlayerList" id="Player2">2. {{ UsersInLobby[1] }}</li>
+      <li class="PlayerList" id="Player3">3. {{ UsersInLobby[2] }}</li>
+      <li class="PlayerList" id="Player4">4. {{ UsersInLobby[3] }}</li>
     </ul>
     <button class="Radio" type="button">Classic</button>
     <button class="Radio" type="button">Bingo</button>
@@ -157,10 +159,13 @@ console.log(classBody);
 </template>
 
 <script>
+
 export default {
+  // https://manage.auth0.com/dashboard/eu/dev-li-9809u/applications/s449g7DqINXUA9dZNRPdVTwPswnMX9qJ/quickstart
+  
   sockets: {
     connect() {
-      console.log('no worries, goose')
+      console.log('no worries, goose');
     },
     disconnect() {
       console.log("socket has been disconnected")
@@ -168,6 +173,7 @@ export default {
     lobbySuccess(lobbyID) {
       console.log("successfully connected to lobby")
       this.playersLobby = lobbyID;
+      this.UsersInLobby[this.noOfUsersInLobby++] = this.UsersID;
       this.JoinLobbyPage = false;
       this.LobbyPage = true;
     },
@@ -176,6 +182,9 @@ export default {
     },
     testMessage(){
       console.log("Test message was successful");
+    },
+    updateUsers(listOfUsers){
+      this.UsersInLobby = listOfUsers;
     }
 
   },
@@ -195,6 +204,9 @@ export default {
       SoloPage: false,
       NoLoginPage: false,
       playersLobby: '',
+      UsersID: '1234',
+      UsersInLobby: [],
+      noOfUsersInLobby: 0,
 
 
 
@@ -204,6 +216,17 @@ export default {
     };
   },
   methods: {
+     noLoginMode(){
+        this.UsersID = this.$refs.nickname.value;
+        this.NoLoginPage = false;
+        this.HomePage = true;
+     },
+     
+     noLoginToIntro(){
+      this.NoLoginPage = false;
+      this.IntroPage = true;
+     },
+     
      NoAccount(){
       this.IntroPage = false;
       this.NoLoginPage = true;
@@ -221,9 +244,12 @@ export default {
      // console.log(lobbyID);
       //this.JoinLobbyPage = false;
       //this.CreateLobbyPage = true;
-
-      var lobbyID = this.$refs.LobbyID.value
-      this.$socket.emit('JoinLobby', lobbyID);
+      if(this.$refs.LobbyID === null){
+        return;
+      }else{
+          var lobbyID = this.$refs.LobbyID.value;
+          this.$socket.emit('JoinLobby', lobbyID, this.UsersID);
+      }
 
     },
     introToLogin(){
@@ -234,7 +260,7 @@ export default {
       this.LoginPage = false;
       this.IntroPage = true;
     },
-    login(){
+    loginPageChange(){
       this.LoginPage = false;
       this.HomePage = true;
     },
@@ -256,7 +282,7 @@ export default {
     },
     createLobby(){
       var newLobbyID = this.createNewLobbyID();
-      this.$socket.emit('CreateNewLobby', newLobbyID);
+      this.$socket.emit('CreateNewLobby', newLobbyID, this.UsersID);
       this.playersLobby = newLobbyID;
       
       this.LobbyPage = true;
@@ -295,7 +321,7 @@ export default {
 
 .v-enter-active,
 .v-leave-active{
-  transition: opacity 0.5s ease;
+  transition: opacity 5s ease;
 }
 .v-enter-from,
 .v-leave-to {
@@ -327,7 +353,7 @@ body {
   background-color: #181818;
   /*color: var(--color-text);
   background: var(--color-background); */
-  transition: color 0.5s, background-color 0.5s;
+  transition: color 5s, background-color 0.5s;
   line-height: 1.6;
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
     Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
