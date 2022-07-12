@@ -6,15 +6,15 @@ console.log(listenerCount);
 </script>
 
 <template>
-<div id="app">
+<div id="app" :key="componentVersion">
     <div v-if="IntroPage" id="Intro-Page" stle="width: 450px" ref="Intro-Page">
       <Transition>
       <h2 v-if="IntroPage">TrackHunt</h2>
       </Transition>
       <Transition><img v-if="IntroPage" class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/></Transition>
       <h5>Who is watching you?</h5>
-      <Transition><button v-if="IntroPage" @click="introToLogin">Login</button></Transition>
-      <Transition><button v-if="IntroPage" @click="NoAccount">No-Login Mode</button></Transition>
+      <Transition><button v-if="IntroPage" @click="googleLogin" ref="LoginButton">Login</button></Transition>
+      <!------<Transition><button v-if="IntroPage" @click="NoAccount">No-Login Mode</button></Transition> --->
       <Transition><p v-if="IntroPage" class="HelpText">New to TrackHunt? Sign up <a>Here</a></p></Transition>
     </div>
 
@@ -60,7 +60,7 @@ console.log(listenerCount);
   <div v-if="HomePage" id = "Home-Page">
     <h2>TrackHunt</h2>
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
-    <p class="HelpText">Welcome back!</p>
+    <p class="HelpText" v-if="userSignedIn">Welcome back, {{ UsersID }}!</p>
     <button @click="solomode" type="button">Play Solo</button><br/>
     <button @click="leaderboards" type="button">LeaderBoards</button>
     <button @click="joinlobby" type="button">Join Lobby</button><br/>
@@ -103,7 +103,7 @@ console.log(listenerCount);
     <button @click="exitToHomePage" type="button">Back</button>
   </div>
     
-  <div v-if="NoLoginPage" id="NoLoginPage">
+  <div v-if="UsernamePage" id="UsernamePage">
     <h2>TrackHunt</h2>
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
     <br/><br/>
@@ -152,9 +152,23 @@ console.log(listenerCount);
     <button class="Radio" type="button">Classic</button>
     <button class="Radio" type="button">Bingo</button>
     <br/>
-    <button type="button">Begin Game</button>
+    <button @click="soloGameInitiated" type="button">Begin Game</button>
     <button @click="exitToHomePage" type="button">Cancel</button>
   </div>
+
+  <div v-if="SoloGame" id="Solo-Game">
+    <h2>TrackHunt</h2>
+    <p class="HelpText">Solo Mode</p>
+    <br/>
+    <label>Time remaining: </label><p> 2:00</p>
+    <label>Current Score: </label><p> {{ userScore }}</p>
+    <button @click="refresh" type="button">Refresh</button>
+    <button @click="exitToHomePage" type="button">Start</button>
+    <button @click="exitToHomePage" type="button">End Game</button>
+  </div>
+
+
+
 </div>
 </template>
 
@@ -202,11 +216,16 @@ export default {
       JoinLobbyPage: false,
       LobbyPage: false,
       SoloPage: false,
-      NoLoginPage: false,
+      UsernamePage: false,
       playersLobby: '',
       UsersID: '1234',
       UsersInLobby: [],
       noOfUsersInLobby: 0,
+      componentVersion: 0,
+      UserGoogleID: '',
+      SoloGame: false,
+
+      userSignedIn: false,
 
 
 
@@ -216,10 +235,42 @@ export default {
     };
   },
   methods: {
+     refresh(){
+        chrome.storage.local.get("DetectedCountries", function(result){
+          console.log(result.name);
+        })
+     },
+     
+     googleLogin(){
+         var vm = this;
+         chrome.runtime.sendMessage({ message: 'login'}, function(response) {
+            if (response === 'success') {
+              //window.close();
+              vm.userSignedIn = true;
+              vm.IntroPage = false;
+              vm.UsernamePage = true;
+              //vm.UserGoogleID = userID;
+            }
+         })
+         chrome.runtime.sendMessage({ message: 'googleID'}, function(response){
+            if(response === ''){
+              console.log("No google ID found");
+            }else{
+              vm.UserGoogleID = response;
+              console.log('test + ' + response);
+            }
+         })
+     },
      noLoginMode(){
         this.UsersID = this.$refs.nickname.value;
-        this.NoLoginPage = false;
+        this.UsernamePage = false;
         this.HomePage = true;
+
+
+     },
+     soloGameInitiated(){
+        this.SoloPage = false;
+        this.SoloGame = true;
      },
      
      noLoginToIntro(){
@@ -295,6 +346,8 @@ export default {
       this.SoloPage = false;
       this.OptionsPage = false;
       this.HomePage = true;
+      this.SoloPage = false;
+      this.SoloGame = false;
     },
     createNewLobbyID(){
      /* adapted from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript */

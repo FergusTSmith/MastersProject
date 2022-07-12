@@ -1,10 +1,12 @@
 const e = require('cors');
 const express = require('express');
 const mySQL = require('mysql');
+const TypeORM = require('typeorm');
 const app = express();
 var http = require('http');
 const { allowedNodeEnvironmentFlags } = require('process');
 const socket = require('socket.io');
+//const {UserAccount} = require("./entity/UserAccount");
 
 // Classes for the structure of the application. 
 
@@ -13,10 +15,6 @@ class Lobby {
     constructor(id){
         this.LobbyID = id;
         this.lobbyUsers = [];
-        //this.LobbyUsers[0] = '';
-        //this.lobbyUsers[1] = '';
-        //this.lobbyUsers[2] = '';
-        //this.lobbyUsers[3] = '';
         this.numberOfUsers = 0;
     }
 
@@ -118,6 +116,9 @@ io.on('connection', (socket) => {
             }
         }
     })
+    socket.on('newUser', (userID, googleID) => {
+        
+    })
    
 })
 
@@ -129,8 +130,8 @@ var nodeServer = http.createServer(app);
 const dataBase = mySQL.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '123456',
-    database: 'tracker-hunt',
+    password: 'TucoDexter123!@',
+    database: 'trackerhunt'
 })
 
 dataBase.connect((err) => {
@@ -141,6 +142,32 @@ dataBase.connect((err) => {
     console.log('MySQL has been Connected to the server');
 })
 
+// Create Database - https://www.youtube.com/watch?v=EN6Dx22cPRI&ab_channel=TraversyMedia
+app.get('/createdb', (req, res) => {
+    let sql = 'CREATE DATABASE trackerhunt';
+    dataBase.query(sql, (err, result) => {
+        if(err){
+            throw err;
+        }else{
+            res.send('Database Created...')
+            console.log(result);
+        }
+    })
+})
+
+// Create a Table for the server
+app.get('/createATable', (req, res) => {
+    let sql = 'CREATE TABLE posts(id int AUTO_INCREMENT, title VARCHAR(100), body VARCHAR(255), PRIMARY KEY (id))';
+    dataBase.query(sql, (err, result) => {
+        if(err){
+            console.log("Error occurred: " + err);
+            throw err;
+        }
+        console.log(result);
+        res.send('Post table created');
+    })
+})
+
 nodeServer.listen(3090, function(){
     console.log("The server is now running on port " + 3090)
 })
@@ -149,4 +176,6 @@ app.get('/', function(req, res){
     res.send("This is a test");
     console.log("User has connected " + req.id);
 })
+
+// Database methods
 
