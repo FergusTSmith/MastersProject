@@ -55,6 +55,8 @@ function getCountry(request){
             for(var j = 0; j < detectedCountries.length; j++){
                 console.log(detectedCountries[j].name + ' ' + detectedCountries[j].count);
             }
+            chrome.storage.local.set({ countryList: detectedCountries });
+            chrome.storage.local.set
         }
     }
 

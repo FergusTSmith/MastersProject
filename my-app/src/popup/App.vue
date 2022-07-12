@@ -1,6 +1,7 @@
 <script setup>
 import { classBody } from '@babel/types';
 import { listenerCount } from 'process';
+import { isReactive } from 'vue';
 console.log(classBody);
 console.log(listenerCount);
 </script>
@@ -15,7 +16,7 @@ console.log(listenerCount);
       <h5>Who is watching you?</h5>
       <Transition><button v-if="IntroPage" @click="googleLogin" ref="LoginButton">Login</button></Transition>
       <!------<Transition><button v-if="IntroPage" @click="NoAccount">No-Login Mode</button></Transition> --->
-      <Transition><p v-if="IntroPage" class="HelpText">New to TrackHunt? Sign up <a>Here</a></p></Transition>
+      <Transition><p v-if="IntroPage" class="HelpText">New to TrackHunt? Sign up <a @click="refresh">Here</a></p></Transition>
     </div>
 
   <div v-if="LoginPage" id = "Login-Page">
@@ -156,11 +157,16 @@ console.log(listenerCount);
     <button @click="exitToHomePage" type="button">Cancel</button>
   </div>
 
-  <div v-if="SoloGame" id="Solo-Game">
+  <div v-if="SoloGame" id="Solo-Game" :key="componentVersion">
     <h2>TrackHunt</h2>
     <p class="HelpText">Solo Mode</p>
     <br/>
-    <label>Time remaining: </label><p> 2:00</p>
+    <label>Time remaining: </label>
+    <p> 2:00</p>
+    <li v-for="name in this.VisitedCountries" ref="ListOfScores" :key="name.name">
+        {{ name }} + test
+    </li>
+    <p>Test + {{ VisitedCountries }}</p>
     <label>Current Score: </label><p> {{ userScore }}</p>
     <button @click="refresh" type="button">Refresh</button>
     <button @click="exitToHomePage" type="button">Start</button>
@@ -174,9 +180,14 @@ console.log(listenerCount);
 
 <script>
 
+
+
 export default {
   // https://manage.auth0.com/dashboard/eu/dev-li-9809u/applications/s449g7DqINXUA9dZNRPdVTwPswnMX9qJ/quickstart
-  
+
+  watch: {
+    
+  },
   sockets: {
     connect() {
       console.log('no worries, goose');
@@ -224,6 +235,9 @@ export default {
       componentVersion: 0,
       UserGoogleID: '',
       SoloGame: false,
+      VisitedCountries: this.get_updated_countries(),
+      componentKey: 0,
+      testCountries: ['France', 'UK'],
 
       userSignedIn: false,
 
@@ -235,10 +249,42 @@ export default {
     };
   },
   methods: {
-     refresh(){
-        chrome.storage.local.get("DetectedCountries", function(result){
-          console.log(result.name);
+     get_updated_countries(){
+        var vm = this;
+        chrome.storage.local.get(["countryList"], function(result){
+          //console.log(result);
+          //console.log(result.countryList)
+          this.VisitedCountries = result.countryList;
+          console.log(this.VisitedCountries)
+          console.log(this.VisitedCountries.length)
+          //for(var i = 0; i < this.VisitedCountries.length; i++){
+           // vm.$set(this.VisitedCountries, i, result.countryList[i]);
+          //}
+          return result.countryList;
         })
+        this.componentVersion += 1;
+     },
+     
+     refresh(){ 
+        var vm = this;
+        chrome.storage.local.get(["countryList"], function(result){
+          //console.log(result);
+          //console.log(result.countryList)
+          this.VisitedCountries = result.countryList.slice();
+          console.log('This array is reactive? ' + isReactive(this.VisitedCountries));
+          this.VisitedCountries = reactive(this.VisitedCountries);
+          console.log('This array is reactive now? ' + isReactive(this.VisitedCountries));
+          
+          //for(var i = 0; i < result.countryList.length; i++){
+          //  vm.$set(this.VisitedCountries, i, result.countryList[i]);
+          //}
+
+          console.log(this.VisitedCountries)
+          console.log(this.VisitedCountries.length)
+
+          
+        })
+        this.componentVersion += 1;
      },
      
      googleLogin(){
@@ -265,10 +311,17 @@ export default {
         this.UsersID = this.$refs.nickname.value;
         this.UsernamePage = false;
         this.HomePage = true;
-
-
      },
      soloGameInitiated(){
+        this.refresh();
+        chrome.storage.onChanged.addListener(function(result) {
+      //console.log(result);
+            this.VisitedCountries = result.countryList.newValue;
+            //console.log(result.countryList.newValue);
+            console.log(this.VisitedCountries);
+            this.componentVersion += 1;
+        })
+
         this.SoloPage = false;
         this.SoloGame = true;
      },
