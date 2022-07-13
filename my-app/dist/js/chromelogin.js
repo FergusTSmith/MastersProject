@@ -49,6 +49,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             console.log(user_info + 'intrachrome');
         }
         return true;
+    }else if (request.message === 'reset'){
+        detectedHosts = [];
+        detectedCountries = [];
+
+        chrome.storage.local.set({ countryList: detectedCountries });
+        sendResponse('success');
     }
 })
 

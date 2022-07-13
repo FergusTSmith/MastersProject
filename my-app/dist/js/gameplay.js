@@ -64,6 +64,18 @@ function getCountry(request){
     xhr.send();
 }
 
+//Responding to messages from the front end
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if(message === 'reset'){
+        detectedHosts = [];
+        detectedCountries = [];
+
+        chrome.storage.local.set({ countryList: detectedCountries });
+        sendResponse('success');
+    }
+})
+
 
 class Country {
     constructor(name){

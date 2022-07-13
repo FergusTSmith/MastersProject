@@ -1,7 +1,9 @@
 <script setup>
 import { classBody } from '@babel/types';
 import { listenerCount } from 'process';
-import { isReactive } from 'vue';
+//import { isReactive } from 'vue';
+import { ref } from 'vue';
+//import { reactive } from '@vue/reactivity';
 console.log(classBody);
 console.log(listenerCount);
 </script>
@@ -159,18 +161,26 @@ console.log(listenerCount);
 
   <div v-if="SoloGame" id="Solo-Game" :key="componentVersion">
     <h2>TrackHunt</h2>
-    <p class="HelpText">Solo Mode</p>
+    <!------<p class="HelpText">Solo Mode</p>--->
+    <div v-if="(!gameOver)">
     <br/>
     <label>Time remaining: </label>
-    <p> 2:00</p>
-    <li v-for="name in this.VisitedCountries" ref="ListOfScores" :key="name.name">
-        {{ name }} + test
+    <p> {{ timer }}</p>
+    <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
+        {{ item.name }} - {{ item.count }}
     </li>
-    <p>Test + {{ VisitedCountries }}</p>
-    <label>Current Score: </label><p> {{ userScore }}</p>
-    <button @click="refresh" type="button">Refresh</button>
-    <button @click="exitToHomePage" type="button">Start</button>
-    <button @click="exitToHomePage" type="button">End Game</button>
+    <br/>
+    <label>Current Score: </label><p> {{ this.userScore }}</p>
+    <button @click="gameSetup" type="button">Start</button>
+    <button @click="gameOver = true" type="button">End Game</button>
+    </div>
+    <div v-if="gameOver">
+    <h2>GAME OVER</h2>
+    <p>Your score was: {{ userScore }}</p>
+    <p>You were tracked by {{ noOfCountries }} nation(s)</p>
+    <button @click="exitToHomePage" type="button">HomePage</button>
+    </div>
+    <!--- --<button @click="gameSetup" type="button">Refresh</button> --->
   </div>
 
 
@@ -179,40 +189,35 @@ console.log(listenerCount);
 </template>
 
 <script>
-
+//var countryList = chrome.storage.local.get[["countryList"]];
 
 
 export default {
   // https://manage.auth0.com/dashboard/eu/dev-li-9809u/applications/s449g7DqINXUA9dZNRPdVTwPswnMX9qJ/quickstart
-
-  watch: {
-    
-  },
-  sockets: {
-    connect() {
-      console.log('no worries, goose');
+    sockets: {
+      connect() {
+        console.log('no worries, goose');
+      },
+      disconnect() {
+        console.log("socket has been disconnected")
+      },
+      lobbySuccess(lobbyID) {
+        console.log("successfully connected to lobby")
+        this.playersLobby = lobbyID;
+        this.UsersInLobby[this.noOfUsersInLobby++] = this.UsersID;
+        this.JoinLobbyPage = false;
+        this.LobbyPage = true;
+      },
+      lobbyFailure() {
+        console.log("there was an error when attempting to connect to the server")
+      },
+      testMessage(){
+        console.log("Test message was successful");
+      },
+      updateUsers(listOfUsers){
+        this.UsersInLobby = listOfUsers;
+      }
     },
-    disconnect() {
-      console.log("socket has been disconnected")
-    },
-    lobbySuccess(lobbyID) {
-      console.log("successfully connected to lobby")
-      this.playersLobby = lobbyID;
-      this.UsersInLobby[this.noOfUsersInLobby++] = this.UsersID;
-      this.JoinLobbyPage = false;
-      this.LobbyPage = true;
-    },
-    lobbyFailure() {
-      console.log("there was an error when attempting to connect to the server")
-    },
-    testMessage(){
-      console.log("Test message was successful");
-    },
-    updateUsers(listOfUsers){
-      this.UsersInLobby = listOfUsers;
-    }
-
-  },
   data(){
     return {
       message: "This is a test",
@@ -235,63 +240,118 @@ export default {
       componentVersion: 0,
       UserGoogleID: '',
       SoloGame: false,
-      VisitedCountries: this.get_updated_countries(),
+      VisitedCountries: [],
+      VC: [],
       componentKey: 0,
       testCountries: ['France', 'UK'],
+      userScore: 0,
+      gameStarted: false,
+      gameOver: false,
+      noOfCountries: 0,
+
+      timer: 120,
 
       userSignedIn: false,
+      }
+    },
+    // Adapted from https://stackoverflow.com/questions/55773602/how-do-i-create-a-simple-10-seconds-countdown-in-vue-js
+    watch: {
+      timer: {
+        handler(value) {
+          if(value > 0 && this.gameStarted){
+            setTimeout(() => {
+              this.timer--;
+            }, 1000);
+          }else if(value === 0){
+            this.gameOver = true;
+          }
+        },
+        immediate: true
+      }
+    },
+    methods: {
 
-
-
-      pages: [
-
-      ]
-    };
-  },
-  methods: {
-     get_updated_countries(){
-        var vm = this;
+      
+      get_updated_countries(){
         chrome.storage.local.get(["countryList"], function(result){
-          //console.log(result);
-          //console.log(result.countryList)
-          this.VisitedCountries = result.countryList;
-          console.log(this.VisitedCountries)
-          console.log(this.VisitedCountries.length)
-          //for(var i = 0; i < this.VisitedCountries.length; i++){
-           // vm.$set(this.VisitedCountries, i, result.countryList[i]);
-          //}
-          return result.countryList;
+          console.log(result.countryList);
+          console.log(this.VisitedCountries);
+          
         })
-        this.componentVersion += 1;
      },
-     
-     refresh(){ 
+
+     updateListOfCountries(){
         var vm = this;
+        
         chrome.storage.local.get(["countryList"], function(result){
-          //console.log(result);
-          //console.log(result.countryList)
-          this.VisitedCountries = result.countryList.slice();
-          console.log('This array is reactive? ' + isReactive(this.VisitedCountries));
-          this.VisitedCountries = reactive(this.VisitedCountries);
-          console.log('This array is reactive now? ' + isReactive(this.VisitedCountries));
-          
-          //for(var i = 0; i < result.countryList.length; i++){
-          //  vm.$set(this.VisitedCountries, i, result.countryList[i]);
-          //}
-
-          console.log(this.VisitedCountries)
-          console.log(this.VisitedCountries.length)
-
-          
+          vm.VisitedCountries = result.countryList;
         })
-        this.componentVersion += 1;
+     }, 
+
+     updateScore(){
+        var vm = this;
+
+        chrome.storage.local.get(["countryList"], function(result){
+            let test = ref(0);
+            for(var i = 0; i < result.countryList.length; i++){
+                test.value += result.countryList[i].count;
+            }
+            vm.userScore = test;
+            vm.noOfCountries = result.countryList.length;
+
+            console.log(vm.userScore.value);
+          })
+
+     },
+     gameSetup(){ 
+        var vm = this;
+        this.gameStarted = true;
+        if(this.timer <= 0){
+          this.timer = 120;
+        }
+
+        this.timer += 1;
+        chrome.runtime.sendMessage({ message: 'reset'}, function(response) {
+          if(response === 'success'){
+            console.log('successfully started the game.')
+            vm.VisitedCountries = [];
+            vm.userScore = 0;
+          }
+          return true;
+        })
+        
+        chrome.storage.local.get(["countryList"], function(result){
+            let test = 0;
+            if(!(result == undefined)){
+              for(var i = 0; i < result.countryList.length; i++){
+                test += result.countryList[i].count;
+              }
+            }
+            
+            console.log(test);
+            vm.userScore = test;
+            vm.VisitedCountries = result.countryList;
+            vm.noOfCountries = result.countryList.length;
+        })
+       chrome.storage.onChanged.addListener(function(result) {
+            vm.updateScore()
+            vm.updateListOfCountries()
+            console.log(result.countryList.newValue);
+            vm.VisitedCountries = result.countryList.newValue;
+            vm.gameStarted = true;
+            //console.log(result.countryList.newValue[0].count)     
+          //console.log(this.testScore.value);
+            //console.log(isReactive(this.testScore));
+
+        })  
+
      },
      
      googleLogin(){
+         
          var vm = this;
          chrome.runtime.sendMessage({ message: 'login'}, function(response) {
             if (response === 'success') {
-              //window.close();
               vm.userSignedIn = true;
               vm.IntroPage = false;
               vm.UsernamePage = true;
@@ -303,7 +363,7 @@ export default {
               console.log("No google ID found");
             }else{
               vm.UserGoogleID = response;
-              console.log('test + ' + response);
+              //console.log('test + ' + response);
             }
          })
      },
@@ -313,15 +373,7 @@ export default {
         this.HomePage = true;
      },
      soloGameInitiated(){
-        this.refresh();
-        chrome.storage.onChanged.addListener(function(result) {
-      //console.log(result);
-            this.VisitedCountries = result.countryList.newValue;
-            //console.log(result.countryList.newValue);
-            console.log(this.VisitedCountries);
-            this.componentVersion += 1;
-        })
-
+        this.gameOver = false;
         this.SoloPage = false;
         this.SoloGame = true;
      },
@@ -343,11 +395,6 @@ export default {
      },
      
      enterLobby(){
-      //var lobbyID = document.getElementByID('JoinLobbyButton').innerHTML;
-     // this.$emit(lobbyID);
-     // console.log(lobbyID);
-      //this.JoinLobbyPage = false;
-      //this.CreateLobbyPage = true;
       if(this.$refs.LobbyID === null){
         return;
       }else{
@@ -412,8 +459,9 @@ export default {
     return id;
     
     }
-  }
 }
+}
+
 </script>
 
 <style>
@@ -436,6 +484,12 @@ export default {
 
 li{
   color: white;
+}
+li.TrackedCountry{
+  color: white;
+  font-size: smaller;
+  list-style: none;
+  font-style: italic;
 }
 p{
   color: white;

@@ -134,7 +134,7 @@ const dataBase = mySQL.createConnection({
     database: 'trackerhunt'
 })
 
-dataBase.connect((err) => {
+/*dataBase.connect((err) => {
     if(err){
         throw err;
         console.log(err + " has occurred")
@@ -153,7 +153,7 @@ app.get('/createdb', (req, res) => {
             console.log(result);
         }
     })
-})
+})*/
 
 // Create a Table for the server
 app.get('/createATable', (req, res) => {
