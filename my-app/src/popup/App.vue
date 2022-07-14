@@ -1,5 +1,6 @@
 <script setup>
 import { classBody } from '@babel/types';
+import { eachMapping } from '@jridgewell/trace-mapping';
 import { listenerCount } from 'process';
 //import { isReactive } from 'vue';
 import { ref } from 'vue';
@@ -124,18 +125,24 @@ console.log(listenerCount);
 
     <p class="HelpText">Connected Players:</p>
     <ul>
-      <li class="PlayerList" id="Player1">1. {{ UsersInLobby[0] }}</li>
-      <li class="PlayerList" id="Player2">2. {{ UsersInLobby[1] }}</li>
-      <li class="PlayerList" id="Player3">3. {{ UsersInLobby[2] }}</li>
-      <li class="PlayerList" id="Player4">4. {{ UsersInLobby[3] }}</li>
+      <!-----
+      <li class="PlayerList" id="Player1">1. {{ UsersInLobby[0].userID }}</li>
+      <li class="PlayerList" id="Player2">2. {{ UsersInLobby[1].userID }}</li>
+      <li class="PlayerList" id="Player3">3. {{ UsersInLobby[2].userID }}</li>
+      <li class="PlayerList" id="Player4">4. {{ UsersInLobby[3].userID }}</li>
+      -->
     </ul>
+    <li v-for="item in UsersInLobby" class="LobbyUsers" :key="item.userID">
+        {{ noOfUsersInLobby+1 }}. {{ item.userID }}
+    </li>
+
     <button class="Radio" type="button">Classic</button>
     <button class="Radio" type="button">Bingo</button>
     <button class="Radio" type="button">Roulette</button>
     <br/>
     <!-----This should only be visible for the lobby leader: ---->
     <button @click="closeLobby" type="button">Close Lobby</button>
-    <button type="button">Begin Game</button>
+    <button @click="multiGameInitiated" type="button">Begin Game</button>
     <button @click="exitToHomePage" type="button">Cancel</button>
   </div>
 
@@ -183,6 +190,33 @@ console.log(listenerCount);
     <!--- --<button @click="gameSetup" type="button">Refresh</button> --->
   </div>
 
+  <div v-if="MultiPlayer" id="Multiplayer-Game" :key="componentVersion">
+    <h2>TrackHunt</h2>
+    <!------<p class="HelpText">Solo Mode</p>--->
+    <div v-if="(!gameOver)">
+    <br/>
+    <label>Time remaining: </label>
+    <p> {{ timer }}</p>
+    <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
+        {{ item.name }} - {{ item.count }}
+    </li>
+    <br/>
+    <label>Current Score: </label><p> {{ this.userScore }}</p>
+    <li v-for="item in UsersInLobby" ref="ListOfScores" class="OtherPlayers" :key="item.name">
+        {{ item.userID }} - {{ item.score }}
+    </li>
+    <button @click="playerReady" type="button">Start</button>
+    <button @click="gameOver = true" type="button">End Game</button>
+    </div>
+    <div v-if="gameOver">
+    <h2>GAME OVER</h2>
+    <p>Your score was: {{ userScore }}</p>
+    <p>You were tracked by {{ noOfCountries }} nation(s)</p>
+    <button @click="exitToHomePage" type="button">HomePage</button>
+    </div>
+    <!--- --<button @click="gameSetup" type="button">Refresh</button> --->
+  </div>
+
 
 
 </div>
@@ -204,7 +238,7 @@ export default {
       lobbySuccess(lobbyID) {
         console.log("successfully connected to lobby")
         this.playersLobby = lobbyID;
-        this.UsersInLobby[this.noOfUsersInLobby++] = this.UsersID;
+        this.UsersInLobby[this.noOfUsersInLobby++] = this.userProfile;
         this.JoinLobbyPage = false;
         this.LobbyPage = true;
       },
@@ -216,6 +250,20 @@ export default {
       },
       updateUsers(listOfUsers){
         this.UsersInLobby = listOfUsers;
+        console.log(this.UsersInLobby);
+      },
+      player_is_ready(userID){
+        var allReady = true;
+        for(var i = 0; i < this.noOfUsersInLobby; i++){
+            if(this.UsersInLobby[i].ready != true){
+              allReady = false;
+            }
+        }
+        if(allReady){
+          this.gameSetup();
+        }
+        console.log(allReady)
+
       }
     },
   data(){
@@ -248,6 +296,9 @@ export default {
       gameStarted: false,
       gameOver: false,
       noOfCountries: 0,
+      userProfile: undefined,
+      allUserIDs: [],
+      MultiPlayer: false,
 
       timer: 120,
 
@@ -270,7 +321,16 @@ export default {
       }
     },
     methods: {
+      playerReady(){
+          this.userProfile.ready = true;
+          for(var i = 0; i< this.noOfUsersInLobby; i++){
+            if(this.UsersInLobby[i].userID = this.UsersID){
+              this.UsersInLobby[i].ready = true;
+            }
+          }
 
+          this.$socket.emit('playerReady', this.userProfile, this.playersLobby);
+      },
       
       get_updated_countries(){
         chrome.storage.local.get(["countryList"], function(result){
@@ -292,15 +352,32 @@ export default {
         var vm = this;
 
         chrome.storage.local.get(["countryList"], function(result){
-            let test = ref(0);
+            console.log('test')
+            let count = ref(0);
             for(var i = 0; i < result.countryList.length; i++){
-                test.value += result.countryList[i].count;
+                count.value += result.countryList[i].count;
             }
-            vm.userScore = test;
+            vm.noOfUsersInLobby = vm.UsersInLobby.length;
+            vm.userScore = count;
+            vm.userProfile.score = count;
+            //console.log(vm.userProfile.score);
             vm.noOfCountries = result.countryList.length;
 
-            console.log(vm.userScore.value);
+            for(var j = 0; j < vm.noOfUsersInLobby; j++){
+              console.log(vm.UsersInLobby[j])
+              console.log('test');
+              console.log(vm.userProfile.userID)
+              console.log(vm.UsersInLobby[j].userID)
+              if(vm.userProfile.userID === vm.UsersInLobby[j].userID){
+                vm.UsersInLobby[j].score = count;
+                console.log(vm.UsersInLobby[j].score);
+              }
+            }
           })
+        
+        if(this.MultiPlayer){
+            this.$socket.emit('scoreUpdate', this.UserProfile, this.LobbyID, this.userScore);
+        }
 
      },
      gameSetup(){ 
@@ -328,15 +405,16 @@ export default {
               }
             }
             
-            console.log(test);
+            //console.log(test);
             vm.userScore = test;
+            vm.userProfile.score = test;
             vm.VisitedCountries = result.countryList;
             vm.noOfCountries = result.countryList.length;
         })
        chrome.storage.onChanged.addListener(function(result) {
             vm.updateScore()
             vm.updateListOfCountries()
-            console.log(result.countryList.newValue);
+            //console.log(result.countryList.newValue);
             vm.VisitedCountries = result.countryList.newValue;
             vm.gameStarted = true;
             //console.log(result.countryList.newValue[0].count)     
@@ -369,13 +447,27 @@ export default {
      },
      noLoginMode(){
         this.UsersID = this.$refs.nickname.value;
-        this.UsernamePage = false;
-        this.HomePage = true;
+
+        if(this.UsersID === ''){
+          alert("Please enter a name")
+        }else if(this.UsersID in this.allUserIDs){
+          alert("Error, that name has been taken");
+        }else{
+          this.userProfile = new User(this.UsersID);
+          this.UsernamePage = false;
+          this.HomePage = true;
+          this.allUserIDs.push(this.UsersID);
+        }
      },
      soloGameInitiated(){
         this.gameOver = false;
         this.SoloPage = false;
         this.SoloGame = true;
+     },
+     multiGameInitiated(){
+        this.gameOver = false;
+        this.LobbyPage = false;
+        this.MultiPlayer = true; 
      },
      
      noLoginToIntro(){
@@ -399,7 +491,7 @@ export default {
         return;
       }else{
           var lobbyID = this.$refs.LobbyID.value;
-          this.$socket.emit('JoinLobby', lobbyID, this.UsersID);
+          this.$socket.emit('JoinLobby', lobbyID, this.userProfile);
       }
 
     },
@@ -433,8 +525,10 @@ export default {
     },
     createLobby(){
       var newLobbyID = this.createNewLobbyID();
-      this.$socket.emit('CreateNewLobby', newLobbyID, this.UsersID);
+      this.$socket.emit('CreateNewLobby', newLobbyID, this.userProfile);
+
       this.playersLobby = newLobbyID;
+      this.noOfUsersInLobby += 1;
       
       this.LobbyPage = true;
       this.HomePage = false;
@@ -448,6 +542,7 @@ export default {
       this.HomePage = true;
       this.SoloPage = false;
       this.SoloGame = false;
+      this.MultiPlayer = false;
     },
     createNewLobbyID(){
      /* adapted from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript */
@@ -460,6 +555,16 @@ export default {
     
     }
 }
+}
+
+// Class Helpers:
+
+class User {
+  constructor(userID){
+    this.userID = userID;
+    this.score = 0;
+    this.ready = false;
+  }
 }
 
 </script>
@@ -491,6 +596,14 @@ li.TrackedCountry{
   list-style: none;
   font-style: italic;
 }
+
+li.LobbyUsers{
+  color: white;
+  font-size: smaller;
+  list-style: none;
+  font-style: italic;
+}
+
 p{
   color: white;
 }

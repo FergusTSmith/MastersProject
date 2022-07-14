@@ -94,10 +94,15 @@ io.on('connection', (socket) => {
         console.log('Creating new Lobby with ID: ' + newLobbyID);
         var newLobby = new Lobby(newLobbyID);
         availableLobbies[numberOfLobbies] = newLobby;
+        
         socket.join(availableLobbies[numberOfLobbies]);
         availableLobbies[numberOfLobbies].addUser(usersID);
+        console.log(usersID)
+
         socket.nsp.to(availableLobbies[numberOfLobbies]).emit('updateUsers', availableLobbies[numberOfLobbies].lobbyUsers)
         numberOfLobbies++;
+
+        console.log(availableLobbies[numberOfLobbies-1].lobbyUsers)
 
         for(var i = 0; i< numberOfLobbies; i++){
             console.log(availableLobbies[i].LobbyID);
@@ -119,7 +124,26 @@ io.on('connection', (socket) => {
     socket.on('newUser', (userID, googleID) => {
         
     })
-   
+
+    socket.on('playerReady', (user, lobbyID) => {
+        for(var i = 0; i < numberOfLobbies; i++){
+            if(availableLobbies[i].LobbyID === lobbyID){
+                socket.nsp.to(availableLobbies[i]).emit('player_is_ready', this.user, this.lobbyID);
+            }
+        }
+    })
+
+    socket.on('scoreUpdate', lobbyID, user, userScore)
+        for(var i = 0; i < numberOfLobbies; i++){
+            if(availableLobbies[i].LobbyID === lobbyID){
+                for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
+                    if(availableLobbies[i].lobbyUsers[j].userID === user.userID){
+                        availableLobbies[i].lobbyUsers[j].score = userScore;
+                        socket.nsp.to(availableLobbies[i]).emit('updateUsers', availableLobbies[i].lobbyUsers)
+                    }
+                }
+            }
+        }
 })
 
 var nodeServer = http.createServer(app);
