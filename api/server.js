@@ -22,10 +22,11 @@ class Lobby {
         if(this.numberOfUsers >= 4){
             console.log("Error. Lobby is currently full");
             return false;
-        }
-        this.lobbyUsers[this.numberOfUsers++] = userID;
-        for(var i = 0; i < this.numberOfUsers; i++){
-            console.log(this.lobbyUsers[i]);
+        }else{
+            this.lobbyUsers[this.numberOfUsers++] = userID;
+            for(var i = 0; i < this.numberOfUsers; i++){
+                console.log(this.lobbyUsers[i]);
+            }
         }
     }
 
@@ -78,7 +79,7 @@ io.on('connection', (socket) => {
             if(availableLobbies[i].LobbyID === lobbyID){
                 socket.join(availableLobbies[i]);
                 socket.emit('lobbySuccess', lobbyID);
-                console.log("User has successfully joined the lobby");
+                console.log("User has successfully joined the lobby " + lobbyID);
                 availableLobbies[i].addUser(UserID);
                 socket.nsp.to(availableLobbies[i]).emit('updateUsers', availableLobbies[i].lobbyUsers)
                 return;
@@ -134,7 +135,7 @@ io.on('connection', (socket) => {
         }
     })
 
-    socket.on('scoreUpdate', (lobbyID, user, userScore) => {
+    socket.on('scoreUpdate', (user, lobbyID, userScore) => {
         for(var i = 0; i < numberOfLobbies; i++){
             if(availableLobbies[i].LobbyID === lobbyID){
                 for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){

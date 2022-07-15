@@ -101,7 +101,7 @@ console.log(listenerCount);
     <br/><br/>
     <label>Enter lobby ID:</label><br/>
     <input ref="LobbyID" type="text">
-    <br/>
+    <p class="ErrorText">{{ lobbyError }}</p>
     <button @click="enterLobby" type="button">Join</button>
     <button @click="exitToHomePage" type="button">Back</button>
   </div>
@@ -250,9 +250,11 @@ export default {
         this.JoinLobbyPage = false;
         this.LobbyPage = true;
         this.$socket.join(lobbyID)
+        this.lobbyError = false;
       },
       lobbyFailure() {
         console.log("there was an error when attempting to connect to the server")
+        this.lobbyError = 'Error: Lobby Not Found';
       },
       testMessage(){
         console.log("Test message was successful");
@@ -310,6 +312,7 @@ export default {
       MultiPlayer: false,
       WinningUser: undefined,
       didYouWin: false,
+      lobbyError: '',
 
       timer: 120,
 
@@ -401,7 +404,6 @@ export default {
             vm.noOfUsersInLobby = vm.UsersInLobby.length;
             vm.userScore = count;
             vm.userProfile.score = count;
-            //console.log(vm.userProfile.score);
             vm.noOfCountries = result.countryList.length;
 
             for(var j = 0; j < vm.noOfUsersInLobby; j++){
@@ -567,9 +569,10 @@ export default {
     createLobby(){
       var newLobbyID = this.createNewLobbyID();
       this.$socket.emit('CreateNewLobby', newLobbyID, this.userProfile);
+      this.noOfUsersInLobby = 0;
 
       this.playersLobby = newLobbyID;
-      this.UsersInLobby[noOfUsersInLobby++] = this.UserProfile;
+      this.UsersInLobby[this.noOfUsersInLobby++] = this.UserProfile;
       
       this.LobbyPage = true;
       this.HomePage = false;
@@ -679,6 +682,10 @@ body {
 p.HelpText {
   font-size: 10px;
   color: white;
+}
+p.ErrorText {
+  font-size: 10px;
+  color: red;
 }
 
 li.PlayerList {
