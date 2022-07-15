@@ -58,7 +58,7 @@ const socketServ = app.listen(PORT, function(){
 
 const io = socket(socketServ, {
     cors: {
-        origin: "http://localhost:3080",
+        origin: "http://138.68.132.17/",
         methods: ["GET", "POST"],
         transports: ['websocket', 'polling'],
         credentials: true
@@ -133,7 +133,7 @@ io.on('connection', (socket) => {
         }
     })
 
-    socket.on('scoreUpdate', lobbyID, user, userScore)
+    socket.on('scoreUpdate', (lobbyID, user, userScore) => {
         for(var i = 0; i < numberOfLobbies; i++){
             if(availableLobbies[i].LobbyID === lobbyID){
                 for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
@@ -144,7 +144,8 @@ io.on('connection', (socket) => {
                 }
             }
         }
-})
+    
+})})
 
 var nodeServer = http.createServer(app);
 
