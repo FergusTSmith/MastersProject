@@ -201,7 +201,7 @@ console.log(listenerCount);
     </li>
     <br/>
     <label>Current Score: </label><p> {{ this.userScore }}</p>
-    <li v-for="item in UsersInLobby" ref="ListOfScores" class="OtherPlayers" :key="item.name">
+    <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item.name">
         {{ item.userID }} - {{ item.score }}
     </li>
     <button @click="playerReady" type="button">Start</button>
@@ -324,7 +324,7 @@ export default {
               this.timer--;
             }, 1000);
           }else if(value === 0){
-            endGame()
+            this.endGame()
           }
         },
         immediate: true
@@ -690,6 +690,7 @@ h2 {
   font-family: 'digitalFont';
   font-size: 40px;
   color: #20C20E;
+
 }
 
 
