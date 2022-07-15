@@ -99,7 +99,8 @@ io.on('connection', (socket) => {
         availableLobbies[numberOfLobbies].addUser(usersID);
         console.log(usersID)
 
-        socket.nsp.to(availableLobbies[numberOfLobbies]).emit('updateUsers', availableLobbies[numberOfLobbies].lobbyUsers)
+        //socket.nsp.to(availableLobbies[numberOfLobbies]).emit('updateUsers', availableLobbies[numberOfLobbies].lobbyUsers)
+        socket.in(availableLobbies[numberOfLobbies]).broadcast.emit('updateUsers', availableLobbies[numberOfLobbies].lobbyUsers)
         numberOfLobbies++;
 
         console.log(availableLobbies[numberOfLobbies-1].lobbyUsers)
@@ -128,7 +129,7 @@ io.on('connection', (socket) => {
     socket.on('playerReady', (user, lobbyID) => {
         for(var i = 0; i < numberOfLobbies; i++){
             if(availableLobbies[i].LobbyID === lobbyID){
-                socket.nsp.to(availableLobbies[i]).emit('player_is_ready', this.user, this.lobbyID);
+                socket.nsp.to(availableLobbies[i]).emit('player_is_ready', user, this.lobbyID);
             }
         }
     })

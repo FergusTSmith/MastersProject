@@ -249,6 +249,7 @@ export default {
         this.UsersInLobby[this.noOfUsersInLobby++] = this.userProfile;
         this.JoinLobbyPage = false;
         this.LobbyPage = true;
+        this.$socket.join(lobbyID)
       },
       lobbyFailure() {
         console.log("there was an error when attempting to connect to the server")
@@ -568,7 +569,7 @@ export default {
       this.$socket.emit('CreateNewLobby', newLobbyID, this.userProfile);
 
       this.playersLobby = newLobbyID;
-      this.noOfUsersInLobby += 1;
+      this.UsersInLobby[noOfUsersInLobby++] = this.UserProfile;
       
       this.LobbyPage = true;
       this.HomePage = false;
