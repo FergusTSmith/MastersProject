@@ -58,7 +58,7 @@ const socketServ = app.listen(PORT, function(){
 
 const io = socket(socketServ, {
     cors: {
-        origin: "http://138.68.132.17/",
+        origin: "138.68.132.17",
         methods: ["GET", "POST"],
         transports: ['websocket', 'polling'],
         credentials: true
