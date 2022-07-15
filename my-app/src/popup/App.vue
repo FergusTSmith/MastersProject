@@ -348,7 +348,7 @@ export default {
     methods: {
       leaveGame(){
         for(var i = 0; i < this.UsersInLobby.length; i++){
-          if(this.UsersInLobby[i] === this.UserProfile){
+          if(this.UsersInLobby[i] === this.userProfile){
             for(var j = i; j < this.UsersInLobby.length-1; j++){
               this.UsersInLobby[j] = this.UsersInLobby[j+1];
             }
