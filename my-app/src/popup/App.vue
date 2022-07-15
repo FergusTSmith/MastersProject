@@ -324,7 +324,7 @@ export default {
               this.timer--;
             }, 1000);
           }else if(value === 0){
-            this.gameOver = true;
+            endGame()
           }
         },
         immediate: true
