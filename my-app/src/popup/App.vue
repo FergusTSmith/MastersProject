@@ -1,6 +1,5 @@
 <script setup>
 import { classBody } from '@babel/types';
-import { eachMapping } from '@jridgewell/trace-mapping';
 import { listenerCount } from 'process';
 //import { isReactive } from 'vue';
 import { ref } from 'vue';
@@ -133,7 +132,7 @@ console.log(listenerCount);
       -->
     </ul>
     <li v-for="item in UsersInLobby" class="LobbyUsers" :key="item.userID">
-        {{ noOfUsersInLobby+1 }}. {{ item.userID }}
+        {{ noOfUsersInLobby }}. {{ item.userID }}
     </li>
 
     <button class="Radio" type="button">Classic</button>
@@ -179,7 +178,7 @@ console.log(listenerCount);
     <br/>
     <label>Current Score: </label><p> {{ this.userScore }}</p>
     <button @click="gameSetup" type="button">Start</button>
-    <button @click="gameOver = true" type="button">End Game</button>
+    <button @click="endGame" type="button">End Game</button>
     </div>
     <div v-if="gameOver">
     <h2>GAME OVER</h2>
@@ -206,10 +205,19 @@ console.log(listenerCount);
         {{ item.userID }} - {{ item.score }}
     </li>
     <button @click="playerReady" type="button">Start</button>
-    <button @click="gameOver = true" type="button">End Game</button>
+    <button @click="endGame" type="button">End Game</button>
     </div>
     <div v-if="gameOver">
     <h2>GAME OVER</h2>
+    <div v-if="didYouWin">
+    <p>You won! Congratularions</p>
+    </div>
+    <div v-if="!(didYouWin)">
+    <p>Condolenses. The winner of the game was {{ WinningUser.userID }}</p>
+    </div>
+    <li v-for="item in UsersInLobby" ref="ListOfScores" class="OtherPlayers" :key="item.name">
+        {{ item.userID }} - {{ item.score }}
+    </li>
     <p>Your score was: {{ userScore }}</p>
     <p>You were tracked by {{ noOfCountries }} nation(s)</p>
     <button @click="exitToHomePage" type="button">HomePage</button>
@@ -252,7 +260,7 @@ export default {
         this.UsersInLobby = listOfUsers;
         console.log(this.UsersInLobby);
       },
-      player_is_ready(userID){
+      player_is_ready(){
         var allReady = true;
         for(var i = 0; i < this.noOfUsersInLobby; i++){
             if(this.UsersInLobby[i].ready != true){
@@ -299,6 +307,8 @@ export default {
       userProfile: undefined,
       allUserIDs: [],
       MultiPlayer: false,
+      WinningUser: undefined,
+      didYouWin: false,
 
       timer: 120,
 
@@ -321,10 +331,40 @@ export default {
       }
     },
     methods: {
+      endGame(){
+        var winningScore = 0;
+
+        if(this.MultiPlayer){
+          for(var i = 0; i < this.noOfUsersInLobby; i++){
+          if(this.UsersInLobby[i].score >= winningScore){
+            winningScore = this.UsersInLobby[i].score;
+            var winningUser = this.UsersInLobby[i].userID;
+          }
+        }
+        }
+        console.log(winningScore + winningUser)
+        this.WinningUser = winningUser;
+
+        this.gameOver = true;
+
+        console.log(this.WinningUser);
+        console.log(this.WinningUser);
+        if(this.WinningUser === this.UsersID){
+          this.didYouWin = true;
+        }
+
+        //Close the Lobby
+        this.$socket.emit('closeLobby', this.playersLobby)
+
+        this.UsersInLobby = []
+        this.noOfUsersInLobby = 0;
+
+      },
+      
       playerReady(){
           this.userProfile.ready = true;
           for(var i = 0; i< this.noOfUsersInLobby; i++){
-            if(this.UsersInLobby[i].userID = this.UsersID){
+            if(this.UsersInLobby[i].userID === this.UsersID){
               this.UsersInLobby[i].ready = true;
             }
           }
