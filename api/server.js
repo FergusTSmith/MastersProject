@@ -123,6 +123,23 @@ io.on('connection', (socket) => {
             }
         }
     })
+    socket.on('playerLeft', (user, lobbyID) => {
+        for(var i = 0; i < numberOfLobbies; i++){
+            if(availableLobbies[i].LobbyID === lobbyID){
+                for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
+                    if(availableLobbies[i].lobbyUsers[j] === user){
+                        for(var k = j; k < availableLobbies[i].lobbyUsers.length-1; k++){
+                            availableLobbies[i].lobbyUsers[k] = availableLobbies[i].lobbyUsers[k+1]
+                        }
+                        availableLobbies[i].lobbyUsers[availableLobbies[i].lobbyUsers.length] = undefined;
+                        socket.nsp.to(availableLobbies[i]).emit('removePlayerFromLobby', user, lobbyID)
+                    }
+                }
+            }
+        }
+    })
+    
+
     socket.on('newUser', (userID, googleID) => {
         
     })
@@ -130,7 +147,7 @@ io.on('connection', (socket) => {
     socket.on('playerReady', (user, lobbyID) => {
         for(var i = 0; i < numberOfLobbies; i++){
             if(availableLobbies[i].LobbyID === lobbyID){
-                socket.nsp.to(availableLobbies[i]).emit('player_is_ready', user, this.lobbyID);
+                socket.nsp.to(availableLobbies[i]).emit('player_is_ready', user, lobbyID);
             }
         }
     })

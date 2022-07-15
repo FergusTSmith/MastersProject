@@ -131,7 +131,7 @@ console.log(listenerCount);
       <li class="PlayerList" id="Player4">4. {{ UsersInLobby[3].userID }}</li>
       -->
     </ul>
-    <li v-for="item in UsersInLobby" class="LobbyUsers" :key="item.userID">
+    <li v-for="item in UsersInLobby" class="LobbyUsers" :key="item">
         {{ noOfUsersInLobby }}. {{ item.userID }}
     </li>
 
@@ -205,7 +205,7 @@ console.log(listenerCount);
         {{ item.userID }} - {{ item.score }}
     </li>
     <button @click="playerReady" type="button">Start</button>
-    <button @click="endGame" type="button">End Game</button>
+    <button @click="leaveGame" type="button">Leave Game</button>
     </div>
     <div v-if="gameOver">
     <h2>GAME OVER</h2>
@@ -274,7 +274,18 @@ export default {
           this.gameSetup();
         }
         console.log(allReady)
-
+      },
+      removePlayerFromLobby(user, lobbyID){
+        if(this.lobbyID === lobbyID){
+          for(var i = 0; i < this.noOfUsersInLobby; i++){
+            if(this.UsersInLobby[i] === user){
+              for(var j = i; j < this.noOfUsersInLobby-1; j++){
+                this.UsersInLobby[i] = this.UsersInlobby[i+1]
+              }
+              this.UsersInLobby[this.noOfUsersInLobby--] = undefined;
+            }
+          }
+        }
       }
     },
   data(){
@@ -335,6 +346,19 @@ export default {
       }
     },
     methods: {
+      leaveGame(){
+        for(var i = 0; i < this.UsersInLobby.length; i++){
+          if(this.UsersInLobby[i] === this.UserProfile){
+            for(var j = i; j < this.UsersInLobby.length-1; j++){
+              this.UsersInLobby[j] = this.UsersInLobby[j+1];
+            }
+            this.UsersInLobby[this.UsersInLobby.length] = undefined;
+          }
+        }
+
+        this.$socket.emit('playerLeft', this.userProfile, this.LobbyID)
+        this.LobbyID = '';
+      },
       endGame(){
         var winningScore = 0;
 
@@ -514,7 +538,7 @@ export default {
      },
      
      noLoginToIntro(){
-      this.NoLoginPage = false;
+      this.UsernamePage = false;
       this.IntroPage = true;
      },
      
@@ -572,7 +596,7 @@ export default {
       this.noOfUsersInLobby = 0;
 
       this.playersLobby = newLobbyID;
-      this.UsersInLobby[this.noOfUsersInLobby++] = this.UserProfile;
+      this.UsersInLobby[this.noOfUsersInLobby++] = this.userProfile;
       
       this.LobbyPage = true;
       this.HomePage = false;
@@ -698,7 +722,8 @@ h2 {
   font-family: 'digitalFont';
   font-size: 40px;
   color: #20C20E;
-
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 
