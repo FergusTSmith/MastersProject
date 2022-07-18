@@ -123,8 +123,8 @@ console.log(listenerCount);
     <!----Animation of the wheel turning ----->
 
     <p class="HelpText">Connected Players:</p>
-    <li v-for="item in UsersInLobby" class="LobbyUsers" :key="item">
-        {{ noOfUsersInLobby }}. {{ item.userID }}
+    <li v-for="(item, count) in UsersInLobby" class="LobbyUsers" :key="item">
+        {{ ++count }}. {{ item.userID }}
     </li>
 
 
@@ -217,8 +217,8 @@ console.log(listenerCount);
     <div v-if="!(didYouWin)">
     <p>Condolenses. The winner of the game was {{ WinningUser }}</p>
     </div>
-    <li v-for="item in UsersInLobby" ref="ListOfScores" class="OtherPlayers" :key="item.name">
-        {{ item.userID }} - {{ item.score }} - {{ item.ready }}
+    <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item.name">
+        {{ item.userID }} - {{ item.score }}
     </li>
     <p>Your score was: {{ userScore }}</p>
     <p>You were tracked by {{ noOfCountries }} nation(s)</p>
@@ -249,8 +249,10 @@ export default {
         console.log("successfully connected to lobby")
         var lobbyID = lobbyDetails[0];
         var listOfUsers = lobbyDetails[1];
+        console.log(listOfUsers);
         this.playersLobby = lobbyID;
         this.UsersInLobby = listOfUsers;
+        this.noOfUsersInLobby++;
         this.JoinLobbyPage = false;
         this.LobbyPage = true;
         //this.$socket.join(lobbyID)
@@ -305,6 +307,7 @@ export default {
         var lobbyID = lobbyDetails[1]
         if(this.playersLobby === lobbyID){
           this.UsersInLobby = listOfUsers;
+          this.noOfUsersInLobby = this.UsersInLobby.length;
           console.log(this.UsersInLobby);
           console.log("test passed");
         }
