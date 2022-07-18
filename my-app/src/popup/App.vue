@@ -411,13 +411,16 @@ export default {
           }) */
       },
       leaveGame(){
+        console.log(this.UsersInLobby)
         for(var i = 0; i < this.UsersInLobby.length; i++){
-          if(this.UsersInLobby[i] === this.userProfile){
-            for(var j = i; j < this.UsersInLobby.length-1; j++){
+          if(this.UsersInLobby[i].userID === this.UsersID){
+            /*for(var j = i; j < this.UsersInLobby.length-1; j++){
               this.UsersInLobby[j] = this.UsersInLobby[j+1];
             }
-            this.UsersInLobby[this.UsersInLobby.length] = undefined;
+            this.UsersInLobby[this.UsersInLobby.length] = undefined;*/
+            this.UsersInLobby.splice(i, i+1)
             console.log("Player deleted")
+            console.log(this.UsersInLobby)
           }
         }
 
