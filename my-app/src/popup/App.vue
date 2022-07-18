@@ -215,7 +215,7 @@ console.log(listenerCount);
     <p>You won! Congratularions</p>
     </div>
     <div v-if="!(didYouWin)">
-    <p>Condolenses. The winner of the game was {{ WinningUser.userID }}</p>
+    <p>Condolenses. The winner of the game was {{ WinningUser }}</p>
     </div>
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="OtherPlayers" :key="item.name">
         {{ item.userID }} - {{ item.score }} - {{ item.ready }}
@@ -255,6 +255,7 @@ export default {
         this.LobbyPage = true;
         //this.$socket.join(lobbyID)
         this.lobbyError = false;
+        this.allPlayersReady = false;
       },
       lobbyFailure() {
         console.log("there was an error when attempting to connect to the server")
@@ -310,11 +311,14 @@ export default {
         console.log(this.playersLobby);
         console.log(lobbyID);
       },
-      player_is_ready(user, lobbyID){
+      player_is_ready(lobbyDetails){
         var allReady = true;
+        var user = lobbyDetails[0];
+        var lobbyID = lobbyDetails[1];
 
         if(lobbyID === this.playersLobby){
           for(var i = 0; i < this.noOfUsersInLobby; i++){
+            console.log(this.UsersInLobby[i]);
             if(this.UsersInLobby[i].userID === user.userID){
               this.UsersInLobby[i].ready = true;
             }
@@ -377,7 +381,7 @@ export default {
       didYouWin: false,
       lobbyError: '',
       isLobbyCreator: false,
-      allPlayersReady: true,
+      allPlayersReady: false,
 
       timer: 120,
 
@@ -440,9 +444,6 @@ export default {
 
         //Close the Lobby
         this.$socket.emit('closeLobby', this.playersLobby)
-
-        this.UsersInLobby = []
-        this.noOfUsersInLobby = 0;
 
       },
       
@@ -633,15 +634,7 @@ export default {
       this.MultiPlayer = false;
     },
     exitToHomePageReset(){
-      this.LobbyPage = false;
-      this.JoinLobbyPage = false;
-      this.LeaderBoard = false;
-      this.SoloPage = false;
-      this.OptionsPage = false;
-      this.HomePage = true;
-      this.SoloPage = false;
-      this.SoloGame = false;
-      this.MultiPlayer = false;
+      this.exitToHomePage();
 
       this.isLobbyCreator = false;
       this.userProfile.ready = false;
@@ -650,6 +643,8 @@ export default {
       this.allPlayersReady = false;
       this.didYouWin = false;
       this.winningUser = false;
+      this.VisitedCountries = [];
+      this.noOfUsersInLobby = 0;
     },
     createNewLobbyID(){
      /* adapted from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript */
