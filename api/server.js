@@ -163,8 +163,16 @@ io.on('connection', (socket) => {
                 }
             }
         }
-    
-})})
+    })
+
+    socket.on('startTheGame', (lobbyID) => {
+        for(var i = 0; i < numberOfLobbies; i++){
+            if(availableLobbies[i].LobbyID === lobbyID){
+                socket.nsp.to(availableLobbies[i]).emit('startGame', availableLobbies[i].LobbyID)
+            }
+        }
+    })
+})
 
 var nodeServer = http.createServer(app);
 
