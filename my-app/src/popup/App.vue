@@ -123,26 +123,20 @@ console.log(listenerCount);
     <!----Animation of the wheel turning ----->
 
     <p class="HelpText">Connected Players:</p>
-    <ul>
-      <!-----
-      <li class="PlayerList" id="Player1">1. {{ UsersInLobby[0].userID }}</li>
-      <li class="PlayerList" id="Player2">2. {{ UsersInLobby[1].userID }}</li>
-      <li class="PlayerList" id="Player3">3. {{ UsersInLobby[2].userID }}</li>
-      <li class="PlayerList" id="Player4">4. {{ UsersInLobby[3].userID }}</li>
-      -->
-    </ul>
     <li v-for="item in UsersInLobby" class="LobbyUsers" :key="item">
         {{ noOfUsersInLobby }}. {{ item.userID }}
     </li>
+
 
     <button class="Radio" type="button">Classic</button>
     <button class="Radio" type="button">Bingo</button>
     <button class="Radio" type="button">Roulette</button>
     <br/>
     <!-----This should only be visible for the lobby leader: ---->
-    <button @click="closeLobby" type="button">Close Lobby</button>
+    <button v-if="isLobbyCreator" @click="closeLobby" type="button">Close Lobby</button>
     <button @click="multiGameInitiated" type="button">Begin Game</button>
     <button @click="exitToHomePage" type="button">Cancel</button>
+    <button @click="leaveGame" type="button">Leave Game</button>
   </div>
 
   <div v-if="SoloPage" id="Solo-Mode">
@@ -196,15 +190,16 @@ console.log(listenerCount);
     <br/>
     <label>Time remaining: </label>
     <p> {{ timer }}</p>
-    <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
+    <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item" class="TrackedCountry">
         {{ item.name }} - {{ item.count }}
     </li>
     <br/>
     <label>Current Score: </label><p> {{ this.userScore }}</p>
-    <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item.name">
+    <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item">
         {{ item.userID }} - {{ item.score }}
     </li>
-    <button @click="playerReady" type="button">Start</button>
+    <button v-if="isLobbyCreator" @click="gameSetup" type="button">Start</button>
+    <button @click="playerReady">Ready Up</button>
     <button @click="leaveGame" type="button">Leave Game</button>
     </div>
     <div v-if="gameOver">
@@ -216,7 +211,7 @@ console.log(listenerCount);
     <p>Condolenses. The winner of the game was {{ WinningUser.userID }}</p>
     </div>
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="OtherPlayers" :key="item.name">
-        {{ item.userID }} - {{ item.score }}
+        {{ item.userID }} - {{ item.score }} - {{ item.ready }}
     </li>
     <p>Your score was: {{ userScore }}</p>
     <p>You were tracked by {{ noOfCountries }} nation(s)</p>
@@ -249,34 +244,81 @@ export default {
         this.UsersInLobby[this.noOfUsersInLobby++] = this.userProfile;
         this.JoinLobbyPage = false;
         this.LobbyPage = true;
-        this.$socket.join(lobbyID)
+        //this.$socket.join(lobbyID)
         this.lobbyError = false;
       },
       lobbyFailure() {
         console.log("there was an error when attempting to connect to the server")
         this.lobbyError = 'Error: Lobby Not Found';
       },
-      testMessage(){
-        console.log("Test message was successful");
+      startGame(lobbyID){
+        if(lobbyID === this.playersLobby){
+          var vm = this;
+          this.gameStarted = true;
+          if(this.timer <= 0){
+            this.timer = 120;
+          }
+
+            this.timer += 1;
+            chrome.runtime.sendMessage({ message: 'reset'}, function(response) {
+              if(response === 'success'){
+                console.log('successfully started the game.')
+                vm.VisitedCountries = [];
+                vm.userScore = 0;
+              }
+              return true;
+            })
+            
+            chrome.storage.local.get(["countryList"], function(result){
+                let test = 0;
+                if(!(result == undefined)){
+                  for(var i = 0; i < result.countryList.length; i++){
+                    test += result.countryList[i].count;
+                  }
+                }
+                
+                //console.log(test);
+                vm.userScore = test;
+                vm.userProfile.score = test;
+                vm.VisitedCountries = result.countryList;
+                vm.noOfCountries = result.countryList.length;
+            })
+          chrome.storage.onChanged.addListener(function(result) {
+                vm.updateScore()
+                vm.updateListOfCountries()
+                //console.log(result.countryList.newValue);
+                vm.VisitedCountries = result.countryList.newValue;
+                vm.gameStarted = true;
+                //console.log(result.countryList.newValue[0].count)     
+              //console.log(this.testScore.value);
+                //console.log(isReactive(this.testScore));
+            }) 
+        }
       },
       updateUsers(listOfUsers){
         this.UsersInLobby = listOfUsers;
         console.log(this.UsersInLobby);
       },
-      player_is_ready(){
+      player_is_ready(user, lobbyID){
         var allReady = true;
-        for(var i = 0; i < this.noOfUsersInLobby; i++){
+
+        if(lobbyID === this.playersLobby){
+          for(var i = 0; i < this.noOfUsersInLobby; i++){
+            if(this.UsersInLobby[i].userID === user.userID){
+              this.UsersInLobby[i].ready = true;
+            }
             if(this.UsersInLobby[i].ready != true){
               allReady = false;
             }
+          }
         }
         if(allReady){
-          this.gameSetup();
+          this.allPlayersReady = true;
         }
         console.log(allReady)
       },
       removePlayerFromLobby(user, lobbyID){
-        if(this.lobbyID === lobbyID){
+        if(this.playersLobby === lobbyID){
           for(var i = 0; i < this.noOfUsersInLobby; i++){
             if(this.UsersInLobby[i] === user){
               for(var j = i; j < this.noOfUsersInLobby-1; j++){
@@ -324,6 +366,8 @@ export default {
       WinningUser: undefined,
       didYouWin: false,
       lobbyError: '',
+      isLobbyCreator: false,
+      allPlayersReady: true,
 
       timer: 120,
 
@@ -347,6 +391,9 @@ export default {
     },
     methods: {
       leaveGame(){
+        this.exitToHomePage();
+
+
         for(var i = 0; i < this.UsersInLobby.length; i++){
           if(this.UsersInLobby[i] === this.userProfile){
             for(var j = i; j < this.UsersInLobby.length-1; j++){
@@ -356,8 +403,10 @@ export default {
           }
         }
 
-        this.$socket.emit('playerLeft', this.userProfile, this.LobbyID)
-        this.LobbyID = '';
+        this.$socket.emit('playerLeft', this.userProfile, this.playersLobby)
+        this.playersLobby = '';
+        console.log('testicles')
+        this.isLobbyCreator = false;
       },
       endGame(){
         var winningScore = 0;
@@ -392,7 +441,7 @@ export default {
       playerReady(){
           this.userProfile.ready = true;
           for(var i = 0; i< this.noOfUsersInLobby; i++){
-            if(this.UsersInLobby[i].userID === this.UsersID){
+            if(this.UsersInLobby[i].userID === this.userProfile.userID){
               this.UsersInLobby[i].ready = true;
             }
           }
@@ -443,53 +492,14 @@ export default {
           })
         
         if(this.MultiPlayer){
-            this.$socket.emit('scoreUpdate', this.UserProfile, this.LobbyID, this.userScore);
+            this.$socket.emit('scoreUpdate', this.userProfile, this.playersLobby, this.userScore);
         }
 
      },
      gameSetup(){ 
-        var vm = this;
-        this.gameStarted = true;
-        if(this.timer <= 0){
-          this.timer = 120;
+        if(this.allPlayersReady){
+          this.$socket.emit('startTheGame', this.playersLobby)
         }
-
-        this.timer += 1;
-        chrome.runtime.sendMessage({ message: 'reset'}, function(response) {
-          if(response === 'success'){
-            console.log('successfully started the game.')
-            vm.VisitedCountries = [];
-            vm.userScore = 0;
-          }
-          return true;
-        })
-        
-        chrome.storage.local.get(["countryList"], function(result){
-            let test = 0;
-            if(!(result == undefined)){
-              for(var i = 0; i < result.countryList.length; i++){
-                test += result.countryList[i].count;
-              }
-            }
-            
-            //console.log(test);
-            vm.userScore = test;
-            vm.userProfile.score = test;
-            vm.VisitedCountries = result.countryList;
-            vm.noOfCountries = result.countryList.length;
-        })
-       chrome.storage.onChanged.addListener(function(result) {
-            vm.updateScore()
-            vm.updateListOfCountries()
-            //console.log(result.countryList.newValue);
-            vm.VisitedCountries = result.countryList.newValue;
-            vm.gameStarted = true;
-            //console.log(result.countryList.newValue[0].count)     
-          //console.log(this.testScore.value);
-            //console.log(isReactive(this.testScore));
-
-        })  
-
      },
      
      googleLogin(){
@@ -600,6 +610,7 @@ export default {
       
       this.LobbyPage = true;
       this.HomePage = false;
+      this.isLobbyCreator = true;
     },
     exitToHomePage(){
       this.LobbyPage = false;
