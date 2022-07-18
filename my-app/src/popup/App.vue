@@ -195,12 +195,16 @@ console.log(listenerCount);
     </li>
     <br/>
     <label>Current Score: </label><p> {{ this.userScore }}</p>
-    <li v-if="!(allPlayersReady)" v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item">
+    <ol v-if="!(allPlayersReady)">
+    <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item">
         {{ item.userID }} - {{ item.ready }}
     </li>
-    <li v-if="allPlayersReady" v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item">
+    </ol>
+    <ol v-if="allPlayersReady">
+    <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item">
         {{ item.userID }} - {{ item.score }}
     </li>
+    </ol>
     <button v-if="isLobbyCreator" @click="gameSetup" type="button">Start</button>
     <button @click="playerReady">Ready Up</button>
     <button @click="leaveGame" type="button">Leave Game</button>
