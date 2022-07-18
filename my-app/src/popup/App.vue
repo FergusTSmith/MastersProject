@@ -297,10 +297,14 @@ export default {
         }
       },
       updateUsers(listOfUsers, lobbyID){
+        console.log("Test: updating users...")
         if(this.playersLobby === lobbyID){
           this.UsersInLobby = listOfUsers;
           console.log(this.UsersInLobby);
+          console.log("test passed");
         }
+        console.log(this.playersLobby);
+        console.log(lobbyID);
       },
       player_is_ready(user, lobbyID){
         var allReady = true;
