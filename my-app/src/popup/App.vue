@@ -296,9 +296,11 @@ export default {
             }) 
         }
       },
-      updateUsers(listOfUsers){
-        this.UsersInLobby = listOfUsers;
-        console.log(this.UsersInLobby);
+      updateUsers(listOfUsers, lobbyID){
+        if(this.playersLobby === lobbyID){
+          this.UsersInLobby = listOfUsers;
+          console.log(this.UsersInLobby);
+        }
       },
       player_is_ready(user, lobbyID){
         var allReady = true;
@@ -391,8 +393,7 @@ export default {
     },
     methods: {
       leaveGame(){
-        this.exitToHomePage();
-
+        this.exitToHomePageReset();
 
         for(var i = 0; i < this.UsersInLobby.length; i++){
           if(this.UsersInLobby[i] === this.userProfile){
@@ -405,7 +406,6 @@ export default {
 
         this.$socket.emit('playerLeft', this.userProfile, this.playersLobby)
         this.playersLobby = '';
-        console.log('testicles')
         this.isLobbyCreator = false;
       },
       endGame(){
