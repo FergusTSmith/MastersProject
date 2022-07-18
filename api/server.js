@@ -133,7 +133,8 @@ io.on('connection', (socket) => {
                             availableLobbies[i].lobbyUsers[k] = availableLobbies[i].lobbyUsers[k+1]
                         }
                         availableLobbies[i].lobbyUsers[availableLobbies[i].lobbyUsers.length] = undefined;
-                        socket.nsp.to(availableLobbies[i]).emit('removePlayerFromLobby', user, availableLobbies[i].LobbyID)
+                        //socket.nsp.to(availableLobbies[i]).emit('removePlayerFromLobby', user, availableLobbies[i].LobbyID)
+                        socket.in(availableLobbies[i]).broadcast.emit('updateUsers', (availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID))
                     }
                 }
             }

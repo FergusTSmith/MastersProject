@@ -212,7 +212,7 @@ console.log(listenerCount);
     <div v-if="gameOver">
     <h2>GAME OVER</h2>
     <div v-if="didYouWin">
-    <p>You won! Congratularions</p>
+    <p>You won! Congratulations</p>
     </div>
     <div v-if="!(didYouWin)">
     <p>Condolenses. The winner of the game was {{ WinningUser }}</p>
@@ -265,40 +265,7 @@ export default {
       },
       startGame(lobbyID){
         if(lobbyID === this.playersLobby){
-          var vm = this;
-          this.gameStarted = true;
-          if(this.timer <= 0){
-            this.timer = 120;
-          }
-
-            this.timer += 1;
-            chrome.runtime.sendMessage({ message: 'reset'}, function(response) {
-              if(response === 'success'){
-                console.log('successfully started the game.')
-                vm.VisitedCountries = [];
-                vm.userScore = 0;
-              }
-              return true;
-            })
-            
-            chrome.storage.local.get(["countryList"], function(result){
-                let score = 0;
-                if(!(result == undefined)){
-                  for(var i = 0; i < result.countryList.length; i++){
-                    score += result.countryList[i].count;
-                  }
-                }
-                vm.userScore = score;
-                vm.userProfile.score = score;
-                vm.VisitedCountries = result.countryList;
-                vm.noOfCountries = result.countryList.length;
-            })
-          chrome.storage.onChanged.addListener(function(result) {
-                vm.updateScore()
-                vm.updateListOfCountries()
-                vm.VisitedCountries = result.countryList.newValue;
-                vm.gameStarted = true;
-            }) 
+          this.initiateGame();
         }
       },
       updateUsers(lobbyDetails){
@@ -407,6 +374,42 @@ export default {
       }
     },
     methods: {
+      initiateGame(){
+        var vm = this;
+          this.gameStarted = true;
+          if(this.timer <= 0){
+            this.timer = 120;
+          }
+
+            this.timer += 1;
+            chrome.runtime.sendMessage({ message: 'reset'}, function(response) {
+              if(response === 'success'){
+                console.log('successfully started the game.')
+                vm.VisitedCountries = [];
+                vm.userScore = 0;
+              }
+              return true;
+            })
+            
+            chrome.storage.local.get(["countryList"], function(result){
+                let score = 0;
+                if(!(result == undefined)){
+                  for(var i = 0; i < result.countryList.length; i++){
+                    score += result.countryList[i].count;
+                  }
+                }
+                vm.userScore = score;
+                vm.userProfile.score = score;
+                vm.VisitedCountries = result.countryList;
+                vm.noOfCountries = result.countryList.length;
+            })
+          chrome.storage.onChanged.addListener(function(result) {
+                vm.updateScore()
+                vm.updateListOfCountries()
+                vm.VisitedCountries = result.countryList.newValue;
+                vm.gameStarted = true;
+            }) 
+      },
       leaveGame(){
         this.exitToHomePageReset();
 
@@ -511,6 +514,8 @@ export default {
      gameSetup(){ 
         if(this.allPlayersReady){
           this.$socket.emit('startTheGame', this.playersLobby)
+        }else if(this.MultiPlayer === false){
+          this.initiateGame();
         }
      },
      
@@ -571,8 +576,7 @@ export default {
      
      closeLobby(){
         this.$socket.emit('closeLobby', this.playersLobby)
-        this.LobbyPage = false;
-        this.HomePage = true;
+        this.exitToHomePageReset();
      },
      
      enterLobby(){
