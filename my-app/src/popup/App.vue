@@ -245,10 +245,12 @@ export default {
       disconnect() {
         console.log("socket has been disconnected")
       },
-      lobbySuccess(lobbyID) {
+      lobbySuccess(lobbyDetails) {
         console.log("successfully connected to lobby")
+        var lobbyID = lobbyDetails[0];
+        var listOfUsers = lobbyDetails[1];
         this.playersLobby = lobbyID;
-        this.UsersInLobby[this.noOfUsersInLobby++] = this.userProfile;
+        this.UsersInLobby = listOfUsers;
         this.JoinLobbyPage = false;
         this.LobbyPage = true;
         //this.$socket.join(lobbyID)
@@ -296,8 +298,10 @@ export default {
             }) 
         }
       },
-      updateUsers(listOfUsers, lobbyID){
+      updateUsers(lobbyDetails){
         console.log("Test: updating users...")
+        var listOfUsers = lobbyDetails[0]
+        var lobbyID = lobbyDetails[1]
         if(this.playersLobby === lobbyID){
           this.UsersInLobby = listOfUsers;
           console.log(this.UsersInLobby);
@@ -572,6 +576,7 @@ export default {
         return;
       }else{
           var lobbyID = this.$refs.LobbyID.value;
+          this.playersLobby = lobbyID;
           this.$socket.emit('JoinLobby', lobbyID, this.userProfile);
       }
 

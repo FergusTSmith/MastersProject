@@ -78,9 +78,9 @@ io.on('connection', (socket) => {
         for(var i = 0; i < numberOfLobbies; i++){
             if(availableLobbies[i].LobbyID === lobbyID){
                 socket.join(availableLobbies[i]);
-                socket.emit('lobbySuccess', lobbyID);
                 console.log("User has successfully joined the lobby " + lobbyID);
                 availableLobbies[i].addUser(UserID);
+                socket.emit('lobbySuccess', [lobbyID, availableLobbies[i].lobbyUsers]);
                 socket.nsp.to(availableLobbies[i]).emit('updateUsers', [availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID])
                 return;
             }else{
