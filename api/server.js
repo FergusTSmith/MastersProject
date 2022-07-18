@@ -91,14 +91,14 @@ io.on('connection', (socket) => {
         console.log("Lobby failure, my g");
     })
 
-    socket.on('CreateNewLobby', (newLobbyID, usersID) => {
+    socket.on('CreateNewLobby', (newLobbyID, user) => {
         console.log('Creating new Lobby with ID: ' + newLobbyID);
         var newLobby = new Lobby(newLobbyID);
         availableLobbies[numberOfLobbies] = newLobby;
         
         socket.join(availableLobbies[numberOfLobbies]);
-        availableLobbies[numberOfLobbies].addUser(usersID);
-        console.log(usersID)
+        availableLobbies[numberOfLobbies].addUser(user);
+        console.log(user)
 
         //socket.nsp.to(availableLobbies[numberOfLobbies]).emit('updateUsers', availableLobbies[numberOfLobbies].lobbyUsers)
         socket.in(availableLobbies[numberOfLobbies]).broadcast.emit('updateUsers', availableLobbies[numberOfLobbies].lobbyUsers)
@@ -109,6 +109,7 @@ io.on('connection', (socket) => {
         for(var i = 0; i< numberOfLobbies; i++){
             console.log(availableLobbies[i].LobbyID);
         }
+        console.log(numberOfLobbies);
     })
 
     socket.on('closeLobby', (lobbyID) => {

@@ -195,7 +195,10 @@ console.log(listenerCount);
     </li>
     <br/>
     <label>Current Score: </label><p> {{ this.userScore }}</p>
-    <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item">
+    <li v-if="!(allPlayersReady)" v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item">
+        {{ item.userID }} - {{ item.ready }}
+    </li>
+    <li v-if="allPlayersReady" v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item">
         {{ item.userID }} - {{ item.score }}
     </li>
     <button v-if="isLobbyCreator" @click="gameSetup" type="button">Start</button>
@@ -215,7 +218,7 @@ console.log(listenerCount);
     </li>
     <p>Your score was: {{ userScore }}</p>
     <p>You were tracked by {{ noOfCountries }} nation(s)</p>
-    <button @click="exitToHomePage" type="button">HomePage</button>
+    <button @click="exitToHomePageReset" type="button">HomePage</button>
     </div>
     <!--- --<button @click="gameSetup" type="button">Refresh</button> --->
   </div>
@@ -270,28 +273,22 @@ export default {
             })
             
             chrome.storage.local.get(["countryList"], function(result){
-                let test = 0;
+                let score = 0;
                 if(!(result == undefined)){
                   for(var i = 0; i < result.countryList.length; i++){
-                    test += result.countryList[i].count;
+                    score += result.countryList[i].count;
                   }
                 }
-                
-                //console.log(test);
-                vm.userScore = test;
-                vm.userProfile.score = test;
+                vm.userScore = score;
+                vm.userProfile.score = score;
                 vm.VisitedCountries = result.countryList;
                 vm.noOfCountries = result.countryList.length;
             })
           chrome.storage.onChanged.addListener(function(result) {
                 vm.updateScore()
                 vm.updateListOfCountries()
-                //console.log(result.countryList.newValue);
                 vm.VisitedCountries = result.countryList.newValue;
                 vm.gameStarted = true;
-                //console.log(result.countryList.newValue[0].count)     
-              //console.log(this.testScore.value);
-                //console.log(isReactive(this.testScore));
             }) 
         }
       },
@@ -355,7 +352,6 @@ export default {
       VisitedCountries: [],
       VC: [],
       componentKey: 0,
-      testCountries: ['France', 'UK'],
       userScore: 0,
       gameStarted: false,
       gameOver: false,
@@ -622,6 +618,25 @@ export default {
       this.SoloPage = false;
       this.SoloGame = false;
       this.MultiPlayer = false;
+    },
+    exitToHomePageReset(){
+      this.LobbyPage = false;
+      this.JoinLobbyPage = false;
+      this.LeaderBoard = false;
+      this.SoloPage = false;
+      this.OptionsPage = false;
+      this.HomePage = true;
+      this.SoloPage = false;
+      this.SoloGame = false;
+      this.MultiPlayer = false;
+
+      this.isLobbyCreator = false;
+      this.userProfile.ready = false;
+      this.UsersInLobby = [];
+      this.userScore = 0;
+      this.allPlayersReady = false;
+      this.didYouWin = false;
+      this.winningUser = false;
     },
     createNewLobbyID(){
      /* adapted from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript */
