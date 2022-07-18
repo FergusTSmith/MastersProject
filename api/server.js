@@ -125,7 +125,7 @@ io.on('connection', (socket) => {
         }
     })
     socket.on('playerLeft', (user, lobbyID) => {
-        for(var i = 0; i < numberOfLobbies; i++){
+        for(var i = 0; i < availableLobbies.length; i++){
             if(availableLobbies[i].LobbyID === lobbyID){
                 console.log('lobby found')
                 for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
