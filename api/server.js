@@ -101,7 +101,7 @@ io.on('connection', (socket) => {
         console.log(user)
 
         //socket.nsp.to(availableLobbies[numberOfLobbies]).emit('updateUsers', availableLobbies[numberOfLobbies].lobbyUsers)
-        socket.in(availableLobbies[numberOfLobbies]).broadcast.emit('updateUsers', availableLobbies[numberOfLobbies].lobbyUsers)
+        socket.in(availableLobbies[numberOfLobbies]).broadcast.emit('updateUsers', availableLobbies[numberOfLobbies].lobbyUsers, newLobby.LobbyID)
         numberOfLobbies++;
 
         console.log(availableLobbies[numberOfLobbies-1].lobbyUsers)
