@@ -81,7 +81,7 @@ io.on('connection', (socket) => {
                 socket.emit('lobbySuccess', lobbyID);
                 console.log("User has successfully joined the lobby " + lobbyID);
                 availableLobbies[i].addUser(UserID);
-                socket.nsp.to(availableLobbies[i]).emit('updateUsers', availableLobbies[i].lobbyUsers)
+                socket.nsp.to(availableLobbies[i]).emit('updateUsers', availableLobbies[i].lobbyUsers, lobbyID)
                 return;
             }else{
                 continue;
