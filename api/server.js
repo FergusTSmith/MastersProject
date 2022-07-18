@@ -129,7 +129,7 @@ io.on('connection', (socket) => {
             if(availableLobbies[i].LobbyID === lobbyID){
                 console.log('lobby found')
                 for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
-                    if(availableLobbies[i].lobbyUsers[j] === user){
+                    if(availableLobbies[i].lobbyUsers[j].userID === user.userID){
                         /*console.log('player found')
                         for(var k = j; k < availableLobbies[i].lobbyUsers.length-1; k++){
                             availableLobbies[i].lobbyUsers[k] = availableLobbies[i].lobbyUsers[k+1]
