@@ -127,13 +127,16 @@ io.on('connection', (socket) => {
     socket.on('playerLeft', (user, lobbyID) => {
         for(var i = 0; i < numberOfLobbies; i++){
             if(availableLobbies[i].LobbyID === lobbyID){
+                console.log('lobby found')
                 for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
                     if(availableLobbies[i].lobbyUsers[j] === user){
+                        console.log('player found')
                         for(var k = j; k < availableLobbies[i].lobbyUsers.length-1; k++){
                             availableLobbies[i].lobbyUsers[k] = availableLobbies[i].lobbyUsers[k+1]
                         }
                         availableLobbies[i].lobbyUsers[availableLobbies[i].lobbyUsers.length] = undefined;
                         //socket.nsp.to(availableLobbies[i]).emit('removePlayerFromLobby', user, availableLobbies[i].LobbyID)
+                        console.log('now updating users')
                         socket.in(availableLobbies[i]).broadcast.emit('updateUsers', (availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID))
                     }
                 }

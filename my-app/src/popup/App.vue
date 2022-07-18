@@ -269,17 +269,13 @@ export default {
         }
       },
       updateUsers(lobbyDetails){
-        console.log("Test: updating users...")
         var listOfUsers = lobbyDetails[0]
         var lobbyID = lobbyDetails[1]
         if(this.playersLobby === lobbyID){
           this.UsersInLobby = listOfUsers;
           this.noOfUsersInLobby = this.UsersInLobby.length;
-          console.log(this.UsersInLobby);
-          console.log("test passed");
         }
-        console.log(this.playersLobby);
-        console.log(lobbyID);
+        console.log(listOfUsers)
       },
       player_is_ready(lobbyDetails){
         var allReady = true;
@@ -409,22 +405,26 @@ export default {
                 vm.VisitedCountries = result.countryList.newValue;
                 vm.gameStarted = true;
             }) 
+
+          /* chrome.windows.create({
+            url: 'https://www.google.com',
+          }) */
       },
       leaveGame(){
-        this.exitToHomePageReset();
-
         for(var i = 0; i < this.UsersInLobby.length; i++){
           if(this.UsersInLobby[i] === this.userProfile){
             for(var j = i; j < this.UsersInLobby.length-1; j++){
               this.UsersInLobby[j] = this.UsersInLobby[j+1];
             }
             this.UsersInLobby[this.UsersInLobby.length] = undefined;
+            console.log("Player deleted")
           }
         }
 
         this.$socket.emit('playerLeft', this.userProfile, this.playersLobby)
         this.playersLobby = '';
         this.isLobbyCreator = false;
+        this.exitToHomePageReset();
       },
       endGame(){
         var winningScore = 0;
@@ -437,13 +437,10 @@ export default {
           }
         }
         }
-        console.log(winningScore + winningUser)
         this.WinningUser = winningUser;
 
         this.gameOver = true;
 
-        console.log(this.WinningUser);
-        console.log(this.WinningUser);
         if(this.WinningUser === this.UsersID){
           this.didYouWin = true;
         }
@@ -484,7 +481,6 @@ export default {
         var vm = this;
 
         chrome.storage.local.get(["countryList"], function(result){
-            console.log('test')
             let count = ref(0);
             for(var i = 0; i < result.countryList.length; i++){
                 count.value += result.countryList[i].count;
@@ -495,13 +491,8 @@ export default {
             vm.noOfCountries = result.countryList.length;
 
             for(var j = 0; j < vm.noOfUsersInLobby; j++){
-              console.log(vm.UsersInLobby[j])
-              console.log('test');
-              console.log(vm.userProfile.userID)
-              console.log(vm.UsersInLobby[j].userID)
               if(vm.userProfile.userID === vm.UsersInLobby[j].userID){
                 vm.UsersInLobby[j].score = count;
-                console.log(vm.UsersInLobby[j].score);
               }
             }
           })

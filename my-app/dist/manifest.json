@@ -10,7 +10,8 @@
     "*://*/*",
     "identity",
     "webRequest",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "icons": {
     "16": "staticimages/Smalllogo.png",
