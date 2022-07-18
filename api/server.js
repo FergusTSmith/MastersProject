@@ -81,7 +81,7 @@ io.on('connection', (socket) => {
                 socket.emit('lobbySuccess', lobbyID);
                 console.log("User has successfully joined the lobby " + lobbyID);
                 availableLobbies[i].addUser(UserID);
-                socket.nsp.to(availableLobbies[i]).emit('updateUsers', availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID)
+                socket.nsp.to(availableLobbies[i]).emit('updateUsers', (availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID))
                 return;
             }else{
                 continue;
@@ -101,7 +101,7 @@ io.on('connection', (socket) => {
         console.log(user)
 
         //socket.nsp.to(availableLobbies[numberOfLobbies]).emit('updateUsers', availableLobbies[numberOfLobbies].lobbyUsers)
-        socket.in(availableLobbies[numberOfLobbies]).broadcast.emit('updateUsers', availableLobbies[numberOfLobbies].lobbyUsers, availableLobbies[numberOfLobbies].LobbyID)
+        socket.in(availableLobbies[numberOfLobbies]).broadcast.emit('updateUsers', (availableLobbies[numberOfLobbies].lobbyUsers, availableLobbies[numberOfLobbies].LobbyID))
         numberOfLobbies++;
 
         console.log(availableLobbies[numberOfLobbies-1].lobbyUsers)
