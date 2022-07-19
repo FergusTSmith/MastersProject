@@ -424,7 +424,7 @@ export default {
           }
         }
 
-        this.$socket.emit('playerLeft', this.userProfile, this.playersLobby)
+        this.$socket.emit('playerLeft', this.UsersInLobby, this.playersLobby)
         this.playersLobby = '';
         this.isLobbyCreator = false;
         this.exitToHomePageReset();
