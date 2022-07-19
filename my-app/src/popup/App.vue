@@ -273,9 +273,9 @@ export default {
         var listOfUsers = lobbyDetails[0]
         var lobbyID = lobbyDetails[1]
         console.log(lobbyDetails)
-        console.log(this.playersLobby);
-        console.log(lobbyID);
         console.log(this.playersLobby === lobbyID)
+        console.log(listOfUsers);
+        console.log(this.UsersInLobby);
 
         if(this.playersLobby === lobbyID){
           this.UsersInLobby = listOfUsers;
