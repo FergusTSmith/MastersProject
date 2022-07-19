@@ -249,7 +249,7 @@ export default {
         console.log("successfully connected to lobby")
         var lobbyID = lobbyDetails[0];
         var listOfUsers = lobbyDetails[1];
-        console.log(listOfUsers);
+        console.log(lobbyID);
         this.playersLobby = lobbyID;
         this.UsersInLobby = listOfUsers;
         this.noOfUsersInLobby++;
@@ -269,6 +269,7 @@ export default {
         }
       },
       updateUsers(lobbyDetails){
+        console.log('we reached updating users')
         var listOfUsers = lobbyDetails[0]
         var lobbyID = lobbyDetails[1]
         if(this.playersLobby === lobbyID){
@@ -425,6 +426,7 @@ export default {
         }
 
         this.$socket.emit('playerLeft', this.UsersInLobby, this.playersLobby)
+        console.log('we reached here');
         this.playersLobby = '';
         this.isLobbyCreator = false;
         this.exitToHomePageReset();

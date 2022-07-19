@@ -11,8 +11,9 @@ import SocketIO from 'socket.io-client';
 //}))
 
 const optionsVueIO = {
-	debgu: true,
+	debug: true,
 	connection: SocketIO('http://138.68.132.17:3080')
+	//connection: SocketIO('http://localhost:3080')
 }
 
 const app = createApp(App).use(new VueSocketIO(optionsVueIO)).use(

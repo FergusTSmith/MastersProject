@@ -125,8 +125,10 @@ io.on('connection', (socket) => {
         }
     })
     socket.on('playerLeft', (LobbyUsers, lobbyID) => {
+        console.log('Looking for lobby... ' + lobbyID)
         for(var i = 0; i < availableLobbies.length; i++){
             if(availableLobbies[i].LobbyID === lobbyID){
+                console.log(lobbyID + ' found.')
                 /*console.log('lobby found')
                 for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
                     if(availableLobbies[i].lobbyUsers[j].userID === user.userID){
@@ -137,6 +139,7 @@ io.on('connection', (socket) => {
                 } */
                 availableLobbies[i].LobbyUsers = LobbyUsers;
                 socket.in(availableLobbies[i]).broadcast.emit('updateUsers', (availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID));
+                console.log('emitted update to front end');
             }
         }
     })
