@@ -12,7 +12,7 @@ chrome.webRequest.onBeforeRequest.addListener(
         
         requestURL = match[1];
 
-        console.log(requestURL);
+        //console.log(requestURL);
 
         if(requestURL in tracker_domains){
             if(!(detectedHosts.includes(requestURL))){

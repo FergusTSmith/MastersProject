@@ -6,7 +6,8 @@ const app = express();
 var http = require('http');
 const { allowedNodeEnvironmentFlags } = require('process');
 const socket = require('socket.io');
-//const {UserAccount} = require("./entity/UserAccount");
+//const {UserAccount} = require('/src/entity/UserAccount');
+//const {dbLobby} = require('/src/entity/Lobby')
 
 // Classes for the structure of the application. 
 
@@ -184,17 +185,29 @@ var nodeServer = http.createServer(app);
 
 // Adding support for mySQL - Create connection to MYSQL - https://www.youtube.com/watch?v=EN6Dx22cPRI&ab_channel=TraversyMedia
 
-const dataBase = mySQL.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'TucoDexter123!@',
-    database: 'trackerhunt'
-})
 
-/*dataBase.connect((err) => {
+
+const dataBase = mySQL.createConnection({
+    host: 'remotemysql.com',
+    user: 'YRhgGyaGcN',
+    password: 'sMotzWEeUV',
+    database: 'YRhgGyaGcN'
+}) 
+
+
+/*const dataBase = TypeORM.createConnection({
+    type: 'mysql',
+    database: 'YRhgGyaGcN',
+    username: 'YRhgGyaGcN',
+    password: 'sMotzWEeUV',
+    logging: true,
+    synchronize: true,
+    //entities: [UserAccount, dbLobby]
+})*/
+
+dataBase.connect((err) => {
     if(err){
         throw err;
-        console.log(err + " has occurred")
     }
     console.log('MySQL has been Connected to the server');
 })
@@ -210,7 +223,7 @@ app.get('/createdb', (req, res) => {
             console.log(result);
         }
     })
-})*/
+})
 
 // Create a Table for the server
 app.get('/createATable', (req, res) => {

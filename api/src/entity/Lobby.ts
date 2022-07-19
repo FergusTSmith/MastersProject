@@ -1,4 +1,3 @@
-import { IntegerDataType } from "sequelize/types";
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
 import { UserAccount } from "./UserAccount";
 

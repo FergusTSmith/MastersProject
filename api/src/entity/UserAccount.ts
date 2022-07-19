@@ -15,4 +15,6 @@ export class UserAccount {
     @Column('datetime')
     dateJoined: Date;
 
+     
+
 }

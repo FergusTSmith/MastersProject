@@ -1,11 +1,5 @@
 <script setup>
-import { classBody } from '@babel/types';
-import { listenerCount } from 'process';
-//import { isReactive } from 'vue';
 import { ref } from 'vue';
-//import { reactive } from '@vue/reactivity';
-console.log(classBody);
-console.log(listenerCount);
 </script>
 
 <template>
@@ -213,6 +207,7 @@ console.log(listenerCount);
     <h2>GAME OVER</h2>
     <div v-if="didYouWin">
     <p>You won! Congratulations</p>
+    <img v-if="IntroPage" class="trophy" src="staticimages/trophy.png" alt="A picture of a trophy"/>
     </div>
     <div v-if="!(didYouWin)">
     <p>Condolenses. The winner of the game was {{ WinningUser }}</p>
@@ -342,7 +337,6 @@ export default {
       UserGoogleID: '',
       SoloGame: false,
       VisitedCountries: [],
-      VC: [],
       componentKey: 0,
       userScore: 0,
       gameStarted: false,
@@ -350,6 +344,7 @@ export default {
       noOfCountries: 0,
       userProfile: undefined,
       allUserIDs: [],
+      allUsers: [],
       MultiPlayer: false,
       WinningUser: undefined,
       didYouWin: false,
@@ -523,37 +518,62 @@ export default {
      },
      
      googleLogin(){
-         
          var vm = this;
          chrome.runtime.sendMessage({ message: 'login'}, function(response) {
             if (response === 'success') {
               vm.userSignedIn = true;
               vm.IntroPage = false;
               vm.UsernamePage = true;
-              //vm.UserGoogleID = userID;
+              vm.getGoogleID();
             }
          })
-         chrome.runtime.sendMessage({ message: 'googleID'}, function(response){
-            if(response === ''){
+         
+     },
+     getGoogleID(){
+        var vm = this;
+          chrome.runtime.sendMessage({ message: 'googleID'}, function(response){
+            if((response === '') || (response === undefined)){
               console.log("No google ID found");
+              return '';
             }else{
               vm.UserGoogleID = response;
-              //console.log('test + ' + response);
+              console.log('test + ' + response);
+              return response;
             }
          })
      },
      noLoginMode(){
         this.UsersID = this.$refs.nickname.value;
+        var userFound = false;
+        console.log(this.UserGoogleID);
+        console.log(this.allUsers.length)
 
-        if(this.UsersID === ''){
+        for(var i = 0; i < this.allUsers.length; i++){
+          console.log(this.allUsers[i].googleID)
+          if(this.allUsers[i].googleID === this.UserGoogleID){
+            this.UserID = this.allUsers[i].googleID;
+            this.userProfile = this.allUsers[i];
+            this.UsernamePage = false;
+            this.HomePage = true;
+            userFound = true;
+            console.log('this should fire for the second')
+          }
+        }
+        
+        if(this.UsersID === '' && !(userFound)){
           alert("Please enter a name")
-        }else if(this.UsersID in this.allUserIDs){
+        }else if(this.UsersID in this.allUserIDs && !(userFound)){
           alert("Error, that name has been taken");
-        }else{
+        }else if(!(userFound)){
+          console.log('This should fire for the first round')
           this.userProfile = new User(this.UsersID);
+          this.userProfile.googleID = this.UserGoogleID;
           this.UsernamePage = false;
           this.HomePage = true;
           this.allUserIDs.push(this.UsersID);
+          this.allUsers.push(this.userProfile);
+          console.log(this.allUsers.length);
+          console.log(this.allUsers)
         }
      },
      soloGameInitiated(){
@@ -676,6 +696,7 @@ class User {
     this.userID = userID;
     this.score = 0;
     this.ready = false;
+    this.googleID = '';
   }
 }
 
