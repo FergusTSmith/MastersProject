@@ -272,9 +272,16 @@ export default {
         console.log('we reached updating users')
         var listOfUsers = lobbyDetails[0]
         var lobbyID = lobbyDetails[1]
+        console.log(lobbyDetails)
+        console.log(this.playersLobby);
+        console.log(lobbyID);
+        console.log(this.playersLobby === lobbyID)
+
         if(this.playersLobby === lobbyID){
           this.UsersInLobby = listOfUsers;
           this.noOfUsersInLobby = this.UsersInLobby.length;
+          console.log('we updated the users');
+          console.log(this.UsersInLobby);
         }
         console.log(listOfUsers)
       },

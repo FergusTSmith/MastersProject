@@ -138,7 +138,7 @@ io.on('connection', (socket) => {
                     }
                 } */
                 availableLobbies[i].LobbyUsers = LobbyUsers;
-                socket.in(availableLobbies[i]).broadcast.emit('updateUsers', (availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID));
+                socket.in(availableLobbies[i]).broadcast.emit('updateUsers', [availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID]);
                 console.log('emitted update to front end');
             }
         }
