@@ -231,6 +231,7 @@ import { ref } from 'vue';
 //var countryList = chrome.storage.local.get[["countryList"]];
 
 
+
 export default {
   // https://manage.auth0.com/dashboard/eu/dev-li-9809u/applications/s449g7DqINXUA9dZNRPdVTwPswnMX9qJ/quickstart
     sockets: {
@@ -456,7 +457,6 @@ export default {
         this.$socket.emit('closeLobby', this.playersLobby)
 
       },
-      
       playerReady(){
           this.userProfile.ready = true;
           for(var i = 0; i< this.noOfUsersInLobby; i++){
@@ -489,17 +489,30 @@ export default {
 
         chrome.storage.local.get(["countryList"], function(result){
             let count = ref(0);
+            let score = 0;
             for(var i = 0; i < result.countryList.length; i++){
                 count.value += result.countryList[i].count;
+                if(result.countryList[i].name === "United States"){
+                    score += result.countryList[i].count;
+                }else if(result.countryList[i].name === "United Kingdom" || result.countryList[i].name === "Canada"){
+                    score += (result.countryList[i].count)*2;
+                    console.log(score + "Test passed");
+                }else if(result.countryList[i].name === "Germany" || result.countryList[i].name === "Netherlands" || result.countryList[i].name === "Ireland"){
+                    score += (result.countryList[i].count)*3
+                }else if(result.countryList[i].name === "Russia"){
+                    score += (result.countryList[i].count)*4
+                }else{
+                    score += (result.countryList[i].count)*5
+                }
             }
             vm.noOfUsersInLobby = vm.UsersInLobby.length;
-            vm.userScore = count;
-            vm.userProfile.score = count;
+            vm.userScore = score;
+            vm.userProfile.score = score;
             vm.noOfCountries = result.countryList.length;
 
             for(var j = 0; j < vm.noOfUsersInLobby; j++){
               if(vm.userProfile.userID === vm.UsersInLobby[j].userID){
-                vm.UsersInLobby[j].score = count;
+                vm.UsersInLobby[j].score = score;
               }
             }
           })

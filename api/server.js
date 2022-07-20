@@ -1,13 +1,13 @@
 const e = require('cors');
 const express = require('express');
-const mySQL = require('mysql');
-const TypeORM = require('typeorm');
+const mySQL = require('mysql2');
 const app = express();
 var http = require('http');
 const { allowedNodeEnvironmentFlags } = require('process');
 const socket = require('socket.io');
-//const {UserAccount} = require('/src/entity/UserAccount');
-//const {dbLobby} = require('/src/entity/Lobby')
+const db = require('./models')
+//const sequelize = require('sequelize')
+const { UserAccount } = require('./models')
 
 // Classes for the structure of the application. 
 
@@ -52,10 +52,13 @@ class Lobby {
 const PORT = 3080;
 var availableLobbies = [];
 var numberOfLobbies = 0;
+var socketServ = undefined;
 
-const socketServ = app.listen(PORT, function(){
-    console.log('Server started on port ' + PORT);
-    console.log('http://localhost:' + PORT);
+db.sequelize.sync().then((req) => { 
+    socketServ = app.listen(PORT, function(){
+        console.log('Server started on port ' + PORT);
+        console.log('http://localhost:' + PORT);
+    })
 })
 
 const io = socket(socketServ, {
@@ -185,59 +188,6 @@ var nodeServer = http.createServer(app);
 
 // Adding support for mySQL - Create connection to MYSQL - https://www.youtube.com/watch?v=EN6Dx22cPRI&ab_channel=TraversyMedia
 
-
-
-const dataBase = mySQL.createConnection({
-    host: 'remotemysql.com',
-    user: 'YRhgGyaGcN',
-    password: 'sMotzWEeUV',
-    database: 'YRhgGyaGcN'
-}) 
-
-
-/*const dataBase = TypeORM.createConnection({
-    type: 'mysql',
-    database: 'YRhgGyaGcN',
-    username: 'YRhgGyaGcN',
-    password: 'sMotzWEeUV',
-    logging: true,
-    synchronize: true,
-    //entities: [UserAccount, dbLobby]
-})*/
-
-dataBase.connect((err) => {
-    if(err){
-        throw err;
-    }
-    console.log('MySQL has been Connected to the server');
-})
-
-// Create Database - https://www.youtube.com/watch?v=EN6Dx22cPRI&ab_channel=TraversyMedia
-app.get('/createdb', (req, res) => {
-    let sql = 'CREATE DATABASE trackerhunt';
-    dataBase.query(sql, (err, result) => {
-        if(err){
-            throw err;
-        }else{
-            res.send('Database Created...')
-            console.log(result);
-        }
-    })
-})
-
-// Create a Table for the server
-app.get('/createATable', (req, res) => {
-    let sql = 'CREATE TABLE posts(id int AUTO_INCREMENT, title VARCHAR(100), body VARCHAR(255), PRIMARY KEY (id))';
-    dataBase.query(sql, (err, result) => {
-        if(err){
-            console.log("Error occurred: " + err);
-            throw err;
-        }
-        console.log(result);
-        res.send('Post table created');
-    })
-})
-
 nodeServer.listen(3090, function(){
     console.log("The server is now running on port " + 3090)
 })
@@ -245,7 +195,29 @@ nodeServer.listen(3090, function(){
 app.get('/', function(req, res){
     res.send("This is a test");
     console.log("User has connected " + req.id);
-})
+});
 
 // Database methods
 
+app.get('/select', (req, res) => {
+    res.send('select')
+});
+
+app.get('/insert', (req, res) => {
+    UserAccount.create({
+        username: "Goose",
+        gamesPlayed: 0,
+        gamesWon: 0,
+        googleID: "test",
+    }).catch(err => {
+        if(err){
+            throw err;
+        }
+    })
+
+    res.send('Mhmm');
+});
+
+app.get('/delete', (req, res) => {
+    res.send('delete')
+});
