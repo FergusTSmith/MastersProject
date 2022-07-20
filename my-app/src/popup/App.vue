@@ -231,7 +231,6 @@ import { ref } from 'vue';
 //var countryList = chrome.storage.local.get[["countryList"]];
 
 
-
 export default {
   // https://manage.auth0.com/dashboard/eu/dev-li-9809u/applications/s449g7DqINXUA9dZNRPdVTwPswnMX9qJ/quickstart
     sockets: {
@@ -240,6 +239,23 @@ export default {
       },
       disconnect() {
         console.log("socket has been disconnected")
+      },
+      testMessage(){
+        console.log('test passed')
+      },
+      UserNotFound(){
+          this.userProfile = new User(this.UsersID);
+          this.userProfile.googleID = this.UserGoogleID;
+          this.UsernamePage = false;
+          this.HomePage = true;
+          this.allUserIDs.push(this.UsersID);
+          this.allUsers.push(this.userProfile);
+          console.log("created a new user!")
+      },
+      UserFound(users){
+          console.log(users);
+          this.UsernamePage = false;
+          this.HomePage = true;
       },
       lobbySuccess(lobbyDetails) {
         console.log("successfully connected to lobby")
@@ -558,8 +574,10 @@ export default {
      noLoginMode(){
         this.UsersID = this.$refs.nickname.value;
         var userFound = false;
-        console.log(this.UserGoogleID);
-        console.log(this.allUsers.length)
+        //var vm = this;
+        this.UsernamePage = false;
+        this.HomePage = true;
+        /*
 
         for(var i = 0; i < this.allUsers.length; i++){
           console.log(this.allUsers[i].googleID)
@@ -572,7 +590,38 @@ export default {
             console.log('this should fire for the second')
           }
         }
-        
+        */
+        if(this.UsersID === '' && !(userFound)){
+          alert("Please enter a name")
+        }else if(this.UsersID in this.allUserIDs && !(userFound)){
+          alert("Error, that name has been taken");
+        }
+
+        this.$socket.emit('doesUserExist', this.UsersID);
+        console.log("readched here");
+
+        /*
+        chrome.storage.local.get(["userQueryResult"], function(result){
+          console.log(result);
+          if(result === false){
+              vm.userProfile = new User(vm.UsersID);
+              vm.userProfile.googleID = vm.UserGoogleID;
+              vm.UsernamePage = false;
+              vm.HomePage = true;
+              vm.allUserIDs.push(vm.UsersID);
+              vm.allUsers.push(vm.userProfile);
+              vm.$socket.emit('newUser', vm.userProfile.userID, vm.userProfile.googleID)
+          }else if(result === true){
+              chrome.storage.local.get(["usersFromQuery"], function(result){
+                console.log(result)
+              })
+          }else{
+            console.log("Error, query resulted in neither false nor true")
+          }
+        }) */
+
+
+        /*
         if(this.UsersID === '' && !(userFound)){
           alert("Please enter a name")
         }else if(this.UsersID in this.allUserIDs && !(userFound)){
@@ -585,10 +634,10 @@ export default {
           this.HomePage = true;
           this.allUserIDs.push(this.UsersID);
           this.allUsers.push(this.userProfile);
-          console.log(this.allUsers.length);
-          console.log(this.allUsers)
-        }
-     },
+
+          this.$socket.emit('newUser', this.userProfile.userID, this.userProfile.googleID)
+          */
+        },
      soloGameInitiated(){
         this.gameOver = false;
         this.SoloPage = false;
@@ -699,8 +748,8 @@ export default {
     return id;
     
     }
-}
-}
+}}
+
 
 // Class Helpers:
 

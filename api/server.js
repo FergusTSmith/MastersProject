@@ -5,9 +5,9 @@ const app = express();
 var http = require('http');
 const { allowedNodeEnvironmentFlags } = require('process');
 const socket = require('socket.io');
-const db = require('./models')
+//const db = require('./models')
 //const sequelize = require('sequelize')
-const { UserAccount } = require('./models')
+const { UserAccount } = require('./models');
 
 // Classes for the structure of the application. 
 
@@ -52,18 +52,25 @@ class Lobby {
 const PORT = 3080;
 var availableLobbies = [];
 var numberOfLobbies = 0;
-var socketServ = undefined;
+//var socketServ = undefined;
 
+/*
 db.sequelize.sync().then((req) => { 
-    socketServ = app.listen(PORT, function(){
+    const socketServ = app.listen(PORT, function(){
         console.log('Server started on port ' + PORT);
         console.log('http://localhost:' + PORT);
     })
+})*/
+const socketServ = app.listen(PORT, function(){
+    console.log('Server started on port ' + PORT);
+    console.log('http://localhost:' + PORT);
 })
+
 
 const io = socket(socketServ, {
     cors: {
-        origin: "138.68.132.17",
+        origin: "138.68.132.17:3080",
+        //origin: "localhost",
         methods: ["GET", "POST"],
         transports: ['websocket', 'polling'],
         credentials: true
@@ -147,10 +154,35 @@ io.on('connection', (socket) => {
             }
         }
     })
-    
-
     socket.on('newUser', (userID, googleID) => {
-        
+        UserAccount.create({
+            username: userID,
+            gamesPlayed: 0,
+            gamesWon: 0,
+            googleID: googleID,
+        }).catch((err) => {
+            if(err){
+                throw err;
+            }
+        })
+    })
+    socket.on('RetrieveUsers', () => {
+        UserAccount.findAll().then((users) => {
+            chrome.storage.local.set({gameUsers: users})
+
+        })
+    })
+
+    socket.on('doesUserExist', (userID) => {
+        console.log("Query received");
+        UserAccount.findall({ where: { username: userID }}.then((users) => {
+            console.log(users);
+            if(users.length === 0){
+                socket.emit('UserNotFound')
+            }else{
+                socket.emit('UserFound', users)
+            }
+        }))
     })
 
     socket.on('playerReady', (user, lobbyID) => {
@@ -196,6 +228,10 @@ app.get('/', function(req, res){
     res.send("This is a test");
     console.log("User has connected " + req.id);
 });
+
+app.get('/socket.io', function(req, res){
+    res.send("test passed")
+})
 
 // Database methods
 
