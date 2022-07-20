@@ -5,7 +5,7 @@ const app = express();
 var http = require('http');
 const { allowedNodeEnvironmentFlags } = require('process');
 const socket = require('socket.io');
-const db = require('./models')
+//const db = require('./models')
 //const sequelize = require('sequelize')
 const { UserAccount } = require('./models');
 
@@ -70,6 +70,7 @@ const socketServ = app.listen(PORT, function(){
 const io = socket(socketServ, {
     cors: {
         origin: "138.68.132.17",
+        //origin: "localhost",
         methods: ["GET", "POST"],
         transports: ['websocket', 'polling'],
         credentials: true
