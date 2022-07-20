@@ -69,7 +69,11 @@ const socketServ = app.listen(PORT, function(){
 
 const io = socket(socketServ, {
     cors: {
+<<<<<<< HEAD
         origin: "138.68.132.17:3080",
+=======
+        origin: "138.68.132.17",
+>>>>>>> 63fa93c34a76b106f66cd5930cceb36b1f9c4333
         //origin: "localhost",
         methods: ["GET", "POST"],
         transports: ['websocket', 'polling'],
