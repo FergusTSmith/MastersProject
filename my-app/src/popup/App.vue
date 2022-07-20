@@ -240,6 +240,9 @@ export default {
       disconnect() {
         console.log("socket has been disconnected")
       },
+      testMessage(){
+        console.log('test passed')
+      },
       UserNotFound(){
           this.userProfile = new User(this.UsersID);
           this.userProfile.googleID = this.UserGoogleID;
@@ -572,7 +575,8 @@ export default {
         this.UsersID = this.$refs.nickname.value;
         var userFound = false;
         //var vm = this;
-
+        this.UsernamePage = false;
+        this.HomePage = true;
         /*
 
         for(var i = 0; i < this.allUsers.length; i++){
@@ -633,8 +637,7 @@ export default {
 
           this.$socket.emit('newUser', this.userProfile.userID, this.userProfile.googleID)
           */
-        }
-     },
+        },
      soloGameInitiated(){
         this.gameOver = false;
         this.SoloPage = false;
@@ -745,7 +748,7 @@ export default {
     return id;
     
     }
-}
+}}
 
 
 // Class Helpers:
