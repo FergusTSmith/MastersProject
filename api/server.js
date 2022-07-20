@@ -53,14 +53,14 @@ class Lobby {
 const PORT = 3080;
 var availableLobbies = [];
 var numberOfLobbies = 0;
-var socketServ = undefined;
+//var socketServ = undefined;
 
-db.sequelize.sync().then((req) => { 
-    socketServ = app.listen(PORT, function(){
+//db.sequelize.sync().then((req) => { 
+    const socketServ = app.listen(PORT, function(){
         console.log('Server started on port ' + PORT);
         console.log('http://localhost:' + PORT);
     })
-})
+//})
 
 const io = socket(socketServ, {
     cors: {
