@@ -4,7 +4,8 @@
 
 /* Adding an initial connection to socket.io */
 //var socketConnection = io.connect("http://127.0.0.1:3080");
-const socket = io("http://138.68.132.17/");
+//const socket = io("http://138.68.132.17/");
+const socket = io("http://localhost:3080");
 
 //const socket = socketClient("http://localhost:3080");
 

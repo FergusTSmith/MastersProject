@@ -65,6 +65,7 @@ db.sequelize.sync().then((req) => {
 const io = socket(socketServ, {
     cors: {
         origin: "138.68.132.17",
+        //origin: "localhost",
         methods: ["GET", "POST"],
         transports: ['websocket', 'polling'],
         credentials: true
@@ -163,16 +164,18 @@ io.on('connection', (socket) => {
     socket.on('RetrieveUsers', () => {
         UserAccount.findAll().then((users) => {
             chrome.storage.local.set({gameUsers: users})
+
         })
     })
 
-    socket.on('DoesUserExist', (userID) => {
+    socket.on('doesUserExist', (userID) => {
+        console.log("Query received");
         UserAccount.findall({ where: { username: userID }}.then((users) => {
+            console.log(users);
             if(users.length === 0){
-                chrome.storage.local.set({ userQueryResult: false })
+                socket.emit('UserNotFound')
             }else{
-                chrome.storage.local.set({ userQueryResult: true })
-                chrome.storage.local.set({ usersFromQuery: users})
+                socket.emit('UserFound', users)
             }
         }))
     })
@@ -220,6 +223,10 @@ app.get('/', function(req, res){
     res.send("This is a test");
     console.log("User has connected " + req.id);
 });
+
+app.get('/socket.io', function(req, res){
+    res.send("test passed")
+})
 
 // Database methods
 
