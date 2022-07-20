@@ -7,7 +7,8 @@ const { allowedNodeEnvironmentFlags } = require('process');
 const socket = require('socket.io');
 const db = require('./models')
 //const sequelize = require('sequelize')
-const { UserAccount } = require('./models')
+const { UserAccount } = require('./models');
+const { createWatchCompilerHost } = require('typescript');
 
 // Classes for the structure of the application. 
 
@@ -147,10 +148,33 @@ io.on('connection', (socket) => {
             }
         }
     })
-    
-
     socket.on('newUser', (userID, googleID) => {
-        
+        UserAccount.create({
+            username: userID,
+            gamesPlayed: 0,
+            gamesWon: 0,
+            googleID: googleID,
+        }).catch((err) => {
+            if(err){
+                throw err;
+            }
+        })
+    })
+    socket.on('RetrieveUsers', () => {
+        UserAccount.findAll().then((users) => {
+            chrome.storage.local.set({gameUsers: users})
+        })
+    })
+
+    socket.on('DoesUserExist', (userID) => {
+        UserAccount.findall({ where: { username: userID }}.then((users) => {
+            if(users.length === 0){
+                chrome.storage.local.set({ userQueryResult: false })
+            }else{
+                chrome.storage.local.set({ userQueryResult: true })
+                chrome.storage.local.set({ usersFromQuery: users})
+            }
+        }))
     })
 
     socket.on('playerReady', (user, lobbyID) => {
