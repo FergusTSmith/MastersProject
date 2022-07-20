@@ -8,7 +8,6 @@ const socket = require('socket.io');
 const db = require('./models')
 //const sequelize = require('sequelize')
 const { UserAccount } = require('./models');
-const { createWatchCompilerHost } = require('typescript');
 
 // Classes for the structure of the application. 
 
@@ -55,12 +54,18 @@ var availableLobbies = [];
 var numberOfLobbies = 0;
 //var socketServ = undefined;
 
-//db.sequelize.sync().then((req) => { 
+/*
+db.sequelize.sync().then((req) => { 
     const socketServ = app.listen(PORT, function(){
         console.log('Server started on port ' + PORT);
         console.log('http://localhost:' + PORT);
     })
-//})
+})*/
+const socketServ = app.listen(PORT, function(){
+    console.log('Server started on port ' + PORT);
+    console.log('http://localhost:' + PORT);
+})
+
 
 const io = socket(socketServ, {
     cors: {
