@@ -64,8 +64,7 @@ db.sequelize.sync().then((req) => {
 
 const io = socket(socketServ, {
     cors: {
-        origin: "138.68.132.17",
-        //origin: "localhost",
+        origin: "http://138.68.132.17/",
         methods: ["GET", "POST"],
         transports: ['websocket', 'polling'],
         credentials: true
