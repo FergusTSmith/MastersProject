@@ -244,14 +244,9 @@ export default {
         console.log('test passed')
       },
       UserNotFound(){
-          this.userProfile = new User(this.UsersID);
-          this.userProfile.googleID = this.UserGoogleID;
           this.UsernamePage = true;
           this.IntroPage = false;
-          this.HomePage = false;
-          this.allUserIDs.push(this.UsersID);
-          this.allUsers.push(this.userProfile);
-          console.log("created a new user!")
+
       },
       UserFound(users){
           console.log(users);
@@ -569,15 +564,20 @@ export default {
               console.log("No google ID found");
               return '';
             }else{
-              vm.UserGoogleID = response;
-              console.log('test + ' + response);
-              return response;
+              var googleID = response;
+              vm.UserGoogleID = googleID.substring(0, 255);
+              vm.userProfile.googleID = vm.UserGoogleID;
+
+              console.log('test + ' + vm.UserGoogleID);
+              return vm.UserGoogleID;
             }
          })
      },
      noLoginMode(){
         this.UsersID = this.$refs.nickname.value;
         var userFound = false;
+        this.userProfile = new User(this.UsersID);
+        this.userProfile.googleID = this.UserGoogleID;
         //var vm = this;
         this.UsernamePage = false;
         this.HomePage = true;
@@ -601,7 +601,7 @@ export default {
           alert("Error, that name has been taken");
         }
 
-        this.$socket.emit('doesUserExist', this.UserGoogleID);
+        this.$socket.emit('newUser', this.UsersID, this.UserGoogleID);
         console.log("reached here");
 
         /*

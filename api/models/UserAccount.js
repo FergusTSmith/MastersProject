@@ -7,7 +7,8 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             validate: {
                 notEmpty: true
-            }
+            },
+            unique: true
         },
         gamesPlayed: {
             type: DataTypes.INTEGER,
@@ -22,7 +23,8 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             validate: {
                 notEmpty: true
-            }
+            },
+            unique: true
         }
     })
 
