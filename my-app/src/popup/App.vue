@@ -455,8 +455,9 @@ export default {
           this.UsersID = this.$refs.NewUsername.value;
           this.userProfile.userID = this.UsersID;
           this.exitToHomePage();
+          console.log(this.UserGoogleID)
 
-          this.$socket.emit('newUsername', this.UserGoogleID)
+          this.$socket.emit('newUsername', this.UserGoogleID, this.UsersID)
       },
       leaveGame(){
         console.log(this.UsersInLobby)
