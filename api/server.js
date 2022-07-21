@@ -185,9 +185,10 @@ io.on('connection', (socket) => {
             }else{
                 console.log(users)
                 console.log(users[0])
+                console.log(users.dataValues.username)
                 users[0].userID = newID;
-                console.log(users[0].userID)
-                console.log(newID);
+                //console.log(users[0].userID)
+                //console.log(newID);
                 users[0].save()
             }
         })
