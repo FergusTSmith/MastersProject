@@ -179,18 +179,21 @@ io.on('connection', (socket) => {
 
     })
     socket.on('newUsername', (usergoogleID, newID) => {
-        UserAccount.findAll({ where: { googleID: usergoogleID }}).then((users) => {
+        /*UserAccount.findAll({ where: { googleID: usergoogleID }}).then((users) => {
             if(users.length === 0){
                 console.log("User not found");
             }else{
                 console.log(users)
                 console.log(users[0])
-                console.log(users.dataValues.username)
+                //console.log(users.dataValues.username)
                 users[0].userID = newID;
                 //console.log(users[0].userID)
                 //console.log(newID);
                 users[0].save()
             }
+        })*/
+        db.connections.update({ username: newID }, {where: { googleID: usergoogleID }}).then((res) => {
+            console.log(res);
         })
     })
 
