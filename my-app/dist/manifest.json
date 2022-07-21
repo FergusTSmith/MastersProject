@@ -11,7 +11,9 @@
     "identity",
     "webRequest",
     "storage",
-    "tabs"
+    "tabs",
+    "identity",
+    "identity.email"
   ],
   "icons": {
     "16": "staticimages/Smalllogo.png",

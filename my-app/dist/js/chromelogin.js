@@ -9,7 +9,8 @@ const STATE = encodeURIComponent('jfkls3n');
 const SCOPE = encodeURIComponent('openid');
 const PROMPT = encodeURIComponent('consent');
 var user_info = '';
-var user_id = ''
+var user_id = '';
+var uniqueIDforUser = '';
 
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -18,6 +19,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             console.log("Error. User is currently logged in");
             sendResponse('success');
             console.log(user_id);
+            chrome.identity.getProfileUserInfo({'accountStatus': 'ANY'}, function(info){
+                console.log(info)
+                uniqueIDforUser = info.id;
+            })
         }else{
             chrome.identity.launchWebAuthFlow({
                 url: create_uri_oauth2(),
@@ -35,7 +40,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     isUserSignedIn = true;
                     sendResponse({response: 'success', userID: user_id});
                     console.log("We have successfully completed the login test");
-                    return true;
+                    
+                    //Get user identity - https://www.youtube.com/watch?v=_26ptq-6o_s&ab_channel=RustyZone
+                    chrome.identity.getProfileUserInfo({'accountStatus': 'ANY'}, function(info){
+                        console.log(info)
+                        uniqueIDforUser = info.id;
+                    })
                 }else{
                     console.log("Error, could not authenticate")
                 }
@@ -48,7 +58,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if(user_id === ''){
             console.log("no user found")
         }else{
-            sendResponse(user_id)
+            sendResponse(uniqueIDforUser)
         }
         return true;
     }else if (request.message === 'reset'){

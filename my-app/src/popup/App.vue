@@ -85,8 +85,21 @@ import { ref } from 'vue';
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/><button type="button">Light Mode</button><br/>
     <button type="button">Dark Mode</button><br/>
     <button type="button">Language</button><br/>
+    <button @click="changeUsernamePage" type="button">Change Username</button>
     <br/><br/>
     <button @click="exitToHomePage" type="button">Home Page</button><br/>
+  </div>
+
+  <div v-if="UsernameChangePage" id="UsernameChangePage">
+    <h2>TrackHunt</h2>
+    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
+    <br/><br/>
+    <p>Your current username is: {{ UsersID }}</p>
+    <label>Enter a new username:</label><br/>
+    <input ref="NewUsername" type="text">
+    <br/>
+    <button @click="changeUsername" type="button">Save</button>
+    <button @click="exitToHomePage" type="button">Back</button>
   </div>
 
   <div v-if="JoinLobbyPage" id="Join-Lobby">
@@ -104,7 +117,7 @@ import { ref } from 'vue';
     <h2>TrackHunt</h2>
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
     <br/><br/>
-    <label>Enter a nickname for your session:</label><br/>
+    <label>Enter a username for your account:</label><br/>
     <input ref="nickname" type="text">
     <br/>
     <button @click="noLoginMode" type="button">Join</button>
@@ -253,6 +266,10 @@ export default {
           this.UsernamePage = false;
           this.HomePage = true;
           this.IntroPage = false;
+
+          this.UsersID = users[0].username;
+          this.UserGoogleID = users[0].googleID;
+
       },
       lobbySuccess(lobbyDetails) {
         console.log("successfully connected to lobby")
@@ -365,6 +382,7 @@ export default {
       lobbyError: '',
       isLobbyCreator: false,
       allPlayersReady: false,
+      UsernameChangePage: false,
 
       timer: 120,
 
@@ -426,6 +444,18 @@ export default {
           /* chrome.windows.create({
             url: 'https://www.google.com',
           }) */
+      },
+      changeUsernamePage(){
+          this.OptionsPage = false;
+          this.UsernameChangePage = true;
+      },
+
+      changeUsername(){
+          this.UsersID = this.$refs.NewUsername.value;
+          this.userProfile.userID = this.UsersID;
+          this.exitToHomePage();
+
+          this.$socket.emit('newUsername', this.UserGoogleID)
       },
       leaveGame(){
         console.log(this.UsersInLobby)
@@ -549,10 +579,20 @@ export default {
             if (response === 'success') {
               vm.userSignedIn = true;
               vm.IntroPage = false;
-              vm.UsernamePage = true;
-              vm.getGoogleID();
+              chrome.runtime.sendMessage({ message: 'googleID'}, function(response){
+                   if((response === '') || (response === undefined)){
+                    console.log("No google ID found");
+                   }else{
+                      var googleID = response;
+                      console.log(googleID);
+                      googleID = googleID.substring(0, 255);
+                      vm.UserGoogleID = googleID;
 
-              vm.$socket.emit('doesUserExist', vm.UserGoogleID);
+                      console.log('test + ' + vm.UserGoogleID);
+                      vm.$socket.emit('doesUserExist', googleID);
+                    }
+                })
+              console.log(vm.UserGoogleID)
             }
          })
          
@@ -565,10 +605,12 @@ export default {
               return '';
             }else{
               var googleID = response;
-              vm.UserGoogleID = googleID.substring(0, 255);
+              console.log(googleID);
+              googleID = googleID.substring(0, 255);
+              vm.UserGoogleID = googleID;
 
               console.log('test + ' + vm.UserGoogleID);
-              return vm.UserGoogleID;
+              return googleID;
             }
          })
      },
@@ -576,7 +618,8 @@ export default {
         this.UsersID = this.$refs.nickname.value;
         var userFound = false;
         this.userProfile = new User(this.UsersID);
-        this.userProfile.googleID = this.UserGoogleID;
+        this.userProfile.userID = this.UsersID;
+        //this.userProfile.googleID = this.UserGoogleID;
         //var vm = this;
         this.UsernamePage = false;
         this.HomePage = true;
@@ -727,6 +770,7 @@ export default {
       this.SoloPage = false;
       this.SoloGame = false;
       this.MultiPlayer = false;
+      this.UsernameChangePage = false;
     },
     exitToHomePageReset(){
       this.exitToHomePage();

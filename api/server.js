@@ -178,6 +178,19 @@ io.on('connection', (socket) => {
         
 
     })
+    socket.on('newUsername', (usergoogleID, newID) => {
+        UserAccount.findAll({ where: { googleID: usergoogleID }}).then((users) => {
+            if(users.length === 0){
+                console.log("User not found");
+            }else{
+                users[0].userID = newID;
+                console.log(users[0].userID)
+                console.log(newID);
+                await users[0].save()
+            }
+        })
+    })
+
     socket.on('RetrieveUsers', () => {
         UserAccount.findAll().then((users) => {
             chrome.storage.local.set({gameUsers: users})
