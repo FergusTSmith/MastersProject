@@ -566,7 +566,6 @@ export default {
             }else{
               var googleID = response;
               vm.UserGoogleID = googleID.substring(0, 255);
-              vm.userProfile.googleID = vm.UserGoogleID;
 
               console.log('test + ' + vm.UserGoogleID);
               return vm.UserGoogleID;

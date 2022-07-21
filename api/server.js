@@ -157,17 +157,26 @@ io.on('connection', (socket) => {
             }
         }
     })
-    socket.on('newUser', (userID, googleID) => {
-        UserAccount.create({
-            username: userID,
-            gamesPlayed: 0,
-            gamesWon: 0,
-            googleID: googleID,
-        }).catch((err) => {
-            if(err){
-                throw err;
+    socket.on('newUser', (userID, usergoogleID) => {
+        UserAccount.findAll({ where: { googleID: usergoogleID}}).then((users => {
+            if(users.length === 0){
+                UserAccount.create({
+                    username: userID,
+                    gamesPlayed: 0,
+                    gamesWon: 0,
+                    googleID: googleID,
+                }).catch((err) => {
+                    if(err){
+                        throw err;
+                    }
+                })
+            }else{
+                console.log("Error, user already in table")
+                console.log(users);
             }
-        })
+        }))
+        
+
     })
     socket.on('RetrieveUsers', () => {
         UserAccount.findAll().then((users) => {
