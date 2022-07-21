@@ -192,7 +192,7 @@ io.on('connection', (socket) => {
                 users[0].save()
             }
         })*/
-        db.connections.update({ username: newID }, {where: { googleID: usergoogleID }}).then((res) => {
+        UserAccount.update({ username: newID }, {where: { googleID: usergoogleID }}).then((res) => {
             console.log(res);
         })
     })
