@@ -176,9 +176,9 @@ io.on('connection', (socket) => {
         })
     })
 
-    socket.on('doesUserExist', (userID) => {
+    socket.on('doesUserExist', (userGoogleID) => {
         console.log("Query received");
-        UserAccount.findAll({ where: { username: userID }}).then((users) => {
+        UserAccount.findAll({ where: { googleID: userGoogleID }}).then((users) => {
             console.log(users);
             if(users.length === 0){
                 socket.emit('UserNotFound')

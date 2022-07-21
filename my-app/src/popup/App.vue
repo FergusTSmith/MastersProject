@@ -246,8 +246,9 @@ export default {
       UserNotFound(){
           this.userProfile = new User(this.UsersID);
           this.userProfile.googleID = this.UserGoogleID;
-          this.UsernamePage = false;
-          this.HomePage = true;
+          this.UsernamePage = true;
+          this.IntroPage = false;
+          this.HomePage = false;
           this.allUserIDs.push(this.UsersID);
           this.allUsers.push(this.userProfile);
           console.log("created a new user!")
@@ -256,6 +257,7 @@ export default {
           console.log(users);
           this.UsernamePage = false;
           this.HomePage = true;
+          this.IntroPage = false;
       },
       lobbySuccess(lobbyDetails) {
         console.log("successfully connected to lobby")
@@ -554,6 +556,8 @@ export default {
               vm.IntroPage = false;
               vm.UsernamePage = true;
               vm.getGoogleID();
+
+              vm.$socket.emit('doesUserExist', vm.UserGoogleID);
             }
          })
          
@@ -597,8 +601,8 @@ export default {
           alert("Error, that name has been taken");
         }
 
-        this.$socket.emit('doesUserExist', this.UsersID);
-        console.log("readched here");
+        this.$socket.emit('doesUserExist', this.UserGoogleID);
+        console.log("reached here");
 
         /*
         chrome.storage.local.get(["userQueryResult"], function(result){
