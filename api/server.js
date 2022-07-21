@@ -178,14 +178,14 @@ io.on('connection', (socket) => {
 
     socket.on('doesUserExist', (userID) => {
         console.log("Query received");
-        UserAccount.findall({ where: { username: userID }}.then((users) => {
+        UserAccount.findall({ where: { username: userID }}).then((users) => {
             console.log(users);
             if(users.length === 0){
                 socket.emit('UserNotFound')
             }else{
                 socket.emit('UserFound', users)
             }
-        }))
+        })
     })
 
     socket.on('playerReady', (user, lobbyID) => {
