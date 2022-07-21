@@ -234,6 +234,10 @@ app.get('/socket.io', function(req, res){
     res.send("test passed")
 })
 
+app.post('/socket.io', function(req, res){
+    res.send("Post test passed")
+})
+
 // Database methods
 
 app.get('/select', (req, res) => {
