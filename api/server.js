@@ -164,7 +164,7 @@ io.on('connection', (socket) => {
                     username: userID,
                     gamesPlayed: 0,
                     gamesWon: 0,
-                    googleID: googleID,
+                    googleID: usergoogleID,
                 }).catch((err) => {
                     if(err){
                         throw err;
