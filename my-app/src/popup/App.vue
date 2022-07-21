@@ -75,7 +75,7 @@ import { ref } from 'vue';
     </div>
     <button class="Radio" type="button">Classic</button>
     <button class="Radio" type="button">Bingo</button>
-    <button class="Radio" type="button">Roulette</button>
+    <!---<button class="Radio" type="button">Roulette</button>---->
     <br/>
     <button @click="exitToHomePage" type="button">HomePage</button>
   </div>
@@ -133,11 +133,11 @@ import { ref } from 'vue';
     <li v-for="(item, count) in UsersInLobby" class="LobbyUsers" :key="item">
         {{ ++count }}. {{ item.userID }}
     </li>
-
+    <br/><br/>
 
     <button class="Radio" type="button">Classic</button>
     <button class="Radio" type="button">Bingo</button>
-    <button class="Radio" type="button">Roulette</button>
+    <!------<button class="Radio" type="button">Roulette</button>--->
     <br/>
     <!-----This should only be visible for the lobby leader: ---->
     <button v-if="isLobbyCreator" @click="closeLobby" type="button">Close Lobby</button>
@@ -149,7 +149,8 @@ import { ref } from 'vue';
   <div v-if="SoloPage" id="Solo-Mode">
     <h2>TrackHunt</h2>
     <p class="HelpText">Solo Mode</p>
-    <br/>
+    <input class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label>Classic</label>
+    <input class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label>Bingo</label>
     <p id="LeaderBoard">Previous Scores:</p>
     <ul>
       <li class="PlayerList" id="Score1">1. </li>
@@ -159,8 +160,10 @@ import { ref } from 'vue';
       <li class="PlayerList" id="Score5">5. </li>
     </ul>
     <br/>
-    <button class="Radio" type="button">Classic</button>
-    <button class="Radio" type="button">Bingo</button>
+    <input class="Radio" type="radio" value="120" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label>2 min</label>
+    <input class="Radio" type="radio" value="300" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label>5 min</label>
+    <input class="Radio" type="radio" value="600" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label>10 min</label>
+    <p> {{ time }}</p>
     <br/>
     <button @click="soloGameInitiated" type="button">Begin Game</button>
     <button @click="exitToHomePage" type="button">Cancel</button>
@@ -168,7 +171,7 @@ import { ref } from 'vue';
 
   <div v-if="SoloGame" id="Solo-Game" :key="componentVersion">
     <h2>TrackHunt</h2>
-    <!------<p class="HelpText">Solo Mode</p>--->
+    <p class="HelpText">Solo Mode - {{ GameMode }}</p>
     <div v-if="(!gameOver)">
     <br/>
     <label>Time remaining: </label>
@@ -384,6 +387,7 @@ export default {
       isLobbyCreator: false,
       allPlayersReady: false,
       UsernameChangePage: false,
+      GameMode: 'Classic',
 
       timer: 120,
 
@@ -408,43 +412,56 @@ export default {
     methods: {
       initiateGame(){
         var vm = this;
-          this.gameStarted = true;
-          if(this.timer <= 0){
-            this.timer = 120;
-          }
+        this.gameStarted = true;
+        if(this.timer <= 0){
+          this.timer = 120;
+        }
 
-            this.timer += 1;
-            chrome.runtime.sendMessage({ message: 'reset'}, function(response) {
-              if(response === 'success'){
-                console.log('successfully started the game.')
-                vm.VisitedCountries = [];
-                vm.userScore = 0;
+        this.timer += 1;
+        chrome.runtime.sendMessage({ message: 'reset'}, function(response) {
+          if(response === 'success'){
+            console.log('successfully started the game.')
+            vm.VisitedCountries = [];
+            vm.userScore = 0;
+          }
+          return true;
+        })
+        
+        chrome.storage.local.get(["countryList"], function(result){
+            let score = 0;
+            if(!(result == undefined)){
+              for(var i = 0; i < result.countryList.length; i++){
+                score += result.countryList[i].count;
               }
-              return true;
-            })
-            
-            chrome.storage.local.get(["countryList"], function(result){
-                let score = 0;
-                if(!(result == undefined)){
-                  for(var i = 0; i < result.countryList.length; i++){
-                    score += result.countryList[i].count;
-                  }
-                }
-                vm.userScore = score;
-                vm.userProfile.score = score;
-                vm.VisitedCountries = result.countryList;
-                vm.noOfCountries = result.countryList.length;
-            })
-          chrome.storage.onChanged.addListener(function(result) {
-                vm.updateScore()
-                vm.updateListOfCountries()
-                vm.VisitedCountries = result.countryList.newValue;
-                vm.gameStarted = true;
-            }) 
+            }
+            vm.userScore = score;
+            vm.userProfile.score = score;
+            vm.VisitedCountries = result.countryList;
+            vm.noOfCountries = result.countryList.length;
+        })
+        chrome.storage.onChanged.addListener(function(result) {
+            vm.updateListOfCountries()
+            vm.VisitedCountries = result.countryList.newValue;
+            vm.gameStarted = true;
+            if(vm.GameMode === "Classic"){
+              vm.updateScoreClassic()
+            }else if(vm.GameMode === "Bingo"){
+              vm.updateScoreBingo(result.countryList.newValue)
+            }
+        }) 
 
           /* chrome.windows.create({
             url: 'https://www.google.com',
           }) */
+      },onGameModeChange(event){
+        var gameModeSelected = event.target.value;
+        this.GameMode = gameModeSelected;
+      },
+
+      onTimeChange(event){ // https://www.codecheef.org/article/how-to-get-selected-radio-button-value-in-vuejs
+        var timeSelected = event.target.value;
+        this.timer = timeSelected;
+
       },
       changeUsernamePage(){
           this.OptionsPage = false;
@@ -496,6 +513,9 @@ export default {
 
         if(this.WinningUser === this.UsersID){
           this.didYouWin = true;
+
+          // This is here to make sure this is only fired once per game, by the winner
+          this.$socket.emit('gameWon', this.UserGoogleID)
         }
 
         //Close the Lobby
@@ -529,7 +549,7 @@ export default {
         })
      }, 
 
-     updateScore(){
+     updateScoreClassic(){
         var vm = this;
 
         chrome.storage.local.get(["countryList"], function(result){
@@ -690,6 +710,12 @@ export default {
         this.gameOver = false;
         this.SoloPage = false;
         this.SoloGame = true;
+
+        //this.GameMode = 
+        //this.timer = $('input[name=time]:checked').val();
+
+        console.log(this.GameMode)
+        console.log(this.timer);
      },
      multiGameInitiated(){
         this.gameOver = false;
