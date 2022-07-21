@@ -186,7 +186,7 @@ io.on('connection', (socket) => {
                 users[0].userID = newID;
                 console.log(users[0].userID)
                 console.log(newID);
-                await users[0].save()
+                users[0].save()
             }
         })
     })
