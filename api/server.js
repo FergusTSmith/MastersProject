@@ -112,7 +112,7 @@ io.on('connection', (socket) => {
         
         socket.join(availableLobbies[numberOfLobbies]);
         availableLobbies[numberOfLobbies].addUser(user);
-        console.log(user)
+        console.log(user.username)
 
         //socket.nsp.to(availableLobbies[numberOfLobbies]).emit('updateUsers', availableLobbies[numberOfLobbies].lobbyUsers)
         socket.in(availableLobbies[numberOfLobbies]).broadcast.emit('updateUsers', (availableLobbies[numberOfLobbies].lobbyUsers, availableLobbies[numberOfLobbies].LobbyID))
@@ -183,6 +183,8 @@ io.on('connection', (socket) => {
             if(users.length === 0){
                 console.log("User not found");
             }else{
+                console.log(users)
+                console.log(users[0])
                 users[0].userID = newID;
                 console.log(users[0].userID)
                 console.log(newID);

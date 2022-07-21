@@ -269,6 +269,7 @@ export default {
 
           this.UsersID = users[0].username;
           this.UserGoogleID = users[0].googleID;
+          this.userProfile = new User(this.UsersID);
 
       },
       lobbySuccess(lobbyDetails) {
