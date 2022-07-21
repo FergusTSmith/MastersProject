@@ -56,10 +56,10 @@ var numberOfLobbies = 0;
 
 
 //db.sequelize.sync().then((req) => { 
-    socketServ = app.listen(PORT, function(){
-        console.log('Server started on port ' + PORT);
-        console.log('http://localhost:' + PORT);
-    })
+    //socketServ = app.listen(PORT, function(){
+        //console.log('Server started on port ' + PORT);
+       // console.log('http://localhost:' + PORT);
+    //})
 //})
 const socketServ = app.listen(PORT, function(){
     console.log('Server started on port ' + PORT);
