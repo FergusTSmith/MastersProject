@@ -5,7 +5,7 @@ const app = express();
 var http = require('http');
 const { allowedNodeEnvironmentFlags } = require('process');
 const socket = require('socket.io');
-//const db = require('./models')
+const db = require('./models')
 //const sequelize = require('sequelize')
 const { UserAccount } = require('./models');
 
