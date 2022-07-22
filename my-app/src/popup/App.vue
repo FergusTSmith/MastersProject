@@ -13,6 +13,7 @@ import { ref } from 'vue';
       <Transition><button v-if="IntroPage" @click="googleLogin" ref="LoginButton">Login</button></Transition>
       <!------<Transition><button v-if="IntroPage" @click="NoAccount">No-Login Mode</button></Transition> --->
       <Transition><p v-if="IntroPage" class="HelpText">New to TrackHunt? Sign up <a @click="refresh">Here</a></p></Transition>
+      <button @click="testMethod">Test</button>
     </div>
 
   <div v-if="LoginPage" id = "Login-Page">
@@ -178,7 +179,7 @@ import { ref } from 'vue';
     <div v-if="(!gameOver)">
     <br/>
     <label>Time remaining: </label>
-    <p> {{ timer }}</p>
+    <p class="timer" ref="timer" id="timer"> {{ timer }}</p>
     <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
         {{ item.name }} - {{ item.count }}
     </li>
@@ -220,7 +221,7 @@ import { ref } from 'vue';
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item">
         {{ item.userID }} - {{ item.score }}
     </li>
-    <p class="HelpText"> {{ playerLeaveMessage }}</p>
+    <p class="ErrorText"> {{ playerLeaveMessage }}</p>
     </ol>
     <button v-if="isLobbyCreator" @click="gameSetup" type="button">Start</button>
     <button @click="playerReady">Ready Up</button>
@@ -427,6 +428,8 @@ export default {
             setTimeout(() => {
               this.timer--;
             }, 1000);
+          }else if(value <= 10){
+              //this.$refs.timer.id = "timerClose";
           }else if(value === 0){
             this.endGame()
           }
@@ -913,6 +916,13 @@ li.LobbyUsers{
 p{
   color: white;
 }
+#timer {
+  color: white;
+}
+#timerClose {
+  color: red;
+}
+
 label {
   color: white;
 }

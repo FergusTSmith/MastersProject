@@ -190,10 +190,7 @@ io.on('connection', (socket) => {
         })
     })
     socket.on('gameWon', (usergoogleID) => {
-        
-        UserAccount.update({ gamesWon: 1 }, {where: { googleID: usergoogleID}}).then((res) => {
-            console.log(res);
-        })
+        UserAccount.increment('gamesWon', { by: 1, where: { googleID: usergoogleID}});
     })
 
     socket.on('RetrieveUsers', () => {
@@ -241,6 +238,9 @@ io.on('connection', (socket) => {
         for(var i = 0; i < numberOfLobbies; i++){
             if(availableLobbies[i].LobbyID === lobbyID){
                 socket.nsp.to(availableLobbies[i]).emit('startGame', availableLobbies[i].LobbyID)
+                for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
+                    UserAccount.increment('gamesPlayed', { by: 1, where: { username: availableLobbies[i].lobbyUsers[j].userID }})
+                }
             }
         }
     })
