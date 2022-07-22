@@ -216,12 +216,12 @@ import { ref } from 'vue';
     <label>Countries To Locate:</label>
     <ol>
     <li v-for="item in countriesToFind" ref="CountriesToFind" :class="{found:item.found}" :key="item">
-        {{ item }}
+        {{ item.country }} - {{ item.found }}
     </li>  
     </ol>
     <label>Countries Located</label>
     <ol>
-      <li v-for="item in VisitedCountries" ref="ListOfCountries" class="countryList" :key="item">
+      <li v-for="item in VisitedCountries" ref="ListOfCountries" class="BingoList" :key="item">
           {{ item.name }}
       </li>
     </ol>
@@ -504,10 +504,11 @@ export default {
             vm.updateListOfCountries()
             vm.VisitedCountries = result.countryList.newValue;
             vm.gameStarted = true;
+            //console.log(vm.GameMode)
             if(vm.GameMode === "Classic"){
               vm.updateScoreClassic()
             }else if(vm.GameMode === "Bingo"){
-              vm.updateScoreBingo(result.countryList.newValue)
+              vm.updateScoreBingo()
             }
         }) 
 
@@ -667,17 +668,27 @@ export default {
      },
      updateScoreBingo(){
         var vm = this;
-        var score = 0;
 
         chrome.storage.local.get(["countryList", (result) => {
-            for(var i = 0; i < vm.countriesToFind; i++){
+            
+            for(var i = 0; i < vm.countriesToFind.length; i++){
+              console.log(vm.countriesToFind[i]);
+              console.log(result.countryList);
               if(vm.countriesToFind[i] in result.countryList){
                  vm.countriesToFind[i].found = true;
               }
             }
         }])
 
-        if(score >= 3){
+        var allFound = true;
+
+        for(var j = 0; j < vm.countriesToFind.length; i++){
+          if(vm.countriesToFind[j].found === false){
+            allFound = false;
+          }
+        }
+
+        if(allFound){
           this.endGame();
         }
      },
