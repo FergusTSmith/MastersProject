@@ -169,7 +169,7 @@ io.on('connection', (socket) => {
                 UserAccount.create({
                     username: userID,
                     gamesPlayed: 0,
-                    gamesWon: 0,
+                    wonGames: 0,
                     googleID: usergoogleID,
                 }).catch((err) => {
                     if(err){
@@ -190,7 +190,7 @@ io.on('connection', (socket) => {
         })
     })
     socket.on('gameWon', (usergoogleID) => {
-        UserAccount.increment('gamesWon', { by: 1, where: { googleID: usergoogleID}});
+        UserAccount.increment('wonGames', { by: 1, where: { googleID: usergoogleID}});
     })
 
     socket.on('RetrieveUsers', () => {
@@ -278,7 +278,7 @@ app.get('/insert', (req, res) => {
     UserAccount.create({
         username: "Goose",
         gamesPlayed: 0,
-        gamesWon: 0,
+        wonGames: 0,
         googleID: "test",
     }).catch(err => {
         if(err){

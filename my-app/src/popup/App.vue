@@ -12,8 +12,8 @@ import { ref } from 'vue';
       <h5>Who is watching you?</h5>
       <Transition><button v-if="IntroPage" @click="googleLogin" ref="LoginButton">Login</button></Transition>
       <!------<Transition><button v-if="IntroPage" @click="NoAccount">No-Login Mode</button></Transition> --->
-      <Transition><p v-if="IntroPage" class="HelpText">New to TrackHunt? Sign up <a @click="refresh">Here</a></p></Transition>
-      <button @click="testMethod">Test</button>
+      <Transition><p v-if="IntroPage" class="HelpText">To use TrackHunt, sign in with Google and ensure you are signed in on your browser.</p></Transition>
+      <!------<button @click="testMethod">Test</button>---->
     </div>
 
   <div v-if="LoginPage" id = "Login-Page">
@@ -192,7 +192,7 @@ import { ref } from 'vue';
     <h2>GAME OVER</h2>
     <p>Your score was: {{ userScore }}</p>
     <p>You were tracked by {{ noOfCountries }} nation(s)</p>
-    <button @click="exitToHomePage" type="button">HomePage</button>
+    <button @click="exitToHomePageReset" type="button">HomePage</button>
     </div>
     <!--- --<button @click="gameSetup" type="button">Refresh</button> --->
   </div>
@@ -204,11 +204,28 @@ import { ref } from 'vue';
     <br/>
     <label>Time remaining: </label>
     <p> {{ timer }}</p>
+    
+    <div v-if="GameMode === 'Classic'">
     <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item" class="TrackedCountry">
         {{ item.name }} - {{ item.count }}
     </li>
     <br/>
     <label>Current Score: </label><p> {{ this.userScore }}</p>
+    </div>
+    <div v-if="GameMode === 'Bingo'">
+    <label>Countries To Locate:</label>
+    <ol>
+    <li v-for="item in countriesToFind" ref="CountriesToFind" :key="item">
+        {{ item }}
+    </li>  
+    </ol>
+    <label>Countries Located</label>
+    <ol>
+      <li v-for="item in VisitedCountries" ref="ListOfCountries" class="countryList" :key="item">
+          {{ item.name }}
+      </li>
+    </ol>
+    </div>
     <ol v-if="!(allPlayersReady)">
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item">
         {{ item.userID }} - {{ item.ready }}
@@ -227,6 +244,7 @@ import { ref } from 'vue';
     <button @click="playerReady">Ready Up</button>
     <button @click="leaveGame" type="button">Leave Game</button>
     </div>
+
     <div v-if="gameOver">
     <h2>GAME OVER</h2>
     <div v-if="didYouWin">
@@ -415,6 +433,15 @@ export default {
 
       userLeaveMessage: "",
 
+
+
+
+
+      easyCountries: ["United States", "United Kingdom"],
+      medEasyCountries: ["Netherlands", "Germany", "Canada"],
+      hardCountries: ["Russia", "Spain"],
+      countriesToFind: [],
+
       timer: 120,
 
       userSignedIn: false,
@@ -428,7 +455,7 @@ export default {
             setTimeout(() => {
               this.timer--;
             }, 1000);
-          }else if(value <= 10){
+          }else if(value <= 10 && value > 1){
               //this.$refs.timer.id = "timerClose";
           }else if(value === 0){
             this.endGame()
@@ -455,6 +482,8 @@ export default {
           }
           return true;
         })
+
+        /*
         
         chrome.storage.local.get(["countryList"], function(result){
             let score = 0;
@@ -468,6 +497,9 @@ export default {
             vm.VisitedCountries = result.countryList;
             vm.noOfCountries = result.countryList.length;
         })
+
+        */
+
         chrome.storage.onChanged.addListener(function(result) {
             vm.updateListOfCountries()
             vm.VisitedCountries = result.countryList.newValue;
@@ -479,10 +511,25 @@ export default {
             }
         }) 
 
+        if(this.GameMode === "Bingo"){
+            this.countriesToFind.push(this.hardCountries[this.generateRandomIntHelper(this.hardCountries.length)])
+            this.countriesToFind.push(this.easyCountries[this.generateRandomIntHelper(this.easyCountries.length)])
+            this.countriesToFind.push(this.medEasyCountries[this.generateRandomIntHelper(this.medEasyCountries.length)])
+
+            console.log(this.countriesToFind);
+
+        }
+
           /* chrome.windows.create({
             url: 'https://www.google.com',
           }) */
-      },onGameModeChange(event){
+      },generateRandomIntHelper(max){
+          return Math.floor(Math.random() * max)
+
+          //Nabbed from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+      },
+      
+      onGameModeChange(event){
         var gameModeSelected = event.target.value;
         this.GameMode = gameModeSelected;
       },
@@ -550,6 +597,8 @@ export default {
         //Close the Lobby
         this.$socket.emit('closeLobby', this.playersLobby)
 
+        this.reset();
+
       },
       playerReady(){
           this.userProfile.ready = true;
@@ -616,8 +665,21 @@ export default {
         }
 
      },
-     updateScoreBing(){
-      console.log('after lunch');
+     updateScoreBingo(){
+        var vm = this;
+        var score = 0;
+
+        chrome.storage.local.get(["countryList", (result) => {
+            for(var i = 0; i < result.countryList.length; i++){
+              if(result.countryList[i] in vm.countriesToFind){
+                score +=1;
+              }
+            }
+        }])
+
+        if(score >= 3){
+          this.endGame();
+        }
      },
      gameSetup(){ 
         if(this.allPlayersReady){
@@ -851,6 +913,21 @@ export default {
       this.VisitedCountries = [];
       this.noOfUsersInLobby = 0;
       this.gameStarted = false;
+      this.userLeaveMessage = "";
+    },
+    reset(){
+      this.isLobbyCreator = false;
+      this.userProfile.ready = false;
+      this.UsersInLobby = [];
+      this.userScore = 0;
+      this.timer = 0;
+      this.allPlayersReady = false;
+      this.didYouWin = false;
+      this.winningUser = false;
+      this.VisitedCountries = [];
+      this.noOfUsersInLobby = 0;
+      this.gameStarted = false;
+      this.userLeaveMessage = "";
     },
     createNewLobbyID(){
      /* adapted from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript */
