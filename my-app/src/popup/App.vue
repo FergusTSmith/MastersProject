@@ -180,11 +180,28 @@ import { ref } from 'vue';
     <br/>
     <label>Time remaining: </label>
     <p class="timer" ref="timer" id="timer"> {{ timer }}</p>
+    <div v-if="GameMode === 'Classic'">
     <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
         {{ item.name }} - {{ item.count }}
     </li>
     <br/>
     <label>Current Score: </label><p> {{ this.userScore }}</p>
+    </div>
+    <div v-if="GameMode === 'Bingo'">
+    <label>Countries To Locate:</label>
+    <ol>
+    <li v-for="item in countriesToFind" ref="CountriesToFind" :class="{found:item.found}" :key="item">
+        {{ item.country }}
+    </li>  
+    </ol>
+    <label>Countries Located</label>
+    <ol>
+      <li v-for="item in VisitedCountries" ref="ListOfCountries" class="BingoList" :key="item">
+          {{ item.name }}
+      </li>
+    </ol>
+    </div>
+
     <button @click="gameSetup" type="button">Start</button>
     <button @click="endGame" type="button">End Game</button>
     </div>
@@ -216,7 +233,7 @@ import { ref } from 'vue';
     <label>Countries To Locate:</label>
     <ol>
     <li v-for="item in countriesToFind" ref="CountriesToFind" :class="{found:item.found}" :key="item">
-        {{ item.country }} - {{ item.found }}
+        {{ item.country }}
     </li>  
     </ol>
     <label>Countries Located</label>
@@ -499,6 +516,14 @@ export default {
         })
 
         */
+        if(this.GameMode === "Bingo"){
+            this.countriesToFind.push({country: this.hardCountries[this.generateRandomIntHelper(this.hardCountries.length)], found: false})
+            this.countriesToFind.push({country: this.easyCountries[this.generateRandomIntHelper(this.easyCountries.length)], found: false})
+            this.countriesToFind.push({country: this.medEasyCountries[this.generateRandomIntHelper(this.medEasyCountries.length)], found: false})
+
+            console.log(this.countriesToFind);
+
+        }
 
         chrome.storage.onChanged.addListener(function(result) {
             vm.updateListOfCountries()
@@ -511,15 +536,6 @@ export default {
               vm.updateScoreBingo()
             }
         }) 
-
-        if(this.GameMode === "Bingo"){
-            this.countriesToFind.push({country: this.hardCountries[this.generateRandomIntHelper(this.hardCountries.length)], found: false})
-            this.countriesToFind.push({country: this.easyCountries[this.generateRandomIntHelper(this.easyCountries.length)], found: false})
-            this.countriesToFind.push({country: this.medEasyCountries[this.generateRandomIntHelper(this.medEasyCountries.length)], found: false})
-
-            console.log(this.countriesToFind);
-
-        }
 
           /* chrome.windows.create({
             url: 'https://www.google.com',
@@ -669,16 +685,37 @@ export default {
      updateScoreBingo(){
         var vm = this;
 
-        chrome.storage.local.get(["countryList", (result) => {
-            
-            for(var i = 0; i < vm.countriesToFind.length; i++){
-              console.log(vm.countriesToFind[i]);
-              console.log(result.countryList);
-              if(vm.countriesToFind[i] in result.countryList){
-                 vm.countriesToFind[i].found = true;
-              }
+        chrome.storage.local.get(["countryList"], function(result){
+            console.log(result.countryList)
+
+            for(var i = 0; i < result.countryList.length; i++){
+
+                for(var j = 0; j < vm.countriesToFind.length; j++){
+                  if(result.countryList[i].name === vm.countriesToFind[j].country){
+                    vm.countriesToFind[j].found = true;
+                    console.log(vm.countriesToFind[j]);
+                  }
+                }
             }
-        }])
+        })
+
+
+
+
+        /*var vm = this;
+        console.log('titties')
+        console.log(vm.countriesToFind)
+        console.log(vm.countriesToFind.length)
+
+        for(var i = 0; i < vm.countriesToFind.length; i++){
+            console.log(i);
+            console.log(vm.countriesToFind[i]);
+            console.log(countryList);
+            if(vm.countriesToFind[i] in countryList){
+              vm.countriesToFind[i].found = true;
+            }
+        }
+        
 
         var allFound = true;
 
@@ -690,7 +727,9 @@ export default {
 
         if(allFound){
           this.endGame();
-        }
+        }*/
+
+        console.log("test");
      },
      gameSetup(){ 
         if(this.allPlayersReady){
@@ -1004,6 +1043,12 @@ li.LobbyUsers{
   font-size: smaller;
   list-style: none;
   font-style: italic;
+}
+
+li.BingoList{
+  color: white;
+  font-size: smaller;
+  list-style: none;
 }
 
 p{
