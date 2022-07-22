@@ -128,8 +128,8 @@ import { ref } from 'vue';
     <h2>TrackHunt</h2>
     <p class="HelpText">Lobby ID: {{ playersLobby }}</p>
     <!----Animation of the wheel turning ----->
-    <input v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label>Classic</label>
-    <input v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label>Bingo</label>
+    <input v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label v-if="isLobbyCreator">Classic</label>
+    <input v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label v-if="isLobbyCreator">Bingo</label>
 
     <p class="HelpText">Connected Players:</p>
     <li v-for="(item, count) in UsersInLobby" class="LobbyUsers" :key="item">
@@ -140,9 +140,9 @@ import { ref } from 'vue';
     <!------<button class="Radio" type="button">Roulette</button>--->
     <br/>
     <!-----This should only be visible for the lobby leader: ---->
-    <input v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label>2 min</label>
-    <input v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label>5 min</label>
-    <input v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label>10 min</label>
+    <input v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label v-if="isLobbyCreator">2 min</label>
+    <input v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label v-if="isLobbyCreator">5 min</label>
+    <input v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label v-if="isLobbyCreator">10 min</label>
     <button v-if="isLobbyCreator" @click="closeLobby" type="button">Close Lobby</button>
     <button @click="multiGameInitiated" type="button">Begin Game</button>
     <!------<button @click="exitToHomePage" type="button">Cancel</button>---->

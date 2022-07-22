@@ -158,9 +158,12 @@ io.on('connection', (socket) => {
         }
     })
     socket.on('gameModeAndTime', (lobbyID, gameMode, timer) => {
+        console.log('69 Attempting to update gamemode')
         for(var i = 0; i < availableLobbies.length; i++){
             if(availableLobbies[i].LobbyID === lobbyID){
+                console.log('69 found the lobby')
                 socket.in(availableLobbies[i].broadcast.emit('updateGameModeAndTime', lobbyID, gameMode, timer))
+                console.log('69 emitted the message to front end')
             }
         }
     })
