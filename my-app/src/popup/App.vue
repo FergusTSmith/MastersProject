@@ -216,7 +216,7 @@ import { ref } from 'vue';
     <ol v-if="allPlayersReady && !(gameStarted)">
         <li class="LobbyUsers">All players are ready</li>
     </ol>
-    <ol v-if="allPlayersReady">
+    <ol v-if="allPlayersReady && (gameStarted)">
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item">
         {{ item.userID }} - {{ item.score }}
     </li>

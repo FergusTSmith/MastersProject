@@ -141,13 +141,15 @@ io.on('connection', (socket) => {
     socket.on('playerLeft', (LobbyUsers, lobbyID, userID) => {
         console.log('Looking for lobby... ' + lobbyID)
         for(var i = 0; i < availableLobbies.length; i++){
-            if(availableLobbies[i].LobbyID === lobbyID){
-                console.log(lobbyID + ' found.')
-                availableLobbies[i].lobbyUsers = LobbyUsers;
-                socket.in(availableLobbies[i]).broadcast.emit('updateUsers', availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID);
-                console.log('emitted update to front end');
-                socket.in(availableLobbies[i]).broadcast.emit('player_leave_message', userID);
-            }
+            if(availableLobbies[i] != undefined){
+                if(availableLobbies[i].LobbyID === lobbyID){
+                    console.log(lobbyID + ' found.')
+                    availableLobbies[i].lobbyUsers = LobbyUsers;
+                    socket.in(availableLobbies[i]).broadcast.emit('updateUsers', availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID);
+                    console.log('emitted update to front end');
+                    socket.in(availableLobbies[i]).broadcast.emit('player_leave_message', userID);
+                }
+            }   
         }
     })
     socket.on('gameModeAndTime', (lobbyID, gameMode, timer) => {
