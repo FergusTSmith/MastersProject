@@ -128,6 +128,8 @@ import { ref } from 'vue';
     <h2>TrackHunt</h2>
     <p class="HelpText">Lobby ID: {{ playersLobby }}</p>
     <!----Animation of the wheel turning ----->
+    <input v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label>Classic</label>
+    <input v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label>Bingo</label>
 
     <p class="HelpText">Connected Players:</p>
     <li v-for="(item, count) in UsersInLobby" class="LobbyUsers" :key="item">
@@ -135,14 +137,15 @@ import { ref } from 'vue';
     </li>
     <br/><br/>
 
-    <button class="Radio" type="button">Classic</button>
-    <button class="Radio" type="button">Bingo</button>
     <!------<button class="Radio" type="button">Roulette</button>--->
     <br/>
     <!-----This should only be visible for the lobby leader: ---->
+    <input v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label>2 min</label>
+    <input v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label>5 min</label>
+    <input v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label>10 min</label>
     <button v-if="isLobbyCreator" @click="closeLobby" type="button">Close Lobby</button>
     <button @click="multiGameInitiated" type="button">Begin Game</button>
-    <button @click="exitToHomePage" type="button">Cancel</button>
+    <!------<button @click="exitToHomePage" type="button">Cancel</button>---->
     <button @click="leaveGame" type="button">Leave Game</button>
   </div>
 
@@ -298,6 +301,16 @@ export default {
           this.initiateGame();
         }
       },
+      updateGameModeAndTime(lobbyID, gameMode, timer){
+          console.log(lobbyID);
+          console.log(gameMode);
+          console.log(timer);
+
+          this.lobbyID = lobbyID;
+          this.GameMode = gameMode;
+          this.timer = timer;
+      },
+
       updateUsers(lobbyDetails){
         console.log('we reached updating users')
         var listOfUsers = lobbyDetails[0]
@@ -461,7 +474,6 @@ export default {
       onTimeChange(event){ // https://www.codecheef.org/article/how-to-get-selected-radio-button-value-in-vuejs
         var timeSelected = event.target.value;
         this.timer = timeSelected;
-
       },
       changeUsernamePage(){
           this.OptionsPage = false;
@@ -721,6 +733,11 @@ export default {
         this.gameOver = false;
         this.LobbyPage = false;
         this.MultiPlayer = true; 
+
+        if(this.isLobbyCreator){
+           this.$socket.emit('gameModeAndTime', this.LobbyID, this.GameMode, this.timer)
+        }
+
      },
      
      noLoginToIntro(){

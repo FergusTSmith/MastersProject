@@ -157,6 +157,14 @@ io.on('connection', (socket) => {
             }
         }
     })
+    socket.on('gameModeAndTime', (lobbyID, gameMode, timer) => {
+        for(var i = 0; i < availableLobbies.length; i++){
+            if(availableLobbies[i].LobbyID === lobbyID){
+                socket.in(availableLobbies[i].broadcast.emit('updateGameModeAndTime', lobbyID, gameMode, timer))
+            }
+        }
+    })
+
     socket.on('newUser', (userID, usergoogleID) => {
         UserAccount.findAll({ where: { googleID: usergoogleID}}).then((users => {
             if(users.length === 0){
