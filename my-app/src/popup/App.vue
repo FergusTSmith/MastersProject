@@ -306,7 +306,7 @@ export default {
           console.log(gameMode);
           console.log(timer);
 
-          this.lobbyID = lobbyID;
+          this.playersLobby = lobbyID;
           this.GameMode = gameMode;
           this.timer = timer;
       },
@@ -735,7 +735,7 @@ export default {
         this.MultiPlayer = true; 
 
         if(this.isLobbyCreator){
-           this.$socket.emit('gameModeAndTime', this.LobbyID, this.GameMode, this.timer)
+           this.$socket.emit('gameModeAndTime', this.playersLobby, this.GameMode, this.timer)
         }
 
      },
