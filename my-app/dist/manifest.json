@@ -1,34 +1,47 @@
 {
   "manifest_version": 2,
-  "name": "__MSG_extName__",
-  "homepage_url": "http://localhost:8080/",
-  "description": "A Vue Browser Extension",
+  "name": "TrackerHunt",
+  "homepage_url": "http://localhost:4000/",
+  "description": "A multiplayer browser extension",
   "default_locale": "en",
   "permissions": [
     "activeTab",
     "<all_urls>",
-    "*://*/*"
+    "*://*/*",
+    "identity",
+    "webRequest",
+    "storage",
+    "tabs",
+    "identity",
+    "identity.email"
   ],
   "icons": {
-    "16": "icons/16.png",
-    "48": "icons/48.png",
-    "128": "icons/128.png"
+    "16": "staticimages/Smalllogo.png",
+    "48": "staticimages/Smalllogo.png",
+    "128": "staticimages/Smalllogo.png"
   },
   "background": {
     "scripts": [
-      "js/background.js"
+      "js/background.js",
+      "js/easylist.js",
+      "js/gameplay.js",
+      "js/socket.io.js",
+      "js/client.js",
+      "js/jsrsasign-all-min.js",
+      "js/chromelogin.js"
     ],
-    "persistent": false
+    "persistent": true
   },
   "devtools_page": "devtools.html",
   "browser_action": {
     "default_popup": "popup.html",
-    "default_title": "__MSG_extName__",
+    "default_title": "TrackerHunt",
     "default_icon": {
-      "19": "icons/19.png",
-      "38": "icons/38.png"
+      "19": "staticimages/Smalllogo.png",
+      "38": "staticimages/Smalllogo.png"
     }
   },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuLn+ZlPBTM8Rb9Moi6KlByPXvOtpeWzffoaEkm743iG8TOdTBrba830kvMVgq6eLy7v60+YtpNs+FBhja8tgAHFfexyAB8veLDShcYPkZpb/gds+AGQbTmukulY4TyQCkyldE5rXWMTCHM1TVqEql30jcBTNJrLQPhrk5Xum7VxR16vbO9HFyMVM4IkevHkDdl6WU+ehDhsQOm95W8NEi/M7rHm658YJzBXfBHd3Mvzh+I6IR13CHi/UyEkTynKKU5YOBgVTpGqQUeUpzdm1vOLvl7IkHqBWe1dRneV694e8/Mr3+GpS5J333mZK/cKymlSv8XKs/5y6q09DcMXFTwIDAQAB",
   "options_ui": {
     "page": "options.html",
     "browser_style": true
