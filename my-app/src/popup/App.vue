@@ -301,14 +301,13 @@ export default {
           this.initiateGame();
         }
       },
-      updateGameModeAndTime(lobbyID, gameMode, timer){
-          console.log(lobbyID);
-          console.log(gameMode);
-          console.log(timer);
+      updateGameModeAndTime(messageDetails){
+          var lobbyID = messageDetails[0];
 
-          this.playersLobby = lobbyID;
-          this.GameMode = gameMode;
-          this.timer = timer;
+          if(lobbyID === this.playersLobby){
+            this.GameMode = messageDetails[1];
+            this.timer = messageDetails[2];
+          }
       },
 
       updateUsers(lobbyDetails){
