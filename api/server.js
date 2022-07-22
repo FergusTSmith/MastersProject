@@ -138,22 +138,15 @@ io.on('connection', (socket) => {
             }
         }
     })
-    socket.on('playerLeft', (LobbyUsers, lobbyID) => {
+    socket.on('playerLeft', (LobbyUsers, lobbyID, userID) => {
         console.log('Looking for lobby... ' + lobbyID)
         for(var i = 0; i < availableLobbies.length; i++){
             if(availableLobbies[i].LobbyID === lobbyID){
                 console.log(lobbyID + ' found.')
-                /*console.log('lobby found')
-                for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
-                    if(availableLobbies[i].lobbyUsers[j].userID === user.userID){
-                        availableLobbies[i].lobbyUsers.splice(j, j+1);
-                        console.log('now updating users')
-                        socket.in(availableLobbies[i]).broadcast.emit('updateUsers', (availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID))
-                    }
-                } */
                 availableLobbies[i].lobbyUsers = LobbyUsers;
                 socket.in(availableLobbies[i]).broadcast.emit('updateUsers', availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID);
                 console.log('emitted update to front end');
+                socket.in(availableLobbies[i]).broadcast.emit('player_leave_message', userID);
             }
         }
     })

@@ -213,6 +213,9 @@ import { ref } from 'vue';
         {{ item.userID }} - {{ item.ready }}
     </li>
     </ol>
+    <ol v-if="allPlayersReady && !(gameStarted)">
+        <li class="LobbyUsers">All players are ready</li>
+    </ol>
     <ol v-if="allPlayersReady">
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item">
         {{ item.userID }} - {{ item.score }}
@@ -309,6 +312,12 @@ export default {
             this.timer = messageDetails[2];
           }
       },
+      playerLeaveMessage(messageDetails){
+          this.playerLeaveMessage = "User: " + messageDetails + " has disconnected from the lobby."
+          if(this.UsersInLobby.length === 1){
+            this.playerLeaveMessage += "You are the only player in this multiplayer game."
+          }
+      },
 
       updateUsers(lobbyDetails){
         console.log('we reached updating users')
@@ -401,6 +410,8 @@ export default {
       UsernameChangePage: false,
       GameMode: 'Classic',
 
+      userLeaveMessage: "",
+
       timer: 120,
 
       userSignedIn: false,
@@ -429,7 +440,8 @@ export default {
           this.timer = 120;
         }
 
-        this.timer += 1;
+        this.timer = this.timer * 1;
+        this.timer -= 1;
         chrome.runtime.sendMessage({ message: 'reset'}, function(response) {
           if(response === 'success'){
             console.log('successfully started the game.')
@@ -501,7 +513,7 @@ export default {
           }
         }
 
-        this.$socket.emit('playerLeft', this.UsersInLobby, this.playersLobby)
+        this.$socket.emit('playerLeft', this.UsersInLobby, this.playersLobby, this.UsersID)
         console.log('we reached here');
         this.playersLobby = '';
         this.isLobbyCreator = false;
@@ -823,11 +835,13 @@ export default {
       this.userProfile.ready = false;
       this.UsersInLobby = [];
       this.userScore = 0;
+      this.timer = 0;
       this.allPlayersReady = false;
       this.didYouWin = false;
       this.winningUser = false;
       this.VisitedCountries = [];
       this.noOfUsersInLobby = 0;
+      this.gameStarted = false;
     },
     createNewLobbyID(){
      /* adapted from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript */
