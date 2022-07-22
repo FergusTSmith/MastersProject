@@ -215,7 +215,7 @@ import { ref } from 'vue';
     <div v-if="GameMode === 'Bingo'">
     <label>Countries To Locate:</label>
     <ol>
-    <li v-for="item in countriesToFind" ref="CountriesToFind" :key="item">
+    <li v-for="item in countriesToFind" ref="CountriesToFind" :class="{found:item.found}" :key="item">
         {{ item }}
     </li>  
     </ol>
