@@ -220,6 +220,7 @@ import { ref } from 'vue';
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item">
         {{ item.userID }} - {{ item.score }}
     </li>
+    <p class="HelpText"> {{ playerLeaveMessage }}</p>
     </ol>
     <button v-if="isLobbyCreator" @click="gameSetup" type="button">Start</button>
     <button @click="playerReady">Ready Up</button>
@@ -312,11 +313,12 @@ export default {
             this.timer = messageDetails[2];
           }
       },
-      playerLeaveMessage(messageDetails){
+      player_leave_message(messageDetails){
           this.playerLeaveMessage = "User: " + messageDetails + " has disconnected from the lobby."
           if(this.UsersInLobby.length === 1){
             this.playerLeaveMessage += "You are the only player in this multiplayer game."
           }
+          console.log(this.playerLeaveMessage)
       },
 
       updateUsers(lobbyDetails){
@@ -481,6 +483,7 @@ export default {
         var gameModeSelected = event.target.value;
         this.GameMode = gameModeSelected;
       },
+      
 
       onTimeChange(event){ // https://www.codecheef.org/article/how-to-get-selected-radio-button-value-in-vuejs
         var timeSelected = event.target.value;
@@ -609,6 +612,9 @@ export default {
             this.$socket.emit('scoreUpdate', this.userProfile, this.playersLobby, this.userScore);
         }
 
+     },
+     updateScoreBing(){
+      console.log('after lunch');
      },
      gameSetup(){ 
         if(this.allPlayersReady){

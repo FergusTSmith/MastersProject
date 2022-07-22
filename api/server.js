@@ -190,7 +190,8 @@ io.on('connection', (socket) => {
         })
     })
     socket.on('gameWon', (usergoogleID) => {
-        UserAccount.update({ gamesWon: gamesWon+1 }, {where: { googleID: usergoogleID}}).then((res) => {
+        
+        UserAccount.update({ gamesWon: 1 }, {where: { googleID: usergoogleID}}).then((res) => {
             console.log(res);
         })
     })
