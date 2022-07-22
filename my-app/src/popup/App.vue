@@ -512,9 +512,9 @@ export default {
         }) 
 
         if(this.GameMode === "Bingo"){
-            this.countriesToFind.push(this.hardCountries[this.generateRandomIntHelper(this.hardCountries.length)])
-            this.countriesToFind.push(this.easyCountries[this.generateRandomIntHelper(this.easyCountries.length)])
-            this.countriesToFind.push(this.medEasyCountries[this.generateRandomIntHelper(this.medEasyCountries.length)])
+            this.countriesToFind.push({country: this.hardCountries[this.generateRandomIntHelper(this.hardCountries.length)], found: false})
+            this.countriesToFind.push({country: this.easyCountries[this.generateRandomIntHelper(this.easyCountries.length)], found: false})
+            this.countriesToFind.push({country: this.medEasyCountries[this.generateRandomIntHelper(this.medEasyCountries.length)], found: false})
 
             console.log(this.countriesToFind);
 
@@ -670,9 +670,9 @@ export default {
         var score = 0;
 
         chrome.storage.local.get(["countryList", (result) => {
-            for(var i = 0; i < result.countryList.length; i++){
-              if(result.countryList[i] in vm.countriesToFind){
-                score +=1;
+            for(var i = 0; i < vm.countriesToFind; i++){
+              if(vm.countriesToFind[i] in result.countryList){
+                 vm.countriesToFind[i].found = true;
               }
             }
         }])
@@ -914,6 +914,7 @@ export default {
       this.noOfUsersInLobby = 0;
       this.gameStarted = false;
       this.userLeaveMessage = "";
+      this.countriesToVisit = [];
     },
     reset(){
       this.isLobbyCreator = false;
@@ -981,6 +982,10 @@ li.TrackedCountry{
   font-size: smaller;
   list-style: none;
   font-style: italic;
+}
+
+.found {
+  color: green;
 }
 
 li.LobbyUsers{
