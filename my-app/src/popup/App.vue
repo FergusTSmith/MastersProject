@@ -754,12 +754,15 @@ export default {
         })
 
         var allFound = true;
+        console.log(this.countriesToFind);
 
         for(var j = 0; j < this.countriesToFind.length; j++){
             if(this.countriesToFind[j].found != true){
               allFound = false;
             }
         }
+
+        console.log(allFound);
 
         if(allFound){
           this.endBingoGame();
