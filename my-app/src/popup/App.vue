@@ -326,17 +326,18 @@ export default {
             }
           }
 
-          if(this.playersLobby === lobby){
-            this.WinningUser = lobbyAndUser[1];
+          if((this.playersLobby === lobby) && (this.UsersID != lobbyAndUser[1])){
+            this.winningUser = lobbyAndUser[1];
             this.gameOver = true;
             this.reset();
+            this.didYouWin = false;
           }
       },
       receiveCountriesToVisit(lobbyAndCountries){
         var lobby = lobbyAndCountries[0];
         console.log(lobbyAndCountries)
         
-        if(this.playersLobby === lobby){
+        if(this.playersLobby === lobby && !(this.isLobbyCreator)){
           this.countriesToFind = lobbyAndCountries[1];
         }
       },
@@ -491,7 +492,7 @@ export default {
 
       easyCountries: ["United States", "United Kingdom"],
       medEasyCountries: ["Netherlands", "Germany", "Canada"],
-      hardCountries: ["Russia", "Spain"],
+      hardCountries: ["Russia"],
       countriesToFind: [],
       noOfCountriesBingo: 0,
 
@@ -656,7 +657,6 @@ export default {
 
       },
       endBingoGame(){
-        
 
         if(this.MultiPlayer){
           this.$socket.emit('endBingoGame', this.playersLobby, this.UserGoogleID)
@@ -665,6 +665,7 @@ export default {
         }
         this.noOfCountriesBingo = this.countriesToFind.length;
         this.winningUser = this.UsersID
+        this.didYouWin = true;
 
 
         this.gameOver = true;
@@ -930,6 +931,7 @@ export default {
         console.log(this.timer);
      },
      multiGameInitiated(){
+        this.countriesToFind = [];
         this.gameOver = false;
         this.LobbyPage = false;
         this.MultiPlayer = true; 
