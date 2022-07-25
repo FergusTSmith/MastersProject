@@ -334,6 +334,7 @@ export default {
       },
       receiveCountriesToVisit(lobbyAndCountries){
         var lobby = lobbyAndCountries[0];
+        console.log(lobbyAndCountries)
         
         if(this.playersLobby === lobby){
           this.countriesToFind = lobbyAndCountries[1];
