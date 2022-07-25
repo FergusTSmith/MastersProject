@@ -545,6 +545,7 @@ export default {
 
         */
         if(this.GameMode === "Bingo"){
+            this.countriesToFind = [];
             this.countriesToFind.push({country: this.hardCountries[this.generateRandomIntHelper(this.hardCountries.length)], found: false})
             this.countriesToFind.push({country: this.easyCountries[this.generateRandomIntHelper(this.easyCountries.length)], found: false})
             this.countriesToFind.push({country: this.medEasyCountries[this.generateRandomIntHelper(this.medEasyCountries.length)], found: false})
@@ -1005,21 +1006,8 @@ export default {
       this.UsernameChangePage = false;
     },
     exitToHomePageReset(){
+      this.reset();
       this.exitToHomePage();
-
-      this.isLobbyCreator = false;
-      this.userProfile.ready = false;
-      this.UsersInLobby = [];
-      this.userScore = 0;
-      this.timer = 0;
-      this.allPlayersReady = false;
-      this.didYouWin = false;
-      this.winningUser = false;
-      this.VisitedCountries = [];
-      this.noOfUsersInLobby = 0;
-      this.gameStarted = false;
-      this.userLeaveMessage = "";
-      this.countriesToVisit = [];
     },
     reset(){
       this.isLobbyCreator = false;
