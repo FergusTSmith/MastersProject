@@ -271,11 +271,21 @@ import { ref } from 'vue';
     <div v-if="!(didYouWin)">
     <p>Condolenses. The winner of the game was {{ WinningUser }}</p>
     </div>
+
+    <div v-if="GameMode === 'Classic'">
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item.name">
         {{ item.userID }} - {{ item.score }}
     </li>
     <p>Your score was: {{ userScore }}</p>
-    <p>You were tracked by {{ noOfCountries }} nation(s)</p>
+    <p>You were tracked by {{ noOfCountries }} nation(s) in total</p>
+    </div>
+
+    <div v-if="GameMode === 'Bingo'">
+    <p>You managed to get tracked by {{ noOfCountriesBingo }} of the bingo countries</p>
+    <p>You were tracked by {{ noOfCountries }} nation(s) in total</p>
+    </div>
+
+
     <button @click="exitToHomePageReset" type="button">HomePage</button>
     </div>
     <!--- --<button @click="gameSetup" type="button">Refresh</button> --->
@@ -306,6 +316,23 @@ export default {
           this.UsernamePage = true;
           this.IntroPage = false;
 
+      },
+      endBingoModeGame(lobbyAndUser){
+          var lobby = lobbyAndUser[0];
+
+          for(var i = 0; i < this.countriesToFind.length; i++){
+            if(this.countriesToFind[i].found === true){
+              this.noOfCountriesBingo++
+            }
+          }
+
+          if(this.playersLobby === lobby){
+            this.WinningUser = lobbyAndUser[1];
+            this.gameOver = true;
+            this.reset();
+          }
+
+          
       },
       UserFound(users){
           console.log(users);
@@ -458,6 +485,7 @@ export default {
       medEasyCountries: ["Netherlands", "Germany", "Canada"],
       hardCountries: ["Russia", "Spain"],
       countriesToFind: [],
+      noOfCountriesBingo: 0,
 
       timer: 120,
 
@@ -617,6 +645,20 @@ export default {
         this.reset();
 
       },
+      endBingoGame(){
+        
+
+        if(this.MultiPlayer){
+          this.$socket.emit('endBingoGame', this.playersLobby, this.UserGoogleID)
+          this.$socket.emit('gameWon', this.UserGoogleID);
+          this.$socket.emit('closeLobby', this.playersLobby)
+        }
+        this.noOfCountriesBingo = this.countriesToFind.length;
+
+
+        this.gameOver = true;
+        this.reset();
+      },
       playerReady(){
           this.userProfile.ready = true;
           for(var i = 0; i< this.noOfUsersInLobby; i++){
@@ -697,13 +739,25 @@ export default {
                   }
                 }
             }
+            vm.noOfCountries = result.countryList.length;
         })
+
+        var allFound = true;
+
+        for(var j = 0; j < this.countriesToFind.length; j++){
+            if(this.countriesToFind[j].found != true){
+              allFound = false;
+            }
+        }
+
+        if(allFound){
+          this.endBingoGame();
+        }
 
 
 
 
         /*var vm = this;
-        console.log('titties')
         console.log(vm.countriesToFind)
         console.log(vm.countriesToFind.length)
 
@@ -979,6 +1033,7 @@ export default {
       this.noOfUsersInLobby = 0;
       this.gameStarted = false;
       this.userLeaveMessage = "";
+      this.countriesToVisit = [];
     },
     createNewLobbyID(){
      /* adapted from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript */

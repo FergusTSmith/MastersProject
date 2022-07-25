@@ -186,6 +186,16 @@ io.on('connection', (socket) => {
         
 
     })
+    socket.on('endBingoGame', (lobbyID, winnerID) => {
+        for(var i = 0; i < availableLobbies.length; i++){
+            if(availableLobbies[i] != undefined){
+                if(availableLobbies[i].LobbyID === lobbyID){
+                    socket.in(availableLobbies[i]).broadcast.emit('endBingModeGame', lobbyID, winnerID);
+                }
+            }            
+        }
+    })
+
     socket.on('newUsername', (usergoogleID, newID) => {
         UserAccount.update({ username: newID }, {where: { googleID: usergoogleID }}).then((res) => {
             console.log(res);
