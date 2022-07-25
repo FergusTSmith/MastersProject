@@ -3,14 +3,13 @@
 <script>
 export default {
     props: {
-        timeLeft: {
+        timeToGo: {
             type: Number,
             required: true
         }
     }
 }</script>
 
-<!---Copy and Pasted : https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f--->
 <template>
   <div class="base-timer">
     <svg
@@ -34,16 +33,34 @@ export default {
 </template>
 
 <style scoped lang="scss">
+/* https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f */
 .base-timer {
-  &__label {
-    position: absolute;      
-    width: 50px;
-    height: 50px;
-    top: 0;  
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 48px;
-  }
+  align-self: center;
+  width: 100px;
+  height: 100px;
 }
+
+.base-timer__circle {
+  fill: none;
+  stroke: none;
+  align-self: center;
+}
+.base-timer__path-elapsed {
+  stroke-width: 5px;
+  stroke: grey;
+}
+
+.base-timer__label {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+
 </style>

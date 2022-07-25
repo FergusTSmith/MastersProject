@@ -1,12 +1,11 @@
 <script setup>
 import { ref } from 'vue';
-import BaseTimer from "../components/BaseTimer"
-console.log(BaseTimer)
+//import BaseTimer from "../components/BaseTimer"
 </script>
 
 <template>
 <div id="app" :key="componentVersion">
-    <div v-if="IntroPage" id="Intro-Page" stle="width: 450px" ref="Intro-Page">
+  <div v-if="IntroPage" id="Intro-Page" stle="width: 450px" ref="Intro-Page">
       <Transition>
       <h2 v-if="IntroPage">TrackHunt</h2>
       </Transition>
@@ -15,45 +14,6 @@ console.log(BaseTimer)
       <Transition><button v-if="IntroPage" @click="googleLogin" ref="LoginButton">Login</button></Transition>
       <!------<Transition><button v-if="IntroPage" @click="NoAccount">No-Login Mode</button></Transition> --->
       <Transition><p v-if="IntroPage" class="HelpText">To use TrackHunt, sign in with Google and ensure you are signed in on your browser.</p></Transition>
-    </div>
-
-  <div v-if="LoginPage" id = "Login-Page">
-    <Transition><h2 v-if="LoginPage" >TrackHunt</h2></Transition>
-    <Transition><img v-if="LoginPage" class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/></Transition><br/>  
-    <Transition><label v-if="LoginPage">Username:</label></Transition>
-    <Transition><input v-if="LoginPage" type="text"></Transition><br/>
-    <Transition><label  v-if="LoginPage">Password:</label></Transition>
-    <Transition><input  v-if="LoginPage" type="password"></Transition>
-    <br/>
-    <Transition><button v-if="LoginPage" @click="loginToIntro" type="button">Cancel</button></Transition>
-    <Transition><button v-if="LoginPage" @click="loginPageChange" type="button">Login</button></Transition>
-  </div>
-
-  <div v-if="PasswordPage" id = "Password-Reset">
-    <h2>TrackHunt</h2>
-    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>  
-    <h6>Password Reset Form</h6>
-    <label>Email:</label>
-    <input type="text"><br/>
-    <label>Confirm Email:</label>
-    <input type="text"><br/>
-    <button type="button">Cancel</button>
-    <button type="button">Reset Password</button>
-    <p class="HelpText">Forgotten your details? Click <a href="www.google.com"> Here</a></p>
-  </div>
-
-  <div v-if="RegistrationPage" id = "Registration">
-    <h2>TrackHunt</h2>
-    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
-    <h6>Sign Up Form</h6>
-    <label>Username:</label>
-    <input type="text"><br/>
-    <label>Password:</label>
-    <input type="password"><br/>
-    <label>Confirm Password:</label>
-    <input type="password"><br/>
-    <button type="button">Cancel</button>
-    <button type = "button">Sign Up</button>
   </div>
 
   <div v-if="HomePage" id = "Home-Page">
@@ -217,16 +177,14 @@ console.log(BaseTimer)
 
     <!-----Using a more sophisticated solution for the timer. Adapted from https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f-->
     <!-----<BaseTimer :time-left="timeLeft"></BaseTimer>-->
-    <div class="TimerSection">
-      <BaseTimer :timeLeft="timeLeft()"/>
+    <!------<div class="TimerSection">---->
+    <!-----<BaseTimer :timeToGo="timeLeft"/>-->
 
 
-    </div>
+    <!------</div>--->
 
 
 
-
-    <button @click="testMethod">Test</button>
     <div v-if="GameMode === 'Classic'">
     <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
         {{ item.name }} - {{ item.count }}
@@ -581,13 +539,13 @@ export default {
       }
     },
     props: {
-      time: {
+      timeToGo: {
         type: Number,
         required: true
       }
     },
     components: {
-      BaseTimer
+      //BaseTimer
     },
     
     
@@ -611,7 +569,7 @@ export default {
     methods: {
       testMethod(){
         this.timerClose = true;
-        console.log(BaseTimer)
+        //console.log(BaseTimer)
       },
       
       initiateGame(){
@@ -903,11 +861,17 @@ export default {
         for(var j = 0; j < this.countriesToFind.length; j++){
             if(this.countriesToFind[j].found != true){
               allFound = false;
+            }else if(!(this.countriesToFind[j] in this.userProfile.BingoCountries) && this.countriesToFind[j].found === true){
+              this.userProfile.BingoCountries.push(this.countriesToFind[j])
             }
             console.log(this.countriesToFind[j].found)
         }
 
         console.log(allFound);
+
+        if(this.MultiPlayer){
+          this.$socket.emit('bingoScoreUpdate', this.userProfile, this.lobbyID)
+        }
 
         if(allFound){
           this.endBingoGame();
@@ -1178,6 +1142,7 @@ class User {
     this.score = 0;
     this.ready = false;
     this.googleID = '';
+    this.BingoCountries = [];
   }
 }
 
@@ -1199,34 +1164,7 @@ class User {
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
-}
 
-/* https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f */
-.base-timer {
-  position: relative;
-  width: 50px;
-  height: 50px;
-}
-
-.base-timer__circle {
-  fill: none;
-  stroke: none;
-}
-.base-timer__path-elapsed {
-  stroke-width: 5px;
-  stroke: grey;
-}
-
-.base-timer__label {
-  position: absolute;
-  width: 50px;
-  height: 50px;
-
-  top: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
 }
 
 li{
@@ -1293,6 +1231,13 @@ div {
   width: 200px;
   height: 200px;
   text-align: center;
+}
+
+div.TimerSection {
+  align-self: center;
+}
+BaseTimer {
+  align-self: center;
 }
 
 body {
