@@ -375,6 +375,8 @@ export default {
             this.GameMode = messageDetails[1];
             this.timer = messageDetails[2];
           }
+          this.gameOver = false;
+          
       },
       player_leave_message(messageDetails){
           this.playerLeaveMessage = "User: " + messageDetails + " has disconnected from the lobby."
