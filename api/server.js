@@ -256,6 +256,19 @@ io.on('connection', (socket) => {
         }
     })
 
+    socket.on('bingoScoreUpdate', (userProfile, lobbyID) => {
+        for(var i = 0; i < numberOfLobbies; i++){
+            if(availableLobbies[i].LobbyID === lobbyID){
+                for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
+                    if(availableLobbies[i].lobbyUsers[j].userID === userProfile.userID){
+                        availableLobbies[i].lobbyUsers[j].BingoCountries = userProfile.BingoCountries;
+                        socket.nsp.to(availableLobbies[i]).emit('updateUsers', availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID)
+                    }
+                }
+            }
+        }
+    })
+
     socket.on('startTheGame', (lobbyID) => {
         for(var i = 0; i < numberOfLobbies; i++){
             if(availableLobbies[i].LobbyID === lobbyID){
