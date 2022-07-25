@@ -536,7 +536,10 @@ export default {
       },
       timeLeft(){
         return this.timer - this.timePassed;
-      }
+      }//,
+      //orderedCountries: function(){
+        //return _.orderBy(this.BingoCountries, 'count')
+      //}
     },
     props: {
       timeToGo: {
