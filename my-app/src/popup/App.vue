@@ -654,6 +654,7 @@ export default {
           this.$socket.emit('closeLobby', this.playersLobby)
         }
         this.noOfCountriesBingo = this.countriesToFind.length;
+        this.winningUser = this.UsersID
 
 
         this.gameOver = true;

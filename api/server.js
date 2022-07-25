@@ -190,7 +190,7 @@ io.on('connection', (socket) => {
         for(var i = 0; i < availableLobbies.length; i++){
             if(availableLobbies[i] != undefined){
                 if(availableLobbies[i].LobbyID === lobbyID){
-                    socket.in(availableLobbies[i]).broadcast.emit('endBingModeGame', lobbyID, winnerID);
+                    socket.in(availableLobbies[i]).broadcast.emit('endBingoModeGame', lobbyID, winnerID);
                 }
             }            
         }
