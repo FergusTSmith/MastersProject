@@ -165,6 +165,16 @@ io.on('connection', (socket) => {
         }
     })
 
+    socket.on('countriesToVisit', (lobbyID, countriesToVisit) => {
+        for(var i = 0; i < availableLobbies.length; i++){
+            if(availableLobbies[i] != undefined){
+                if(availableLobbies[i].LobbyID === lobbyID){
+                    socket.in(availableLobbies[i]).broadcast.emit('receiveCountriesToVisit', lobbyID, countriesToVisit);
+                }
+            }
+        }
+    })
+
     socket.on('newUser', (userID, usergoogleID) => {
         UserAccount.findAll({ where: { googleID: usergoogleID}}).then((users => {
             if(users.length === 0){

@@ -331,8 +331,13 @@ export default {
             this.gameOver = true;
             this.reset();
           }
-
-          
+      },
+      receiveCountriesToVisit(lobbyAndCountries){
+        var lobby = lobbyAndCountries[0];
+        
+        if(this.playersLobby === lobby){
+          this.countriesToFind = lobbyAndCountries[1];
+        }
       },
       UserFound(users){
           console.log(users);
@@ -376,7 +381,7 @@ export default {
             this.timer = messageDetails[2];
           }
           this.gameOver = false;
-          
+
       },
       player_leave_message(messageDetails){
           this.playerLeaveMessage = "User: " + messageDetails + " has disconnected from the lobby."
@@ -553,6 +558,7 @@ export default {
             this.countriesToFind.push({country: this.medEasyCountries[this.generateRandomIntHelper(this.medEasyCountries.length)], found: false})
 
             console.log(this.countriesToFind);
+            this.$socket.emit('countriesToVisit', this.playersLobby, this.countriesToFind)
 
         }
 
@@ -926,7 +932,8 @@ export default {
 
         if(this.isLobbyCreator){
            this.$socket.emit('gameModeAndTime', this.playersLobby, this.GameMode, this.timer)
-        }
+           }
+        
 
      },
      
