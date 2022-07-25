@@ -5,6 +5,9 @@ var endpoint = 'http://ip-api.com/json/';
 var detectedHosts = [];
 var detectedCountries = [];
 
+var passiveUniqueHosts = [];
+var passiveCountries = [];
+
 chrome.webRequest.onBeforeRequest.addListener(
     function (details) {
         /* Directly copy and pasted: */  
@@ -23,11 +26,21 @@ chrome.webRequest.onBeforeRequest.addListener(
                 var tracker_location_url = endpoint + "/" + requestURL;
 
                 //console.log(tracker_location_url);
+                getCountry(tracker_location_url);  
 
-                getCountry(tracker_location_url);
-
-  
+                passiveUniqueHosts.push(new Host(requestURL))
+            }else{
+                for(var i = 0; i < passiveUniqueHosts.length; i++){
+                    if(passiveUniqueHosts[i].URL === requestURL){
+                        passiveUniqueHosts[i].addCount();
+                        getCountryPassive(endpoint + "/" + requestURL)
+                    }
+                }
             }
+
+            chrome.storage.local.set({ passiveHosts: passiveUniqueHosts});
+            console.log(passiveUniqueHosts);
+
         }
 
     }, {urls: ["<all_urls>"]});
@@ -56,7 +69,43 @@ function getCountry(request){
                 console.log(detectedCountries[j].name + ' ' + detectedCountries[j].count);
             }
             chrome.storage.local.set({ countryList: detectedCountries });
-            chrome.storage.local.set
+
+            if(response.country in passiveCountries){
+                for(var j = 0; j < passiveCountries.length; j++){
+                    if(passiveCountries[j].name === response.country){
+                        passiveCountries[j].addCount();
+                    }
+                }
+            }
+            chrome.storage.local.set({ passiveCountryList: passiveCountries });
+            console.log(passiveCountries)
+        }
+    }
+
+    xhr.open("GET", request, true);
+    xhr.send();
+}
+
+function getCountryPassive(request){
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if(this.readyState == 4 && this.status == 200){
+            var response = JSON.parse(this.responseText);
+            console.log(response);
+
+            var found = false;
+
+            for(var j = 0; j < passiveCountries.length; j++){
+                if(passiveCountries[j].name === response.country){
+                    passiveCountries[j].addCount();
+                    found = true;
+                }
+            }
+            if(!found){
+                passiveCountries.push(new Country(response.country))
+            }
+            chrome.storage.local.set({ passiveCountryList: passiveCountries });
+            console.log(passiveCountries)
         }
     }
 
@@ -85,5 +134,16 @@ class Country {
 
     addCount(){
         this.count += 1;
+    }
+}
+
+class Host {
+    constructor(URL){
+        this.URL = URL;
+        this.count = 1;
+    }
+
+    addCount(){
+        this.count +=1;
     }
 }

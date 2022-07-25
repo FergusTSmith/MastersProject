@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue';
+import BaseTimer from "../components/BaseTimer"
+console.log(BaseTimer)
 </script>
 
 <template>
@@ -13,7 +15,6 @@ import { ref } from 'vue';
       <Transition><button v-if="IntroPage" @click="googleLogin" ref="LoginButton">Login</button></Transition>
       <!------<Transition><button v-if="IntroPage" @click="NoAccount">No-Login Mode</button></Transition> --->
       <Transition><p v-if="IntroPage" class="HelpText">To use TrackHunt, sign in with Google and ensure you are signed in on your browser.</p></Transition>
-      <!------<button @click="testMethod">Test</button>---->
     </div>
 
   <div v-if="LoginPage" id = "Login-Page">
@@ -60,10 +61,11 @@ import { ref } from 'vue';
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
     <p class="HelpText" v-if="userSignedIn">Welcome back, {{ UsersID }}!</p>
     <button @click="solomode" type="button">Play Solo</button><br/>
-    <button @click="leaderboards" type="button">LeaderBoards</button>
+    <button @click="createLobby" type="button">Create Lobby</button>
     <button @click="joinlobby" type="button">Join Lobby</button><br/>
     <button @click="options" type="button">Options</button>
-    <button @click="createLobby" type="button">Create Lobby</button>
+    <button @click="leaderboards" type="button">LeaderBoards</button>
+    <button @click="passiveMode" type="button">View Passive Mode Stats</button>
   </div>
 
   <div v-if="LeaderBoard"  id = "Leader-Board">
@@ -141,13 +143,45 @@ import { ref } from 'vue';
     <!------<button class="Radio" type="button">Roulette</button>--->
     <br/>
     <!-----This should only be visible for the lobby leader: ---->
-    <input v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label v-if="isLobbyCreator">2 min</label>
-    <input v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label v-if="isLobbyCreator">5 min</label>
-    <input v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label v-if="isLobbyCreator">10 min</label>
+    <input v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">2 min</label>
+    <input v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">5 min</label>
+    <input v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">10 min</label>
     <button v-if="isLobbyCreator" @click="closeLobby" type="button">Close Lobby</button>
     <button @click="multiGameInitiated" type="button">Begin Game</button>
     <!------<button @click="exitToHomePage" type="button">Cancel</button>---->
     <button @click="leaveGame" type="button">Leave Game</button>
+  </div>
+
+  <div v-if="PassivePage">
+  <h2>TrackHunt</h2>
+  <p class="HelpText">"Passive Mode" engages whenever you install TrackerHunt. This will show a collection of all of the trackers encountered since the application was installed.</p>
+  <p class="PassiveText">Since you installed TackerHunt, you have been tracked: {{ passiveModeTotalTrackers }} times.</p>
+  <p class="PassiveText">This was done by a total of {{ passiveModeUniqueHosts }} different entities.</p>
+  <p class="PassiveText">These entities hailed from {{ passiveModeTotalCounties }} countries.</p>
+  <p class="PassiveText">To see a complete list of hosts and counts, click <button @click="PassiveToHost">here</button></p>
+  <p class="PassiveText">To see a complete list of countries and counts, click <button @click="PassiveToCountry">here</button></p>
+  <button @click="exitToHomePage">Back</button>
+  
+  </div>
+
+  <div v-if="HostPage">
+  <h2>TrackHunt</h2>
+  <p class="HelpText">Passive Mode - Complete list of Hosts</p>
+  <li v-for="item in passiveModeHosts" :key="item" class="TrackedCountry">
+      {{ item.URL }} - {{ item.count }}
+  </li>
+  <button @click="exitToHomePage">HomePage</button>
+  <button @click="HostToPassive">Back</button>
+  </div>
+
+  <div v-if="CountryPage">
+  <h2>TrackHunt</h2>
+  <p class="HelpText">Passive Mode - Complete list of Countries</p>
+  <li v-for="item in passiveModeCountries" :key="item" class="TrackedCountry">
+      {{ item.name }} - {{ item.count }}
+  </li>
+  <button @click="exitToHomePage">HomePage</button>
+  <button @click="CountToPassive">Back</button>
   </div>
 
   <div v-if="SoloPage" id="Solo-Mode">
@@ -164,10 +198,9 @@ import { ref } from 'vue';
       <li class="PlayerList" id="Score5">5. </li>
     </ul>
     <br/>
-    <input class="Radio" type="radio" value="120" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label>2 min</label>
-    <input class="Radio" type="radio" value="300" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label>5 min</label>
-    <input class="Radio" type="radio" value="600" name="time" ref="Timebutton" v-model="time" @change="onTimeChange($event)"/><label>10 min</label>
-    <p> {{ time }}</p>
+    <input class="Radio" type="radio" value="120" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label>2 min</label>
+    <input class="Radio" type="radio" value="300" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label>5 min</label>
+    <input class="Radio" type="radio" value="600" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label>10 min</label>
     <br/>
     <button @click="soloGameInitiated" type="button">Begin Game</button>
     <button @click="exitToHomePage" type="button">Cancel</button>
@@ -178,8 +211,22 @@ import { ref } from 'vue';
     <p class="HelpText">Solo Mode - {{ GameMode }}</p>
     <div v-if="(!gameOver)">
     <br/>
+
     <label>Time remaining: </label>
-    <p class="timer" ref="timer" id="timer"> {{ timer }}</p>
+    <p class="timer" ref="timer" id="timer" :class="{timer:timerClose}"> {{ timer }}</p>
+
+    <!-----Using a more sophisticated solution for the timer. Adapted from https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f-->
+    <!-----<BaseTimer :time-left="timeLeft"></BaseTimer>-->
+    <div class="TimerSection">
+      <BaseTimer :timeLeft="timeLeft()"/>
+
+
+    </div>
+
+
+
+
+    <button @click="testMethod">Test</button>
     <div v-if="GameMode === 'Classic'">
     <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
         {{ item.name }} - {{ item.count }}
@@ -325,6 +372,8 @@ export default {
               this.noOfCountriesBingo++
             }
           }
+
+          console.log(this.playersLobby === lobby);
 
           if((this.playersLobby === lobby) && (this.UsersID != lobbyAndUser[1])){
             this.winningUser = lobbyAndUser[1];
@@ -482,25 +531,66 @@ export default {
       isLobbyCreator: false,
       allPlayersReady: false,
       UsernameChangePage: false,
+      PassivePage: false,
+      HostPage: false,
+      CountryPage: false,
       GameMode: 'Classic',
 
+
       userLeaveMessage: "",
+
+      passiveModeHosts: [],
+      passiveModeCountries: [],
+      passiveModeTotalTrackers: 0,
+      passiveModeTotalCounties: 0,
+      passiveModeUniqueHosts: 0,
 
 
 
 
 
       easyCountries: ["United States", "United Kingdom"],
-      medEasyCountries: ["Netherlands", "Germany", "Canada"],
+      medEasyCountries: ["Canada"],
       hardCountries: ["Russia"],
       countriesToFind: [],
       noOfCountriesBingo: 0,
 
       timer: 120,
+      timePassed: 0,
+      timerClose: false,
 
       userSignedIn: false,
       }
     },
+    computed: {
+      // https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f
+      formatTimeLeft(){
+        var timeTG = this.timer;
+
+        var minutes = Math.floor(timeTG/60);
+        var seconds = timeTG % 60;
+
+        if(seconds < 10){
+          seconds = `0${seconds}`;
+        }
+        return `${minutes}:${seconds}`;
+
+      },
+      timeLeft(){
+        return this.timer - this.timePassed;
+      }
+    },
+    props: {
+      time: {
+        type: Number,
+        required: true
+      }
+    },
+    components: {
+      BaseTimer
+    },
+    
+    
     // Adapted from https://stackoverflow.com/questions/55773602/how-do-i-create-a-simple-10-seconds-countdown-in-vue-js
     watch: {
       timer: {
@@ -510,7 +600,7 @@ export default {
               this.timer--;
             }, 1000);
           }else if(value <= 10 && value > 1){
-              //this.$refs.timer.id = "timerClose";
+              this.timerClose = true;
           }else if(value === 0){
             this.endGame()
           }
@@ -519,6 +609,11 @@ export default {
       }
     },
     methods: {
+      testMethod(){
+        this.timerClose = true;
+        console.log(BaseTimer)
+      },
+      
       initiateGame(){
         var vm = this;
         this.gameStarted = true;
@@ -595,6 +690,22 @@ export default {
         var timeSelected = event.target.value;
         this.timer = timeSelected;
       },
+      HostToPassive(){
+        this.HostPage = false;
+        this.PassivePage = true;
+      },
+      CountToPassive(){
+        this.CountryPage = false;
+        this.PassivePage = true;
+      },
+      PassiveToHost(){
+        this.PassivePage = false;
+        this.HostPage = true;
+      },
+      PassiveToCountry(){
+        this.PassivePage = false;
+        this.CountryPage = true;
+      },
       changeUsernamePage(){
           this.OptionsPage = false;
           this.UsernameChangePage = true;
@@ -658,6 +769,7 @@ export default {
       },
       endBingoGame(){
 
+        this.didYouWin = true;
         if(this.MultiPlayer){
           this.$socket.emit('endBingoGame', this.playersLobby, this.UserGoogleID)
           this.$socket.emit('gameWon', this.UserGoogleID);
@@ -696,6 +808,37 @@ export default {
         chrome.storage.local.get(["countryList"], function(result){
           vm.VisitedCountries = result.countryList;
         })
+     },
+     passiveMode(){
+        var vm = this;
+        
+        chrome.storage.local.get(["passiveHosts"], function(result){
+          vm.passiveModeHosts = result.passiveHosts;
+          console.log(vm.passiveModeHosts);
+
+          var totalHosts = 0;
+
+          for(var i = 0; i < result.passiveHosts.length; i++){
+            totalHosts += result.passiveHosts[i].count;
+          }
+
+          vm.passiveModeTotalTrackers = totalHosts;
+          vm.passiveModeUniqueHosts = result.passiveHosts.length;
+        })
+
+        chrome.storage.local.get(["passiveCountryList"], function(result){
+          vm.passiveModeCountries = result.passiveCountryList;
+          console.log(vm.passiveModeCountries);
+
+          vm.passiveModeTotalCounties = result.passiveCountryList.length;
+        })
+
+        this.HomePage = false;
+        this.PassivePage = true;
+
+        console.log(this.passiveModeCountries);
+        console.log(this.passiveModeHosts)
+
      }, 
 
      updateScoreClassic(){
@@ -740,14 +883,14 @@ export default {
         var vm = this;
 
         chrome.storage.local.get(["countryList"], function(result){
-            console.log(result.countryList)
+            //console.log(result.countryList)
 
             for(var i = 0; i < result.countryList.length; i++){
 
                 for(var j = 0; j < vm.countriesToFind.length; j++){
                   if(result.countryList[i].name === vm.countriesToFind[j].country){
                     vm.countriesToFind[j].found = true;
-                    console.log(vm.countriesToFind[j]);
+                    //console.log(vm.countriesToFind[j]);
                   }
                 }
             }
@@ -755,50 +898,22 @@ export default {
         })
 
         var allFound = true;
-        console.log(this.countriesToFind);
+        console.log(this.countriesToFind)
 
         for(var j = 0; j < this.countriesToFind.length; j++){
             if(this.countriesToFind[j].found != true){
               allFound = false;
             }
+            console.log(this.countriesToFind[j].found)
         }
 
         console.log(allFound);
 
         if(allFound){
           this.endBingoGame();
+          this.didYouWin = true;
+          this.winningUser = this.userProfile
         }
-
-
-
-
-        /*var vm = this;
-        console.log(vm.countriesToFind)
-        console.log(vm.countriesToFind.length)
-
-        for(var i = 0; i < vm.countriesToFind.length; i++){
-            console.log(i);
-            console.log(vm.countriesToFind[i]);
-            console.log(countryList);
-            if(vm.countriesToFind[i] in countryList){
-              vm.countriesToFind[i].found = true;
-            }
-        }
-        
-
-        var allFound = true;
-
-        for(var j = 0; j < vm.countriesToFind.length; i++){
-          if(vm.countriesToFind[j].found === false){
-            allFound = false;
-          }
-        }
-
-        if(allFound){
-          this.endGame();
-        }*/
-
-        console.log("test");
      },
      gameSetup(){ 
         if(this.allPlayersReady){
@@ -1019,6 +1134,9 @@ export default {
       this.SoloGame = false;
       this.MultiPlayer = false;
       this.UsernameChangePage = false;
+      this.PassivePage = false;
+      this.HostPage = false;
+      this.CountryPage = false;
     },
     exitToHomePageReset(){
       this.reset();
@@ -1083,6 +1201,34 @@ class User {
   opacity: 0;
 }
 
+/* https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f */
+.base-timer {
+  position: relative;
+  width: 50px;
+  height: 50px;
+}
+
+.base-timer__circle {
+  fill: none;
+  stroke: none;
+}
+.base-timer__path-elapsed {
+  stroke-width: 5px;
+  stroke: grey;
+}
+
+.base-timer__label {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
 li{
   color: white;
 }
@@ -1097,6 +1243,10 @@ li.TrackedCountry{
   color: green;
 }
 
+.timerClose {
+  color: red;
+}
+
 li.LobbyUsers{
   color: white;
   font-size: smaller;
@@ -1106,17 +1256,29 @@ li.LobbyUsers{
 
 li.BingoList{
   color: white;
-  font-size: smaller;
+  font-size: x-small;
   list-style: none;
+  font-style: italic;
+  display: flex;
 }
 
 p{
   color: white;
 }
+p.PassiveText{
+  color: white;
+  font-size: small;
+  font-style: none;
+  display: flex;
+}
+
 #timer {
   color: white;
 }
 #timerClose {
+  color: red;
+}
+.timerClose {
   color: red;
 }
 
@@ -1149,11 +1311,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 p.HelpText {
-  font-size: 10px;
+  font-size: 9px;
   color: white;
 }
 p.ErrorText {
-  font-size: 10px;
+  font-size: 9px;
   color: red;
 }
 
