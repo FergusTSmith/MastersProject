@@ -33,7 +33,7 @@ chrome.webRequest.onBeforeRequest.addListener(
                 for(var i = 0; i < passiveUniqueHosts.length; i++){
                     if(passiveUniqueHosts[i].URL === requestURL){
                         passiveUniqueHosts[i].addCount();
-                        getCountryPassive(endpoint + "/" + requestURL)
+                        //getCountryPassive(endpoint + "/" + requestURL) - Removing for now, means too many requests made at once
                     }
                 }
             }
