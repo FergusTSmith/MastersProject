@@ -39,7 +39,7 @@ chrome.webRequest.onBeforeRequest.addListener(
             }
 
             chrome.storage.local.set({ passiveHosts: passiveUniqueHosts});
-            console.log(passiveUniqueHosts);
+            //console.log(passiveUniqueHosts);
 
         }
 

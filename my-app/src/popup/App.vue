@@ -485,10 +485,16 @@ export default {
         console.log(this.multiBingoLeaderboard);
       },
       sendSoloClassic(MessageDetails){
-        this.soloClassicLeaderboard = MessageDetails;
+        if(this.UsersID === MessageDetails[1]){
+          this.soloClassicLeaderboard = MessageDetails[0];
+        }
+        console.log(MessageDetails)
       },
       sendSoloBingo(MessageDetails){
-        this.soloBingoLeaderboard = MessageDetails;
+        if(this.UsersID === MessageDetails[1]){
+          this.soloBingoLeaderboard = MessageDetails;
+        }
+        console.log(MessageDetails)
       }
     },
   data(){
@@ -626,7 +632,7 @@ export default {
       },
       getHighScores(){
         this.$socket.emit('retrieveLeaderBoards');
-        this.$socket.emit('retreiveSoloScores');
+        this.$socket.emit('retreiveSoloScores', this.UsersID);
       },
       
       initiateGame(){
