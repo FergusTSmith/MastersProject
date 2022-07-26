@@ -8,7 +8,7 @@ const socket = require('socket.io');
 const db = require('./models')
 //const sequelize = require('sequelize')
 const { UserAccount } = require('./models');
-const GameDetails = require('./models');
+const { GameDetails } = require('../models');
 
 // Classes for the structure of the application. 
 
