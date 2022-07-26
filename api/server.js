@@ -269,7 +269,7 @@ db.sequelize.sync().then((req) => {
                 for(var i = 0; i < SoloClassic.length; i++){
                     SoloClassic[i].createdAt = SoloClassic[i].createdAt.toString().substr(0, 9)
                 }
-                socket.emit('sendSoloClassic', SoloClassic);
+                socket.emit('sendSoloClassic', SoloClassic, userID);
 
 
             });
@@ -277,7 +277,7 @@ db.sequelize.sync().then((req) => {
             GameDetails.findAll({ where: {gameType: 'Bingo', Multiplayer: false, username: userID}}).then((res) => {
                 SoloBingo = res; 
                 console.log(SoloBingo);
-                socket.emit('sendSoloBingo›', SoloBingo);
+                socket.emit('sendSoloBingo›', SoloBingo, userID);
             })
         })
     
