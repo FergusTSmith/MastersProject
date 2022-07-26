@@ -248,8 +248,8 @@ db.sequelize.sync().then((req) => {
                 MultiBingo = res;
             })
 
-            MultiClassic.sequelize.col('Score')
-            MultiClassic.splice(10, 100);
+            //MultiClassic.sequelize.col('Score')
+            //MultiClassic.splice(10, 100);
 
             console.log(MultiClassic);
             console.log(MultiBingo);
