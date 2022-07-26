@@ -49,6 +49,7 @@ import { ref } from 'vue';
     --->
     <ol v-if="SoloClassicLB">
     <!------Putt the W/L ratio here-->
+    <p>W/L = {{ gamesWon }}/{{gamesPlayed}}</p>
     <li v-for="item in intSoloClassLB" :key="item" class="LeaderBoard">
         {{ item.username }}  |  {{ item.Score }}  |  {{ item.createdAt }}
     </li>
@@ -385,6 +386,8 @@ export default {
           this.HomePage = true;
           this.IntroPage = false;
 
+          this.getUserDetails(users[0].googleID);
+
           this.UsersID = users[0].username;
           this.UserGoogleID = users[0].googleID;
           this.userProfile = new User(this.UsersID);
@@ -512,6 +515,13 @@ export default {
           this.soloBingoLeaderboard = MessageDetails;
         }
         console.log(MessageDetails)
+      },
+      sendUserDetails(MessageDetails){
+        console.log(MessageDetails);
+        this.gamesPlayed = MessageDetails[0].gamesPlayed;
+        this.gamesWon = MessageDetails[0].wonGames
+        console.log(this.gamesPlayed);
+        console.log(this.gamesWon);
       }
     },
   data(){
@@ -567,7 +577,8 @@ export default {
       passiveModeUniqueHosts: 0,
 
 
-
+      gamesPlayed: 0,
+      gamesWon: 0,
 
 
       easyCountries: ["United States", "United Kingdom"],
@@ -653,7 +664,9 @@ export default {
         this.$socket.emit('retrieveLeaderBoards');
         this.$socket.emit('retreiveSoloScores', this.UsersID);
       },
-      
+      getUserDetails(userGoogleID){
+        this.$socket.emit('retrieveDetails', userGoogleID)
+      },
       initiateGame(){
         var vm = this;
         this.gameStarted = true;
@@ -814,12 +827,16 @@ export default {
           }
         }
 
+        console.log(this.WinningUser);
+        console.log(this.UsersID);
+        console.log(this.UserGoogleID);
+
         if(this.WinningUser === this.UsersID){
           this.didYouWin = true;
           console.log("Winning game won test passed");
 
           // This is here to make sure this is only fired once per game, by the winner
-          this.$socket.emit('gameWon', this.WinningUser)
+          this.$socket.emit('gameWon', this.UserGoogleID)
         }
 
         //Close the Lobby
@@ -1040,6 +1057,7 @@ export default {
         //var vm = this;
         this.UsernamePage = false;
         this.HomePage = true;
+        this.getUserDetails(this.UserGoogleID);
         /*
 
         for(var i = 0; i < this.allUsers.length; i++){

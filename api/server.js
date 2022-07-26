@@ -237,6 +237,12 @@ db.sequelize.sync().then((req) => {
             })
         })
 
+        socket.on('retrieveDetails', (userGoogleID) => {
+            UserAccount.findAll({ where: {googleID: userGoogleID}}).then((res) => {
+                socket.emit('sendUserDetails', res)
+            })
+        })
+
         socket.on('retrieveLeaderBoards', () => {
             var MultiClassic = [];
             var MultiBingo = [];
