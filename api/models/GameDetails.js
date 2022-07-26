@@ -1,7 +1,7 @@
 // Adapated from https://www.youtube.com/watch?v=Crk_5Xy8GMA&ab_channel=PedroTech
 
 module.exports = (sequelize, DataTypes) => {
-    const GameDetails  = sequelize.define("UserAccount", {
+    const GameDetails  = sequelize.define("GameDetails", {
         username: {
             type: DataTypes.STRING,
             allowNull: false,
