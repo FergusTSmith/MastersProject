@@ -33,6 +33,9 @@ import { ref } from 'vue';
     <p class="HelpText">LeaderBoards</p>
     <button class="Radio" type="button">Personal</button>
     <button class="Radio" type="button">World</button><br/>
+    <li v-for="item in multiClassicLeaderboard" :key="item">
+        {{ item.username }} - {{ item.score }} - {{ item.createdAt }}
+    </li>
 
     <div id="Leaderboard">
     </div>
@@ -149,6 +152,8 @@ import { ref } from 'vue';
     <p class="HelpText">Solo Mode</p>
     <input class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label>Classic</label>
     <input class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label>Bingo</label>
+
+
     <p id="LeaderBoard">Previous Scores:</p>
     <ul>
       <li class="PlayerList" id="Score1">1. </li>
@@ -157,6 +162,9 @@ import { ref } from 'vue';
       <li class="PlayerList" id="Score4">4. </li>
       <li class="PlayerList" id="Score5">5. </li>
     </ul>
+
+
+
     <br/>
     <input class="Radio" type="radio" value="10" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label>2 min</label>
     <input class="Radio" type="radio" value="300" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label>5 min</label>
@@ -449,6 +457,10 @@ export default {
             }
           }
         }
+      },
+      sendLeaderBoards(MessageDetails){
+        this.multiClassicLeaderboard = MessageDetails[0];
+        this.multiBingoLeaderboard = MessageDetails[1];
       }
     },
   data(){
@@ -513,6 +525,11 @@ export default {
       countriesToFind: [],
       noOfCountriesBingo: 0,
 
+      soloClassicLeaderboard: [],
+      soloBingoLeaderboard: [],
+      multiClassicLeaderboard: [],
+      multiBingoLeaderboard: [],
+
       timer: 10,
       timePassed: 0,
       timerClose: false,
@@ -573,6 +590,9 @@ export default {
       testMethod(){
         this.timerClose = true;
         //console.log(BaseTimer)
+      },
+      getHighScores(multiplayer, gamemode){
+        this.$socket.emit('retrieveLeaderBoards', multiplayer, gamemode);
       },
       
       initiateGame(){

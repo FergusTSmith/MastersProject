@@ -233,8 +233,29 @@ db.sequelize.sync().then((req) => {
         socket.on('RetrieveUsers', () => {
             UserAccount.findAll().then((users) => {
                 chrome.storage.local.set({gameUsers: users})
-    
             })
+        })
+
+        socket.on('retrieveLeaderBoards', () => {
+            var MultiClassic = [];
+            var MultiBingo = [];
+
+            GameDetails.findAll({ where: {gameType: 'Classic'}}).then((res) => {
+                MultiClassic = res;
+            });
+
+            GameDetails.findAll({ where: {gameMode: 'Bingo'}}).then((res) => {
+                MultiBingo = res;
+            })
+
+            MultiClassic.sequelize.col('Score')
+            MultiClassic.splice(10, 100);
+
+            console.log(MultiClassic);
+            console.log(MultiBingo);
+
+            socket.emit('sendLeaderBoards', MultiClassic, MultiBingo);
+
         })
     
         socket.on('doesUserExist', (userGoogleID) => {
