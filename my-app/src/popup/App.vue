@@ -715,6 +715,10 @@ export default {
 
         this.gameOver = true;
 
+        if(this.gameMode === "Classic"){
+          this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, this.userScore, (this.Multiplayer === true))
+        }
+
         if(this.WinningUser === this.UsersID){
           this.didYouWin = true;
 

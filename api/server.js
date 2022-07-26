@@ -8,6 +8,7 @@ const socket = require('socket.io');
 const db = require('./models')
 //const sequelize = require('sequelize')
 const { UserAccount } = require('./models');
+const { GameDetails } = require('./models');
 
 // Classes for the structure of the application. 
 
@@ -196,6 +197,20 @@ io.on('connection', (socket) => {
         
 
     })
+    socket.on('addScoreToDatabase', (userID, gameMode, score, multiplayer) => {
+        GameDetails.create({
+            username: userID,
+            Score: score,
+            gameType: gameMode,
+            Multiplayer: multiplayer,
+        }).catch((err) => {
+            if(err){
+                throw err;
+            }
+        })
+    })
+    
+
     socket.on('endBingoGame', (lobbyID, winnerID) => {
         for(var i = 0; i < availableLobbies.length; i++){
             if(availableLobbies[i] != undefined){
