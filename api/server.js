@@ -245,7 +245,7 @@ db.sequelize.sync().then((req) => {
                 console.log(MultiClassic);
 
                 for(var i = 0; i < MultiClassic.length; i++){
-                    MultiClassic[i].createdAt = MultiClassic[i].createdAt.substring(0, 9)
+                    MultiClassic[i].createdAt = MultiClassic[i].createdAt.toString().substring(0, 9)
                 }
                 socket.emit('sendClassicLeaderBoards', MultiClassic);
 
