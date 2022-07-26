@@ -615,6 +615,7 @@ export default {
           if(value > 0 && this.gameStarted){
             setTimeout(() => {
               this.timer--;
+              this.timePased++;
             }, 1000);
           }else if(value <= 10 && value > 1){
               this.timerClose = true;
@@ -777,6 +778,18 @@ export default {
 
         if(this.GameMode === "Classic"){
           this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, this.userScore, (this.MultiPlayer === true))
+        }else if(this.GameMode === "Bingo"){
+          var finishedGame = true;
+          for(var i = 0; i < this.VisitedCountries.length; i++){
+              if(this.VisitedCountries[i].found != true){
+                finishedGame = false;
+                console.log('unfinished')
+              }
+          }
+          if(finishedGame){
+            this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, this.timePassed, (this.MultiPlayer === true))
+            console.log('sent bingo score to the server');
+          }
         }
 
         if(this.WinningUser === this.UsersID){
