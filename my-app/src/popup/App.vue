@@ -710,7 +710,7 @@ export default {
             var winningUser = this.UsersInLobby[i].userID;
           }
         }
-        }
+        } 
         this.WinningUser = winningUser;
 
         this.gameOver = true;

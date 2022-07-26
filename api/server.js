@@ -198,6 +198,7 @@ io.on('connection', (socket) => {
 
     })
     socket.on('addScoreToDatabase', (userID, gameMode, score, multiplayer) => {
+        console.log('Test - server received the request!!')
         GameDetails.create({
             username: userID,
             Score: score,
