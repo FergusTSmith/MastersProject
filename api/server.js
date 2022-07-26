@@ -240,7 +240,7 @@ db.sequelize.sync().then((req) => {
             var MultiClassic = [];
             var MultiBingo = [];
 
-            GameDetails.findAll({ where: {gameType: 'Classic', Multiplayer: true}, order:['Score']}).then((res) => {
+            GameDetails.findAll({ where: {gameType: 'Classic', Multiplayer: true}, order:[['Score', 'DESC']]}).then((res) => {
                 MultiClassic = res;
                 console.log(MultiClassic);
 
