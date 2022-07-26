@@ -6,6 +6,7 @@ var detectedHosts = [];
 var detectedCountries = [];
 
 var passiveUniqueHosts = [];
+var passiveTotalHosts = 0
 var passiveCountries = [];
 
 chrome.webRequest.onBeforeRequest.addListener(
@@ -29,10 +30,15 @@ chrome.webRequest.onBeforeRequest.addListener(
                 getCountry(tracker_location_url);  
 
                 passiveUniqueHosts.push(new Host(requestURL))
+
             }else{
+                
+                
+                var counted = false;
                 for(var i = 0; i < passiveUniqueHosts.length; i++){
                     if(passiveUniqueHosts[i].URL === requestURL){
                         passiveUniqueHosts[i].addCount();
+                        counted = true;
                         //getCountryPassive(endpoint + "/" + requestURL) - Removing for now, means too many requests made at once
                     }
                 }
@@ -64,20 +70,24 @@ function getCountry(request){
             }
             if(!found){
                 detectedCountries.push(new Country(response.country));
-                passiveCountries.push(new Country(response.country));
             }
             for(var j = 0; j < detectedCountries.length; j++){
                 console.log(detectedCountries[j].name + ' ' + detectedCountries[j].count);
             }
             chrome.storage.local.set({ countryList: detectedCountries });
 
-            if(response.country in passiveCountries){
-                for(var j = 0; j < passiveCountries.length; j++){
-                    if(passiveCountries[j].name === response.country){
-                        passiveCountries[j].addCount();
-                    }
+            var passiveFound = false;
+
+            for(var j = 0; j < passiveCountries.length; j++){
+                if(passiveCountries[j].name === response.country){
+                    passiveCountries[j].addCount();
+                    passiveFound = true;
                 }
             }
+            if(!passiveFound){
+                passiveCountries.push(new Country(response.country));
+            }
+
             chrome.storage.local.set({ passiveCountryList: passiveCountries });
             console.log(passiveCountries)
         }
@@ -126,6 +136,40 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 })
 
+// Notifications for Passive Mode
+
+// https://blog.shahednasser.com/how-to-send-notifications-in-chrome-extensions/
+
+chrome.alarms.create('PASSIVEMODE-ALARM', {
+    periodInMinutes: 0.2
+})
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+    if(alarm.name === "PASSIVEMODE-ALARM"){
+        console.log('ALARM HEARD')
+        chrome.notifications.create('test', {
+            type: 'basic',
+            iconUrl: './staticimages/SmallLogo.png',
+            title: 'TrackerHunt - Passive Mode Statistics',
+            message: 'While passively browsing, you were tracked by ' + passiveUniqueHosts.length + ' unique entities. These entities were spread across ' + passiveCountries.length + ' different nations. Open TrackerHunt to find out more!',
+            priority: 2,
+            buttons: [
+                {
+                    title: 'Ok'
+                }
+            ]
+        });
+        console.log('Passed by all the notification code');
+    }
+})
+
+
+
+
+
+
+
+// Helper Classes
 
 class Country {
     constructor(name){
@@ -148,3 +192,4 @@ class Host {
         this.count +=1;
     }
 }
+
