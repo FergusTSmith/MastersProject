@@ -36,7 +36,7 @@ import { ref } from 'vue';
     <!-----<button @click="displaySoloBing" class="Radio" type="button">Solo Bingo</button><br/>--->
     <p>Username   |   Score   |  Date </p>
     <ol v-if="MultiClassicLB">
-    <li v-for="item in multiClassicLeaderboard" :key="item" class="LeaderBoard">
+    <li v-for="item in intMultiClassLB" :key="item" class="LeaderBoard">
         {{ item.username }}  |  {{ item.Score }}  |  {{ item.createdAt }}
     </li>
     </ol>
@@ -49,7 +49,7 @@ import { ref } from 'vue';
     --->
     <ol v-if="SoloClassicLB">
     <!------Putt the W/L ratio here-->
-    <li v-for="item in soloClassicLeaderboard" :key="item" class="LeaderBoard">
+    <li v-for="item in intSoloClassLB" :key="item" class="LeaderBoard">
         {{ item.username }}  |  {{ item.Score }}  |  {{ item.createdAt }}
     </li>
     </ol>
@@ -65,6 +65,9 @@ import { ref } from 'vue';
     
     <!------<button @click="displayMulBing" class="Radio" type="button">Multi Bingo</button>--->
     <!---<button class="Radio" type="button">Roulette</button>---->
+    <button @click="twoMinLB" class="TimeButton" type="button">2 min</button>
+    <button @click="fiveMinLB" class="TimeButton" type="button">5 min</button>
+    <button @click="tenMinLB" class="TimeButton" type="button">10 min</button>
     <br/>
     <button @click="exitToHomePage" type="button">HomePage</button>
   </div>
@@ -73,7 +76,6 @@ import { ref } from 'vue';
     <h2>TrackHunt</h2>
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/><button type="button">Light Mode</button><br/>
     <button type="button">Dark Mode</button><br/>
-    <button type="button">Language</button><br/>
     <button @click="changeUsernamePage" type="button">Change Username</button>
     <br/><br/>
     <button @click="exitToHomePage" type="button">Home Page</button><br/>
@@ -129,7 +131,7 @@ import { ref } from 'vue';
     <!------<button class="Radio" type="button">Roulette</button>--->
     <br/>
     <!-----This should only be visible for the lobby leader: ---->
-    <input v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">2 min</label>
+    <input v-if="isLobbyCreator" class="Radio" type="radio" value="10" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">2 min</label>
     <input v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">5 min</label>
     <input v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">10 min</label>
     <button v-if="isLobbyCreator" @click="closeLobby" type="button">Close Lobby</button>
@@ -177,14 +179,12 @@ import { ref } from 'vue';
     <input class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label>Bingo</label>
 
 
-    <p id="LeaderBoard">Previous Scores:</p>
-    <ul>
-      <li class="PlayerList" id="Score1">1. </li>
-      <li class="PlayerList" id="Score2">2. </li>
-      <li class="PlayerList" id="Score3">3. </li>
-      <li class="PlayerList" id="Score4">4. </li>
-      <li class="PlayerList" id="Score5">5. </li>
-    </ul>
+    <p id="LeaderBoard">Previous Classic Scores:</p>
+    <ol>
+    <li v-for="item in personalSoloHS" :key="item" class="LeaderBoard">
+        {{ item.username }}  |  {{ item.Score }}  |  {{ item.createdAt }}
+    </li>
+    </ol>
 
 
 
@@ -501,7 +501,9 @@ export default {
 
           for(var i = 0; i < this.soloClassicLeaderboard.length; i++){
           this.soloClassicLeaderboard[i].createdAt = this.soloClassicLeaderboard[i].createdAt.toString().substring(0, 9)
-        }
+          }
+
+          this.personalSoloHS = this.soloClassicLeaderboard.filter(item => item.username === this.UsersID);
         }
         console.log(MessageDetails)
       },
@@ -575,16 +577,17 @@ export default {
       noOfCountriesBingo: 0,
 
       soloClassicLeaderboard: [],
-      soloBingoLeaderboard: [],
+      intSoloClassLB: [],
       multiClassicLeaderboard: [],
-      multiBingoLeaderboard: [],
+      intMultiClassLB: [],
+      personalSOloHS: [],
 
       MultiClassicLB: false,
       MultiBingoLB: false,
       SoloClassicLB: false,
       SoloBingoLB: false,
 
-      timer: 120,
+      timer: 10,
       startTime: 120,
       timerClose: false,
 
@@ -813,9 +816,10 @@ export default {
 
         if(this.WinningUser === this.UsersID){
           this.didYouWin = true;
+          console.log("Winning game won test passed");
 
           // This is here to make sure this is only fired once per game, by the winner
-          this.$socket.emit('gameWon', this.UserGoogleID)
+          this.$socket.emit('gameWon', this.WinningUser)
         }
 
         //Close the Lobby
@@ -1159,6 +1163,7 @@ export default {
       this.HomePage = true;
     },
     solomode(){
+      this.getHighScores();
       this.HomePage = false;
       this.SoloPage = true;
     },
@@ -1198,6 +1203,18 @@ export default {
       this.MultiBingoLB = false;
       this.SoloClassicLB = false;
       this.SoloBingoLB = true;
+    },
+    twoMinLB(){
+      this.intSoloClassLB = this.soloClassicLeaderboard.filter(item => item.startTime === 120);
+      this.intMultiClassLB = this.multiClassicLeaderboard.filter(item => item.startTime === 120);
+    },
+    fiveMinLB(){
+      this.intSoloClassLB = this.soloClassicLeaderboard.filter(item => item.startTime === 300);
+      this.intMultiClassLB = this.multiClassicLeaderboard.filter(item => item.startTime === 300);
+    },
+    tenMinLB(){
+      this.intSoloClassLB = this.soloClassicLeaderboard.filter(item => item.startTime === 600)
+      this.intMultiClassLB = this.multiClassicLeaderboard.filter(item => item.startTime === 600);
     },
     createLobby(){
       var newLobbyID = this.createNewLobbyID();

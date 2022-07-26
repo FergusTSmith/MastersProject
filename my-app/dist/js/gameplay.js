@@ -64,6 +64,7 @@ function getCountry(request){
             }
             if(!found){
                 detectedCountries.push(new Country(response.country));
+                passiveCountries.push(new Country(response.country));
             }
             for(var j = 0; j < detectedCountries.length; j++){
                 console.log(detectedCountries[j].name + ' ' + detectedCountries[j].count);
