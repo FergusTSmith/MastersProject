@@ -240,7 +240,7 @@ db.sequelize.sync().then((req) => {
             var MultiClassic = [];
             var MultiBingo = [];
 
-            GameDetails.findAll({ where: {gameType: 'Classic'}}).then((res) => {
+            GameDetails.findAll({ where: {gameType: 'Classic', Multiplayer: true}}).then((res) => {
                 MultiClassic = res;
                 console.log(MultiClassic);
 
@@ -252,7 +252,7 @@ db.sequelize.sync().then((req) => {
 
             });
 
-            GameDetails.findAll({ where: {gameType: 'Bingo'}}).then((res) => {
+            GameDetails.findAll({ where: {gameType: 'Bingo', Multiplayer: true}}).then((res) => {
                 MultiBingo = res; 
                 console.log(MultiBingo);
                 socket.emit('sendBingoLeaderBoards', MultiBingo);
