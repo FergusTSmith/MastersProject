@@ -797,7 +797,7 @@ export default {
           this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, this.userScore, (this.MultiPlayer === true))
         }else if(this.GameMode === "Bingo"){
           var finishedGame = true;
-          for(var i = 0; i < this.VisitedCountries.length; i++){
+          for(var j = 0; j < this.VisitedCountries.length; j++){
               if(this.VisitedCountries[i].found != true){
                 finishedGame = false;
                 console.log('unfinished')
