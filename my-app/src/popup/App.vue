@@ -32,32 +32,37 @@ import { ref } from 'vue';
     <h2>TrackHunt</h2><br/>
     <p class="HelpText">LeaderBoards</p>
     <button @click="displaySoloClass" class="Radio" type="button">Solo Classic</button>
-    <button @click="displaySoloBing" class="Radio" type="button">Solo Bingo</button><br/>
+    <button @click="displayMulClass" class="Radio" type="button">Multi Classic</button>
+    <!-----<button @click="displaySoloBing" class="Radio" type="button">Solo Bingo</button><br/>--->
     <ol v-if="MultiClassicLB">
     <li v-for="item in multiClassicLeaderboard" :key="item" class="LeaderBoard">
         {{ item.username }} - {{ item.Score }} - {{ item.createdAt }}
     </li>
     </ol>
+    <!------
     <ol v-if="MultiBingoLB">
     <li v-for="item in multiBingoLeaderboard" :key="item" class="LeaderBoard">
-      {{ item.username }}
+      {{ item.username }} - {{ item.Score }} - {{ item.createdAt }}
     </li>
     </ol>
+    --->
     <ol v-if="SoloClassicLB">
     <!------Putt the W/L ratio here-->
     <li v-for="item in soloClassicLeaderboard" :key="item" class="LeaderBoard">
         {{ item.username }} - {{ item.Score }} - {{ item.createdAt }}
     </li>
     </ol>
+    <!------
     <ol v-if="SoloBingoLB">
     <li v-for="item in soloBingoLeaderboard" :key="item" class="LeaderBoard">
         {{ item.username }}
     </li>
     </ol>
+    ---->
     <div id="Leaderboard">
     </div>
-    <button @click="displayMulClass" class="Radio" type="button">Multi Classic</button>
-    <button @click="displayMulBing" class="Radio" type="button">Multi Bingo</button>
+    
+    <!------<button @click="displayMulBing" class="Radio" type="button">Multi Bingo</button>--->
     <!---<button class="Radio" type="button">Roulette</button>---->
     <br/>
     <button @click="exitToHomePage" type="button">HomePage</button>
@@ -413,6 +418,7 @@ export default {
           if(lobbyID === this.playersLobby){
             this.GameMode = messageDetails[1];
             this.timer = messageDetails[2];
+            this.startTime = messageDetails[2];
           }
           this.gameOver = false;
 
@@ -479,14 +485,22 @@ export default {
         this.multiClassicLeaderboard = MessageDetails;
         console.log(MessageDetails)
         console.log(this.multiClassicLeaderboard);
+
+        for(var i = 0; i < this.multiClassicLeaderboard.length; i++){
+          this.multiClassicLeaderboard[i].createdAt = this.multiClassicLeaderboard[i].createdAt.toString().substring(0, 9)
+        }
       },
       sendBingoLeaderBoards(MessageDetails){
-        this.multiBingoLeaderboard = MessageDetails[0];
+        this.multiBingoLeaderboard = MessageDetails;
         console.log(this.multiBingoLeaderboard);
       },
       sendSoloClassic(MessageDetails){
         if(this.UsersID === MessageDetails[1]){
           this.soloClassicLeaderboard = MessageDetails[0];
+
+          for(var i = 0; i < this.soloClassicLeaderboard.length; i++){
+          this.soloClassicLeaderboard[i].createdAt = this.soloClassicLeaderboard[i].createdAt.toString().substring(0, 9)
+        }
         }
         console.log(MessageDetails)
       },
@@ -570,7 +584,7 @@ export default {
       SoloBingoLB: false,
 
       timer: 120,
-      timePassed: 0,
+      startTime: 0,
       timerClose: false,
 
       userSignedIn: false,
@@ -590,8 +604,8 @@ export default {
         return `${minutes}:${seconds}`;
 
       },
-      timeLeft(){
-        return this.timer - this.timePassed;
+      timePassed(){
+        return this.startTime - this.timer;
       }//,
       //orderedCountries: function(){
         //return _.orderBy(this.BingoCountries, 'count')
@@ -639,6 +653,7 @@ export default {
       initiateGame(){
         var vm = this;
         this.gameStarted = true;
+        this.startTime = this.timer;
         if(this.timer <= 0){
           this.timer = 120;
         }
@@ -773,8 +788,10 @@ export default {
         }
         } 
         this.WinningUser = winningUser;
+        var timePassed = this.startTime - this.timer;
 
         this.gameOver = true;
+        console.log(timePassed)
 
         if(this.GameMode === "Classic"){
           this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, this.userScore, (this.MultiPlayer === true))
@@ -787,7 +804,7 @@ export default {
               }
           }
           if(finishedGame){
-            this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, this.timePassed, (this.MultiPlayer === true))
+            this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, timePassed, (this.MultiPlayer === true))
             console.log('sent bingo score to the server');
           }
         }
