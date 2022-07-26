@@ -8,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 notEmpty: true
             },
-            unique: true
         },
         Score: {
             type: DataTypes.INTEGER,
@@ -21,10 +20,6 @@ module.exports = (sequelize, DataTypes) => {
         Multiplayer: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
-            validate: {
-                notEmpty: true
-            },
-            unique: true
         }
     })
 

@@ -741,7 +741,7 @@ export default {
           this.$socket.emit('closeLobby', this.playersLobby)
         }
         this.noOfCountriesBingo = this.countriesToFind.length;
-        this.winningUser = this.UsersID
+        this.WinningUser = this.UsersID
         this.didYouWin = true;
 
 
@@ -883,7 +883,7 @@ export default {
         if(allFound){
           this.endBingoGame();
           this.didYouWin = true;
-          this.winningUser = this.userProfile
+          this.WinningUser = this.userProfile.userID
         }
      },
      gameSetup(){ 
