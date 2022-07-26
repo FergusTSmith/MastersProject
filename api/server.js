@@ -242,19 +242,15 @@ db.sequelize.sync().then((req) => {
 
             GameDetails.findAll({ where: {gameType: 'Classic'}}).then((res) => {
                 MultiClassic = res;
+                console.log(MultiClassic);
+                socket.emit('sendClassicLeaderBoards', MultiClassic);
             });
 
             GameDetails.findAll({ where: {gameType: 'Bingo'}}).then((res) => {
-                MultiBingo = res;
+                MultiBingo = res; 
+                console.log(MultiBingo);
+                socket.emit('sendBingoLeaderBoards', MultiBingo);
             })
-
-            //MultiClassic.sequelize.col('Score')
-            //MultiClassic.splice(10, 100);
-
-            console.log(MultiClassic);
-            console.log(MultiBingo);
-
-            socket.emit('sendLeaderBoards', MultiClassic, MultiBingo);
 
         })
     

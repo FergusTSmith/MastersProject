@@ -458,9 +458,13 @@ export default {
           }
         }
       },
-      sendLeaderBoards(MessageDetails){
+      sendClassicLeaderBoards(MessageDetails){
         this.multiClassicLeaderboard = MessageDetails[0];
-        this.multiBingoLeaderboard = MessageDetails[1];
+        console.log(this.multiClassicLeaderboard);
+      },
+      sendBingoLeaderBoards(MessageDetails){
+        this.multiBingoLeaderboard = MessageDetails[0];
+        console.log(this.multiBingoLeaderboard);
       }
     },
   data(){
@@ -1091,6 +1095,7 @@ export default {
       this.SoloPage = true;
     },
     leaderboards(){
+      this.getHighScores();
       this.LeaderBoard = true;
       this.HomePage = false;
     },
