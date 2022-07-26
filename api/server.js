@@ -196,13 +196,14 @@ db.sequelize.sync().then((req) => {
             
     
         })
-        socket.on('addScoreToDatabase', (userID, gameMode, score, multiplayer) => {
+        socket.on('addScoreToDatabase', (userID, gameMode, score, multiplayer, startTime) => {
             console.log('Test - server received the request!!');
             GameDetails.create({
                 username: userID,
                 Score: score,
                 gameType: gameMode,
                 Multiplayer: multiplayer,
+                startTime: startTime,
             }).catch((err) => {
                 if(err){
                     throw err;

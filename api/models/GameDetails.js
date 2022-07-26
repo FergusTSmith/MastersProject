@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
         Multiplayer: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
+        },
+        startTime: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
         }
     })
 

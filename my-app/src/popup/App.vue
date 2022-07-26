@@ -34,7 +34,7 @@ import { ref } from 'vue';
     <button @click="displaySoloClass" class="Radio" type="button">Solo Classic</button>
     <button @click="displayMulClass" class="Radio" type="button">Multi Classic</button>
     <!-----<button @click="displaySoloBing" class="Radio" type="button">Solo Bingo</button><br/>--->
-    <p>Username   |   Score   |  Date Scored</p>
+    <p>Username   |   Score   |  Date </p>
     <ol v-if="MultiClassicLB">
     <li v-for="item in multiClassicLeaderboard" :key="item" class="LeaderBoard">
         {{ item.username }}  |  {{ item.Score }}  |  {{ item.createdAt }}
@@ -50,7 +50,7 @@ import { ref } from 'vue';
     <ol v-if="SoloClassicLB">
     <!------Putt the W/L ratio here-->
     <li v-for="item in soloClassicLeaderboard" :key="item" class="LeaderBoard">
-        {{ item.username }} - {{ item.Score }} - {{ item.createdAt }}
+        {{ item.username }}  |  {{ item.Score }}  |  {{ item.createdAt }}
     </li>
     </ol>
     <!------
@@ -585,7 +585,7 @@ export default {
       SoloBingoLB: false,
 
       timer: 120,
-      startTime: 0,
+      startTime: 120,
       timerClose: false,
 
       userSignedIn: false,
@@ -657,6 +657,7 @@ export default {
         this.startTime = this.timer;
         if(this.timer <= 0){
           this.timer = 120;
+          this.startTime = this.timer;
         }
 
         this.timer = this.timer * 1;
@@ -795,7 +796,7 @@ export default {
         console.log(timePassed)
 
         if(this.GameMode === "Classic"){
-          this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, this.userScore, (this.MultiPlayer === true))
+          this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, this.userScore, (this.MultiPlayer === true), this.startTime)
         }else if(this.GameMode === "Bingo"){
           var finishedGame = true;
           for(var j = 0; j < this.VisitedCountries.length; j++){
@@ -1394,9 +1395,8 @@ li.PlayerList {
 }
 li.LeaderBoard {
   text-align: left;
-  font-style:italic;
+  font-style: italic;
   font-size: smaller;
-  list-style: none;
   margin-left: none;
 }
 
