@@ -31,16 +31,32 @@ import { ref } from 'vue';
   <div v-if="LeaderBoard"  id = "Leader-Board">
     <h2>TrackHunt</h2><br/>
     <p class="HelpText">LeaderBoards</p>
-    <button class="Radio" type="button">Personal</button>
-    <button class="Radio" type="button">World</button><br/>
-    <li v-for="item in multiClassicLeaderboard" :key="item">
-        {{ item.username }} - {{ item.score }} - {{ item.createdAt }}
+    <button @click="displaySoloClass" class="Radio" type="button">Solo Classic</button>
+    <button @click="displaySoloBing" class="Radio" type="button">Solo Bingo</button><br/>
+    <ol v-if="MultiClassicLB">
+    <li v-for="item in multiClassicLeaderboard" :key="item" class="LeaderBoard">
+        {{ item.username }} - {{ item.Score }} - {{ item.createdAt }}
     </li>
-
+    </ol>
+    <ol v-if="MultiBingoLB">
+    <li v-for="item in multiBingoLeaderboard" :key="item" class="LeaderBoard">
+      {{ item.username }}
+    </li>
+    </ol>
+    <ol v-if="SoloClassicLB">
+    <li v-for="item in soloClassicLeaderboard" :key="item" class="LeaderBoard">
+        {{ item.username }} - {{ item.Score }} - {{ item.createdAt }}
+    </li>
+    </ol>
+    <ol v-if="SoloBingoLB">
+    <li v-for="item in soloBingoLeaderboard" :key="item" class="LeaderBoard">
+        {{ item.username }}
+    </li>
+    </ol>
     <div id="Leaderboard">
     </div>
-    <button class="Radio" type="button">Classic</button>
-    <button class="Radio" type="button">Bingo</button>
+    <button @click="displayMulClass" class="Radio" type="button">Multi Classic</button>
+    <button @click="displayMulBing" class="Radio" type="button">Multi Bingo</button>
     <!---<button class="Radio" type="button">Roulette</button>---->
     <br/>
     <button @click="exitToHomePage" type="button">HomePage</button>
@@ -459,7 +475,8 @@ export default {
         }
       },
       sendClassicLeaderBoards(MessageDetails){
-        this.multiClassicLeaderboard = MessageDetails[0];
+        this.multiClassicLeaderboard = MessageDetails;
+        console.log(MessageDetails)
         console.log(this.multiClassicLeaderboard);
       },
       sendBingoLeaderBoards(MessageDetails){
@@ -533,6 +550,11 @@ export default {
       soloBingoLeaderboard: [],
       multiClassicLeaderboard: [],
       multiBingoLeaderboard: [],
+
+      MultiClassicLB: false,
+      MultiBingoLB: false,
+      SoloClassicLB: false,
+      SoloBingoLB: false,
 
       timer: 10,
       timePassed: 0,
@@ -1106,6 +1128,30 @@ export default {
     options(){
       this.OptionsPage = true;
       this.HomePage = false;
+    },
+    displayMulClass(){
+      this.MultiClassicLB = true;
+      this.MultiBingoLB = false;
+      this.SoloClassicLB = false;
+      this.SoloBingoLB = false;
+    },
+    displayMulBing(){
+      this.MultiClassicLB = false;
+      this.MultiBingoLB = true;
+      this.SoloClassicLB = false;
+      this.SoloBingoLB = false;
+    },
+    displaySoloClass(){
+      this.MultiClassicLB = false;
+      this.MultiBingoLB = false;
+      this.SoloClassicLB = true;
+      this.SoloBingoLB = false;
+    },
+    displaySoloBing(){
+      this.MultiClassicLB = false;
+      this.MultiBingoLB = false;
+      this.SoloClassicLB = false;
+      this.SoloBingoLB = true;
     },
     createLobby(){
       var newLobbyID = this.createNewLobbyID();
