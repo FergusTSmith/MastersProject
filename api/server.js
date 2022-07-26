@@ -244,7 +244,7 @@ db.sequelize.sync().then((req) => {
                 MultiClassic = res;
             });
 
-            GameDetails.findAll({ where: {gameMode: 'Bingo'}}).then((res) => {
+            GameDetails.findAll({ where: {gameType: 'Bingo'}}).then((res) => {
                 MultiBingo = res;
             })
 
