@@ -123,7 +123,7 @@ import { ref } from 'vue';
     <!------<button class="Radio" type="button">Roulette</button>--->
     <br/>
     <!-----This should only be visible for the lobby leader: ---->
-    <input v-if="isLobbyCreator" class="Radio" type="radio" value="10" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">2 min</label>
+    <input v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">2 min</label>
     <input v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">5 min</label>
     <input v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">10 min</label>
     <button v-if="isLobbyCreator" @click="closeLobby" type="button">Close Lobby</button>
@@ -183,7 +183,7 @@ import { ref } from 'vue';
 
 
     <br/>
-    <input class="Radio" type="radio" value="10" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label>2 min</label>
+    <input class="Radio" type="radio" value="120" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label>2 min</label>
     <input class="Radio" type="radio" value="300" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label>5 min</label>
     <input class="Radio" type="radio" value="600" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label>10 min</label>
     <br/>
@@ -563,7 +563,7 @@ export default {
       SoloClassicLB: false,
       SoloBingoLB: false,
 
-      timer: 10,
+      timer: 120,
       timePassed: 0,
       timerClose: false,
 
