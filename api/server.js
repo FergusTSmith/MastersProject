@@ -252,7 +252,7 @@ db.sequelize.sync().then((req) => {
 
             });
 
-            GameDetails.findAll({ where: {gameType: 'Bingo', Multiplayer: true}, order:['Score']}).then((res) => {
+            GameDetails.findAll({ where: {gameType: 'Bingo', Multiplayer: true}, order:[['Score', 'DESC']]}).then((res) => {
                 MultiBingo = res; 
                 console.log(MultiBingo);
                 socket.emit('sendBingoLeaderBoards', MultiBingo);
@@ -262,7 +262,7 @@ db.sequelize.sync().then((req) => {
             var SoloClassic = [];
             var SoloBingo = [];
 
-            GameDetails.findAll({ where: {gameType: 'Classic', Multiplayer: false, username: userID}, order:['Score']}).then((res) => {
+            GameDetails.findAll({ where: {gameType: 'Classic', Multiplayer: false, username: userID}, order:[['Score', 'DESC']]}).then((res) => {
                 SoloClassic = res;
                 console.log(SoloClassic);
 

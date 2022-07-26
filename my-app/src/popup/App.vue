@@ -34,9 +34,10 @@ import { ref } from 'vue';
     <button @click="displaySoloClass" class="Radio" type="button">Solo Classic</button>
     <button @click="displayMulClass" class="Radio" type="button">Multi Classic</button>
     <!-----<button @click="displaySoloBing" class="Radio" type="button">Solo Bingo</button><br/>--->
+    <p>Username   |   Score   |  Date Scored</p>
     <ol v-if="MultiClassicLB">
     <li v-for="item in multiClassicLeaderboard" :key="item" class="LeaderBoard">
-        {{ item.username }} - {{ item.Score }} - {{ item.createdAt }}
+        {{ item.username }}  |  {{ item.Score }}  |  {{ item.createdAt }}
     </li>
     </ol>
     <!------
@@ -1396,6 +1397,7 @@ li.LeaderBoard {
   font-style:italic;
   font-size: smaller;
   list-style: none;
+  margin-left: none;
 }
 
 h2 {
