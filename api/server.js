@@ -257,7 +257,28 @@ db.sequelize.sync().then((req) => {
                 console.log(MultiBingo);
                 socket.emit('sendBingoLeaderBoards', MultiBingo);
             })
+        })
+        socket.on('retreiveSoloScores', () => {
+            var SoloClassic = [];
+            var SoloBingo = [];
 
+            GameDetails.findAll({ where: {gameType: 'Classic', Multiplayer: false}}).then((res) => {
+                SoloClassic = res;
+                console.log(SoloClassic);
+
+                for(var i = 0; i < SoloClassic.length; i++){
+                    SoloClassic[i].createdAt = SoloClassic[i].createdAt.toString().substr(0, 9)
+                }
+                socket.emit('sendSoloClassic', SoloClassic);
+
+
+            });
+
+            GameDetails.findAll({ where: {gameType: 'Bingo', Multiplayer: false}}).then((res) => {
+                SoloBingo = res; 
+                console.log(SoloBingo);
+                socket.emit('sendSoloBingo›', SoloBingo);
+            })
         })
     
         socket.on('doesUserExist', (userGoogleID) => {

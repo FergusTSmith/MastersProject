@@ -482,6 +482,12 @@ export default {
       sendBingoLeaderBoards(MessageDetails){
         this.multiBingoLeaderboard = MessageDetails[0];
         console.log(this.multiBingoLeaderboard);
+      },
+      sendSoloClassic(MessageDetails){
+        this.soloClassicLeaderboard = MessageDetails;
+      },
+      sendSoloBingo(MessageDetails){
+        this.soloBingoLeaderboard = MessageDetails;
       }
     },
   data(){
@@ -617,8 +623,9 @@ export default {
         this.timerClose = true;
         //console.log(BaseTimer)
       },
-      getHighScores(multiplayer, gamemode){
-        this.$socket.emit('retrieveLeaderBoards', multiplayer, gamemode);
+      getHighScores(){
+        this.$socket.emit('retrieveLeaderBoards');
+        this.$socket.emit('retreiveSoloScores');
       },
       
       initiateGame(){
