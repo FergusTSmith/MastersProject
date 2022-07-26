@@ -44,6 +44,7 @@ import { ref } from 'vue';
     </li>
     </ol>
     <ol v-if="SoloClassicLB">
+    <!------Putt the W/L ratio here-->
     <li v-for="item in soloClassicLeaderboard" :key="item" class="LeaderBoard">
         {{ item.username }} - {{ item.Score }} - {{ item.createdAt }}
     </li>
@@ -1353,6 +1354,12 @@ li.PlayerList {
   text-align: left;
   font-style: italic;
   font-size: 10px;
+}
+li.LeaderBoard {
+  text-align: left;
+  font-style:italic;
+  font-size: smaller;
+  list-style: none;
 }
 
 h2 {
