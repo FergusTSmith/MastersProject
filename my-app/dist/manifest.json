@@ -15,7 +15,8 @@
     "identity",
     "identity.email",
     "notifications",
-    "alarms"
+    "alarms",
+    "cookies"
   ],
   "icons": {
     "16": "staticimages/Smalllogo.png",

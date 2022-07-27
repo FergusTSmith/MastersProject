@@ -219,7 +219,7 @@ import { ref } from 'vue';
 
     <div v-if="GameMode === 'Classic'">
     <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
-        {{ item.name }} - {{ item.count }}
+        {{ item.name }} - {{ item.count }} - <p class = "TinyText"> {{ item.site }} </p>
     </li>
     <br/>
     <label>Current Score: </label><p> {{ this.userScore }}</p>
@@ -885,6 +885,7 @@ export default {
         
         chrome.storage.local.get(["countryList"], function(result){
           vm.VisitedCountries = result.countryList;
+          console.log(vm.VisitedCountries)
         })
      },
      passiveMode(){
@@ -931,7 +932,6 @@ export default {
                     score += result.countryList[i].count;
                 }else if(result.countryList[i].name === "United Kingdom" || result.countryList[i].name === "Canada"){
                     score += (result.countryList[i].count)*2;
-                    console.log(score + "Test passed");
                 }else if(result.countryList[i].name === "Germany" || result.countryList[i].name === "Netherlands" || result.countryList[i].name === "Ireland"){
                     score += (result.countryList[i].count)*3
                 }else if(result.countryList[i].name === "Russia"){
@@ -1367,6 +1367,10 @@ p.PassiveText{
   font-size: small;
   font-style: none;
   display: flex;
+}
+p.TinyText{
+  color: white;
+  font-size: xx-small;
 }
 
 #timer {
