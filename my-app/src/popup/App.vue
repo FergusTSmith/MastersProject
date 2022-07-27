@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-//import BaseTimer from "../components/BaseTimer"
+import BaseTimer from "../components/BaseTimer"
 </script>
 
 <template>
@@ -132,7 +132,7 @@ import { ref } from 'vue';
     <!------<button class="Radio" type="button">Roulette</button>--->
     <br/>
     <!-----This should only be visible for the lobby leader: ---->
-    <input v-if="isLobbyCreator" class="Radio" type="radio" value="10" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">2 min</label>
+    <input v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">2 min</label>
     <input v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">5 min</label>
     <input v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">10 min</label>
     <button v-if="isLobbyCreator" @click="closeLobby" type="button">Close Lobby</button>
@@ -149,9 +149,22 @@ import { ref } from 'vue';
   <p class="PassiveText">These entities hailed from {{ passiveModeTotalCounties }} countries.</p>
   <p class="PassiveText">To see a complete list of hosts and counts, click <button @click="PassiveToHost">here</button></p>
   <p class="PassiveText">To see a complete list of countries and counts, click <button @click="PassiveToCountry">here</button></p>
-  <button @click="exitToHomePage">Back</button>
-  
+  <button @click="achievementPage">Achievements</button>
+  <br/>
+  <button @click="exitToHomePage">HomePage</button>
   </div>
+
+  <div v-if="AchievementPage">
+  <p>Passive Mode Achievements are unlocked while passively browsing. A notification will be received when this is achieved.</p>
+  <li class="Achievements" v-for="item in achievements" :key="item">
+      <p class="AchivementTitle">{{ item.name }} | {{ item.achieved }}</p>
+      <p class="HelpText">{{ item.text }}</p>
+      <hr/>
+  </li>
+  <button @click="backToPassive">Back</button>
+  <button @click="exitToHomePage">HomePage</button>
+  </div>
+
 
   <div v-if="HostPage">
   <h2>TrackHunt</h2>
@@ -204,25 +217,23 @@ import { ref } from 'vue';
     <div v-if="(!gameOver)">
     <br/>
 
-    <label>Time remaining: </label>
-    <p class="timer" ref="timer" id="timer" :class="{timer:timerClose}"> {{ timer }}</p>
+    <!-----<p class="timer" ref="timer" id="timer" :class="{timer:timerClose}">Time Remaining: {{ timer }}</p>--->
 
     <!-----Using a more sophisticated solution for the timer. Adapted from https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f-->
-    <!-----<BaseTimer :time-left="timeLeft"></BaseTimer>-->
+    <BaseTimer :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="15"></BaseTimer>
     <!------<div class="TimerSection">---->
     <!-----<BaseTimer :timeToGo="timeLeft"/>-->
 
 
     <!------</div>--->
-
-
-
-    <div v-if="GameMode === 'Classic'">
+    <div v-if="GameMode === 'Classic'" class="ClassicGameMode">
+    <p>Current Score: {{ this.userScore }} </p>
     <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
-        {{ item.name }} - {{ item.count }} - <p class = "TinyText"> {{ item.site }} </p>
+        <p class="CountryText">{{ item.name }} | {{ item.count }} |</p><p class = "TinyText"> {{ item.site }} </p>
     </li>
+    <p class="CountryText">During this session, {{numberOfCookies.numberOfCookies}} tracking cookies have been set on your device.</p>
     <br/>
-    <label>Current Score: </label><p> {{ this.userScore }}</p>
+    
     </div>
     <div v-if="GameMode === 'Bingo'">
     <label>Countries To Locate:</label>
@@ -256,15 +267,15 @@ import { ref } from 'vue';
     <!------<p class="HelpText">Solo Mode</p>--->
     <div v-if="(!gameOver)">
     <br/>
-    <label>Time remaining: </label>
-    <p> {{ timer }}</p>
-    
-    <div v-if="GameMode === 'Classic'">
+    <!----<label>Time remaining: </label><p> {{ timer }}</p>-->
+    <BaseTimer :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="15"></BaseTimer>
+    <br/>
+    <div v-if="GameMode === 'Classic'" class="ClassicGameMode">
+    <p>Current Score: {{ this.userScore }} </p>
     <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item" class="TrackedCountry">
-        {{ item.name }} - {{ item.count }}
+        <p class="CountryText">{{ item.name }} | {{ item.count }} |</p><p class = "TinyText"> {{ item.site }} </p>
     </li>
     <br/>
-    <label>Current Score: </label><p> {{ this.userScore }}</p>
     </div>
     <div v-if="GameMode === 'Bingo'">
     <label>Countries To Locate:</label>
@@ -281,15 +292,16 @@ import { ref } from 'vue';
     </ol>
     </div>
     <ol v-if="!(allPlayersReady)">
-    <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item">
+    <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item">
         {{ item.userID }} - {{ item.ready }}
     </li>
     </ol>
     <ol v-if="allPlayersReady && !(gameStarted)">
-        <li class="LobbyUsers">All players are ready</li>
+        <li class="GameUsers">All players are ready</li>
     </ol>
     <ol v-if="allPlayersReady && (gameStarted)">
-    <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item">
+    
+    <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item">
         {{ item.userID }} - {{ item.score }}
     </li>
     <p class="ErrorText"> {{ playerLeaveMessage }}</p>
@@ -310,7 +322,7 @@ import { ref } from 'vue';
     </div>
 
     <div v-if="GameMode === 'Classic'">
-    <li v-for="item in UsersInLobby" ref="ListOfScores" class="LobbyUsers" :key="item.name">
+    <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item.name">
         {{ item.userID }} - {{ item.score }}
     </li>
     <p>Your score was: {{ userScore }}</p>
@@ -491,7 +503,7 @@ export default {
         console.log(this.multiClassicLeaderboard);
 
         for(var i = 0; i < this.multiClassicLeaderboard.length; i++){
-          this.multiClassicLeaderboard[i].createdAt = this.multiClassicLeaderboard[i].createdAt.toString().substring(0, 9)
+          this.multiClassicLeaderboard[i].createdAt = this.multiClassicLeaderboard[i].createdAt.toString().substring(0, 10)
         }
       },
       sendBingoLeaderBoards(MessageDetails){
@@ -503,7 +515,7 @@ export default {
           this.soloClassicLeaderboard = MessageDetails[0];
 
           for(var i = 0; i < this.soloClassicLeaderboard.length; i++){
-          this.soloClassicLeaderboard[i].createdAt = this.soloClassicLeaderboard[i].createdAt.toString().substring(0, 9)
+          this.soloClassicLeaderboard[i].createdAt = this.soloClassicLeaderboard[i].createdAt.toString().substring(0, 10)
           }
 
           this.personalSoloHS = this.soloClassicLeaderboard.filter(item => item.username === this.UsersID);
@@ -565,7 +577,11 @@ export default {
       PassivePage: false,
       HostPage: false,
       CountryPage: false,
+      AchievementPage: false,
+
       GameMode: 'Classic',
+
+      numberOfCookies: 0,
 
 
       userLeaveMessage: "",
@@ -575,6 +591,7 @@ export default {
       passiveModeTotalTrackers: 0,
       passiveModeTotalCounties: 0,
       passiveModeUniqueHosts: 0,
+      achievements: [],
 
 
       gamesPlayed: 0,
@@ -584,6 +601,7 @@ export default {
       easyCountries: ["United States", "United Kingdom"],
       medEasyCountries: ["Canada"],
       hardCountries: ["Russia"],
+      //countriesIveFoundBeforeAndShouldIncludeAbove: ["Canada", "United Kingdom", "United States", "Germany", "Netherlands", "Ireland", "Belgium"],
       countriesToFind: [],
       noOfCountriesBingo: 0,
 
@@ -598,7 +616,7 @@ export default {
       SoloClassicLB: false,
       SoloBingoLB: false,
 
-      timer: 10,
+      timer: 120,
       startTime: 120,
       timerClose: false,
 
@@ -607,10 +625,10 @@ export default {
     },
     computed: {
       // https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f
-      formatTimeLeft(){
-        var timeTG = this.timer;
+      formattedTimeLeft(){
+        const timeTG = this.timer;
 
-        var minutes = Math.floor(timeTG/60);
+        const minutes = Math.floor(timeTG/60);
         var seconds = timeTG % 60;
 
         if(seconds < 10){
@@ -621,10 +639,13 @@ export default {
       },
       timePassed(){
         return this.startTime - this.timer;
-      }//,
+      },//,
       //orderedCountries: function(){
         //return _.orderBy(this.BingoCountries, 'count')
       //}
+      timeLeft(){
+        return this.startTime - (this.startTime - this.timer);
+      }
     },
     props: {
       timeToGo: {
@@ -633,7 +654,7 @@ export default {
       }
     },
     components: {
-      //BaseTimer
+      BaseTimer
     },
     
     
@@ -686,7 +707,7 @@ export default {
           }
           return true;
         })
-
+ 
         /*
         
         chrome.storage.local.get(["countryList"], function(result){
@@ -716,6 +737,7 @@ export default {
 
         chrome.storage.onChanged.addListener(function(result) {
             vm.updateListOfCountries()
+            vm.updateAchievements()
             vm.VisitedCountries = result.countryList.newValue;
             vm.gameStarted = true;
             //console.log(vm.GameMode)
@@ -764,6 +786,14 @@ export default {
       changeUsernamePage(){
           this.OptionsPage = false;
           this.UsernameChangePage = true;
+      },
+      achievementPage(){
+        this.AchievementPage = true;
+        this.PassivePage = false;
+      },
+      backToPassive(){
+        this.AchievementPage = false;
+        this.PassivePage = true;
       },
 
       changeUsername(){
@@ -879,6 +909,12 @@ export default {
           
         })
      },
+     updateAchievements(){
+       var vm=this;
+       chrome.storage.local.get(["achievements"], function(result){
+            vm.achievements = result.achievements;
+          })
+     },
 
      updateListOfCountries(){
         var vm = this;
@@ -886,6 +922,14 @@ export default {
         chrome.storage.local.get(["countryList"], function(result){
           vm.VisitedCountries = result.countryList;
           console.log(vm.VisitedCountries)
+
+          chrome.storage.local.get(["numberOfCookies"], function(result){
+            vm.numberOfCookies = result;
+            console.log(vm.numberOfCookies);
+          })
+          chrome.storage.local.get(["achievements"], function(result){
+            vm.achievements = result.achievements;
+          })
         })
      },
      passiveMode(){
@@ -910,6 +954,11 @@ export default {
           console.log(vm.passiveModeCountries);
 
           vm.passiveModeTotalCounties = result.passiveCountryList.length;
+        })
+
+        chrome.storage.local.get(["achievements"], function(result){
+            vm.achievements = result.achievements;
+            console.log(result);
         })
 
         this.HomePage = false;
@@ -1260,6 +1309,7 @@ export default {
       this.PassivePage = false;
       this.HostPage = false;
       this.CountryPage = false;
+      this.AchievementPage = false;
     },
     exitToHomePageReset(){
       this.reset();
@@ -1328,12 +1378,18 @@ class User {
 
 li{
   color: white;
+  /*display: flex;*/
 }
 li.TrackedCountry{
   color: white;
   font-size: smaller;
   list-style: none;
   font-style: italic;
+}
+li.Achievements{
+  color: white;
+  font-size: smaller;
+  list-style: none;
 }
 
 .found {
@@ -1349,6 +1405,13 @@ li.LobbyUsers{
   font-size: smaller;
   list-style: none;
   font-style: italic;
+}
+li.GameUsers{
+  color: white;
+  font-size: smaller;
+  list-style: none;
+  font-style: italic;
+  margin-right: 33px;
 }
 
 li.BingoList{
@@ -1370,7 +1433,12 @@ p.PassiveText{
 }
 p.TinyText{
   color: white;
-  font-size: xx-small;
+  font-size: 7px;
+}
+
+p.CountryText {
+  color: white;
+  font-size: 13px
 }
 
 #timer {
@@ -1399,6 +1467,13 @@ div {
 div.TimerSection {
   align-self: center;
 }
+div.ClassicGameMode {
+  height: 380px;
+  width: 100%;
+  max-height: 380px;
+  display: inline-block;
+}
+
 BaseTimer {
   align-self: center;
 }
