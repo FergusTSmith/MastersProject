@@ -135,7 +135,7 @@ import BaseTimer from "../components/BaseTimer"
     <br/>
     <!-----This should only be visible for the lobby leader: ---->
     <div class="RadioButtons">
-    <input id="2mins" v-if="isLobbyCreator" class="Radio" type="radio" value="45" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="2mins" v-if="isLobbyCreator">2 min</label>
+    <input id="2mins" v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="2mins" v-if="isLobbyCreator">2 min</label>
     <input id="5mins" v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="5mins" v-if="isLobbyCreator">5 min</label>
     <input id="10mins" v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="10mins" v-if="isLobbyCreator">10 min</label>
     </div>
@@ -212,7 +212,7 @@ import BaseTimer from "../components/BaseTimer"
     <br/>
     <!--- Radio Buttons adapted from https://markheath.net/post/customize-radio-button-css https://codepen.io/phusum/pen/VQrQqy-->
     <div class="RadioButtons">
-    <input id="2min" class="Radio" type="radio" value="60" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label for="2min">2 min</label>
+    <input id="2min" class="Radio" type="radio" value="120" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label for="2min">2 min</label>
     <input id="5min" class="Radio" type="radio" value="300" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label for="5min">5 min</label>
     <input id="10min" class="Radio" type="radio" value="600" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label for="10min">10 min</label>
     </div>
@@ -872,7 +872,7 @@ export default {
       },
       endGame(){
         var winningScore = 0;
-        const vm = this;
+        //const vm = this;
 
         if(this.GameMode === 'Bingo'){
           this.endBingoGame();
@@ -1602,6 +1602,15 @@ button:hover {
   background-color: darkgreen
 }
 
+button.InformationBox {
+  background-color: #181818;
+  border: 1px solid lightgray;
+  font-size: 9px;
+
+}
+button.InformationBox:hover {
+  background-color: #20C20E;
+}
 
 BaseTimer {
   align-self: center;
