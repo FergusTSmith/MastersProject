@@ -220,7 +220,7 @@ import BaseTimer from "../components/BaseTimer"
     <!-----<p class="timer" ref="timer" id="timer" :class="{timer:timerClose}">Time Remaining: {{ timer }}</p>--->
 
     <!-----Using a more sophisticated solution for the timer. Adapted from https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f-->
-    <BaseTimer :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="15"></BaseTimer>
+    <BaseTimer :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="30"></BaseTimer>
     <!------<div class="TimerSection">---->
     <!-----<BaseTimer :timeToGo="timeLeft"/>-->
 
@@ -231,7 +231,7 @@ import BaseTimer from "../components/BaseTimer"
     <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
         <p class="CountryText">{{ item.name }} | {{ item.count }} |</p><p class = "TinyText"> {{ item.site }} </p>
     </li>
-    <p class="CountryText">During this session, {{numberOfCookies.numberOfCookies}} tracking cookies have been set on your device.</p>
+    <p class="CookieText">During this session, {{numberOfCookies.numberOfCookies}} tracking cookies have been set on your device.</p>
     <br/>
     
     </div>
@@ -264,11 +264,11 @@ import BaseTimer from "../components/BaseTimer"
 
   <div v-if="MultiPlayer" id="Multiplayer-Game" :key="componentVersion">
     <h2>TrackHunt</h2>
-    <!------<p class="HelpText">Solo Mode</p>--->
+    <p class="HelpText">MultiPlayer - {{ GameMode }} <button @click="displayInformation" class="InformationBox">i</button></p>
     <div v-if="(!gameOver)">
     <br/>
     <!----<label>Time remaining: </label><p> {{ timer }}</p>-->
-    <BaseTimer :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="15"></BaseTimer>
+    <BaseTimer :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="30"></BaseTimer>
     <br/>
     <div v-if="GameMode === 'Classic'" class="ClassicGameMode">
     <p>Current Score: {{ this.userScore }} </p>
@@ -696,6 +696,7 @@ export default {
           this.timer = 120;
           this.startTime = this.timer;
         }
+        this.numberOfCookies = 0;
 
         this.timer = this.timer * 1;
         this.timer -= 1;
@@ -704,6 +705,7 @@ export default {
             console.log('successfully started the game.')
             vm.VisitedCountries = [];
             vm.userScore = 0;
+            vm.numberOfCookies = 0;
           }
           return true;
         })
@@ -852,7 +854,7 @@ export default {
               }
           }
           if(finishedGame){
-            this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, timePassed, (this.MultiPlayer === true))
+            this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, timePassed, (this.MultiPlayer === true), this.startTime)
             console.log('sent bingo score to the server');
           }
         }
@@ -1339,6 +1341,13 @@ export default {
     }
     return id;
     
+    },
+    displayInformation(){
+      if(this.GameMode === "Classic"){
+        alert("In Classic mode, points are awarded through discovering tracking URLs located in different nations. The rarity of the nation discovered determines the amount of points received. The United States will have an (x1) multiplyer, whereas a Tuvalu would have a (x10) multiplyer. The player with the most points when the timer elapses will win.")
+      }else{
+        alert("In Bingo mode, users are challenged to discover tracking URLs from a specific list of countries. The first player to discover all listed countries is the winner of the game")
+      }
     }
 }}
 
@@ -1439,6 +1448,10 @@ p.TinyText{
 p.CountryText {
   color: white;
   font-size: 13px
+}
+
+p.CookieText {
+  font-size: 10px
 }
 
 #timer {

@@ -96,7 +96,7 @@ export default {
   }
 
   &__path-elapsed {
-    stroke-width: 8px;
+    stroke-width: 7px;
     stroke:grey;
   }
   &__label {
@@ -112,7 +112,7 @@ export default {
     color: white;
   }
   &__path-remaining {
-    stroke-width: 7px;
+    stroke-width: 6px;
     stroke-linecap: round;
 
     transform: rotate(90deg);

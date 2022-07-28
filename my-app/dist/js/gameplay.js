@@ -366,7 +366,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if(message === 'reset'){
         detectedHosts = [];
         detectedCountries = [];
-        numberOfCookies = 0;
+        totalTrackerCookies = 0;
 
         chrome.storage.local.set({ countryList: detectedCountries });
         sendResponse('success');
