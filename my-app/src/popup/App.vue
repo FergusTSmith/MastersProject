@@ -502,12 +502,15 @@ export default {
         console.log(MessageDetails)
         console.log(this.multiClassicLeaderboard);
 
+        this.multiClassicLeaderboard = this.multiClassicLeaderboard.slice(0, 11)
+
         for(var i = 0; i < this.multiClassicLeaderboard.length; i++){
           this.multiClassicLeaderboard[i].createdAt = this.multiClassicLeaderboard[i].createdAt.toString().substring(0, 10)
         }
       },
       sendBingoLeaderBoards(MessageDetails){
         this.multiBingoLeaderboard = MessageDetails;
+        
         console.log(this.multiBingoLeaderboard);
       },
       sendSoloClassic(MessageDetails){
@@ -518,7 +521,10 @@ export default {
           this.soloClassicLeaderboard[i].createdAt = this.soloClassicLeaderboard[i].createdAt.toString().substring(0, 10)
           }
 
+          
+
           this.personalSoloHS = this.soloClassicLeaderboard.filter(item => item.username === this.UsersID);
+          this.personalSoloHS = this.personalSoloHS.slice(0, 11);
         }
         console.log(MessageDetails)
       },
@@ -609,7 +615,7 @@ export default {
       intSoloClassLB: [],
       multiClassicLeaderboard: [],
       intMultiClassLB: [],
-      personalSOloHS: [],
+      personalSoloHS: [],
 
       MultiClassicLB: false,
       MultiBingoLB: false,
@@ -840,7 +846,6 @@ export default {
         this.WinningUser = winningUser;
         var timePassed = this.startTime - this.timer;
 
-        this.gameOver = true;
         console.log(timePassed)
 
         if(this.GameMode === "Classic"){
@@ -873,6 +878,7 @@ export default {
 
         //Close the Lobby
         this.$socket.emit('closeLobby', this.playersLobby)
+        this.gameOver = true;
 
         this.reset();
 
@@ -1080,6 +1086,7 @@ export default {
               console.log(vm.UserGoogleID)
             }
          })
+        this.getHighScores();
          
      },
      getGoogleID(){
@@ -1523,7 +1530,7 @@ li.PlayerList {
 li.LeaderBoard {
   text-align: left;
   font-style: italic;
-  font-size: smaller;
+  font-size: x-small;
   margin-left: none;
 }
 
