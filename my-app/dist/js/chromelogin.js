@@ -52,8 +52,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             });
             return true;
         }
-    }else if (request.message === 'logout'){
-
     }else if (request.message === 'googleID'){
         if(uniqueIDforUser === ''){
             console.log("no user found")

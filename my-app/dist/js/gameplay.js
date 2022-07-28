@@ -1,10 +1,10 @@
-
-
 /* Largely adapted from Cormac Muir's background.js file */
 var numberOfTrackers = 0;
 var endpoint = 'http://ip-api.com/json/';
 var detectedHosts = [];
 var detectedCountries = [];
+
+const CategoryEndpoint = "https://website-categorization.whoisxmlapi.com/api/v2?apiKey=at_sst90T8EnkuxyjY7XxRtpwgkieia0&domainName="
 
 var passiveUniqueHosts = [];
 var passiveTotalHosts = 0
@@ -19,6 +19,9 @@ var EuropeanCountries = ["Hungary", "Belarus", "Austria", "Serbia", "Switzerland
 var NorthAmerica = ["United States", "USA", "United States of America", "Canada", "Mexico"]
 var Oceania = ["Australia", "New Zealand"]
 var SouthAmerica = [];
+
+var categoriesTrackedBy = []
+var sitesCategorised = []
 
 
 // Helper Classes
@@ -53,6 +56,16 @@ class Host {
         this.count +=1;
     }
 }
+class Category {
+    constructor(name){
+        this.name = name;
+        this.count = 1;
+    }
+    addCount(){
+        this.count++;
+    }
+}
+
 // Inspired by https://gamedev.stackexchange.com/questions/139136/implementing-achievement-system-in-javascript
 
 // This part of the program defines an Achievement class, and creates some achievements to be complete in passive mode.
@@ -77,7 +90,7 @@ class Achievement {
                 }
             ]
         });
-        console.log('achieve() fired' - this.name);
+        //console.log('achieve() fired' - this.name);
 
     }
 }
@@ -93,6 +106,8 @@ achievements.push(new Achievement("10 Countries", "Get tracked by 10 different c
 achievements.push(new Achievement("20 Countries", "Get tracked by 20 different counties")); // 8
 achievements.push(new Achievement("Night of 1000 cookies", "Get tracked by 1000 tracker cookies")); // 9
 achievements.push(new Achievement("Stalker", "Get tracked by the same country 10 times")); // 10
+
+//getCategory(CategoryEndpoint + "bbc.com");
 
 chrome.storage.local.set({ achievements: achievements});
 
@@ -110,7 +125,7 @@ chrome.webRequest.onBeforeRequest.addListener(
             if(!(detectedHosts.includes(requestURL))){
                 detectedHosts.push(requestURL)
                 //console.log(detectedHosts);
-                console.log(requestURL + 'Tracker')
+                //console.log(requestURL + 'Tracker')
                 numberOfTrackers += 1;
                 //console.log("We have found a tracker: " + requestURL + ' ' + numberOfTrackers);
                 var tracker_location_url = endpoint + "/" + requestURL;
@@ -122,7 +137,8 @@ chrome.webRequest.onBeforeRequest.addListener(
                 //console.log(cleanedUpInitiator);
 
                 //console.log(tracker_location_url);
-                getCountry(tracker_location_url, cleanedUpInitiator);  
+                getCountry(tracker_location_url, cleanedUpInitiator, requestURL);  
+                //getCategory(CategoryEndpoint + cleanedUpInitiator)
 
                 passiveUniqueHosts.push(new Host(requestURL))
 
@@ -145,31 +161,9 @@ chrome.webRequest.onBeforeRequest.addListener(
 
     }, {urls: ["<all_urls>"]});
 
-/*
-chrome.webRequest.onSendHeaders.addListener(
-    function(details){
-        console.log(details.initiator);
-    }, {urls: ["<all_urls>"]});
-
-/*
-chrome.webRequest.onBeforeSendHeaders.addListener(
-    function(details){
-        console.log(details);
-    }, {urls: ["<all_urls>"]});
 
 
-chrome.webRequest.onBeforeRedirect.addListener(
-    function(details){
-        console.log(details);
-    }, {urls: ["<all_urls>"]});
 
-
-chrome.webRequest.onHeadersReceived.addListener(
-    function(details){
-        console.log(details);
-    }, {urls: ["<all_urls>"]});
-
-  */ 
 
 chrome.cookies.onChanged.addListener(function(result) {
     //console.log(result);
@@ -191,7 +185,7 @@ chrome.cookies.onChanged.addListener(function(result) {
 })
 
 chrome.cookies.getAll({}, function(result) {
-    console.log(result);
+    //console.log(result);
 
     for(var i = 0; i < result.length; i++){
         //if(result[i].)
@@ -199,9 +193,50 @@ chrome.cookies.getAll({}, function(result) {
 })
 
 
+// HelperMethod to determine a website's category
+
+function getCategory(request){
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if(this.readyState == 4 && this.status == 200){
+            var response = JSON.parse(this.responseText)
+            console.log(response);
+            var mostLikelyCategory = '';
+            var found = false;
+            
+            if(response.websiteResponsed != false){
+                mostLikelyCategory = response.categories[0].tier1.name
+                console.log(mostLikelyCategory)
+                if(mostLikelyCategory === "Not enough content"){
+                    mostLikelyCategory = "Unknown Category"
+                }
+                console.log(mostLikelyCategory)
+            }
+
+            for(var i = 0; i < categoriesTrackedBy.length; i++){
+                if(categoriesTrackedBy[i].name === mostLikelyCategory){
+                    categoriesTrackedBy[i].addCount();
+                    found = true;
+                }
+            }
+            if(!(found)){
+                categoriesTrackedBy.push(new Category(mostLikelyCategory))
+            }
+            console.log(categoriesTrackedBy)
+
+            chrome.storage.local.set({ categoryList: categoriesTrackedBy });
+
+        }
+    }
+    console.log(request);
+    xhr.open("GET", request, true);
+    xhr.send();
+
+}
+
 // Helper Methods for retrieiving the Countries using the IPAPI API
 
-function getCountry(request, originalSite){
+function getCountry(request, originalSite, originalURL){
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if(this.readyState == 4 && this.status == 200){
@@ -218,11 +253,20 @@ function getCountry(request, originalSite){
                     for(var k = 0; k < detectedCountries[i].site.length; k++){
                         if(detectedCountries[i].site[k] == originalSite){
                             alreadyTracked = true;
+                            //console.log(detectedCountries);
                             //console.log('ffs')
                         }
                     }
+                    //console.log(alreadyTracked)
+                   // console.log(originalURL)
                     if(!(alreadyTracked)){
                         detectedCountries[i].site.push(originalSite)
+
+                        if(!(sitesCategorised.includes(originalSite))){
+                            // getCategory(CategoryEndpoint + originalSite) Disabling to Save API bandwidth
+                            console.log(originalSite);
+                            sitesCategorised.push(originalSite)
+                        }
                     }
                     
                     //console.log(detectedCountries)
@@ -231,6 +275,13 @@ function getCountry(request, originalSite){
             }
             if(!found){
                 detectedCountries.push(new Country(response.country, originalSite));
+
+                if(!(sitesCategorised.includes(originalSite))){
+                    // getCategory(CategoryEndpoint + originalSite); Disabing to save API bandwidth
+                    console.log(originalSite);
+                    sitesCategorised.push(originalSite)
+                }
+
             }
             for(var j = 0; j < detectedCountries.length; j++){
                 //console.log(detectedCountries[j].name + ' ' + detectedCountries[j].count);
@@ -251,8 +302,8 @@ function getCountry(request, originalSite){
 
             chrome.storage.local.set({ passiveCountryList: passiveCountries });
 
-            console.log(response.country)
-            console.log(EuropeanCountries.includes(response.country))
+            //console.log(response.country)
+            //console.log(EuropeanCountries.includes(response.country))
 
             if(passiveCountries.length >= 10 && achivements[7].achieved === false){
                 achievements[7].achieve();
@@ -265,7 +316,7 @@ function getCountry(request, originalSite){
             if(response.country === "Russia" && achievements[0].achieved === false){
                 achievements[0].achieve();
                 achievements[0].achieved = true;
-                console.log("Test Passed - From Russia With Love")
+                //console.log("Test Passed - From Russia With Love")
             } 
             if(CountriesInAsia.includes(response.country) && achievements[1].achieved === false){
                 achievements[1].achieve();
@@ -276,8 +327,8 @@ function getCountry(request, originalSite){
             }else if(EuropeanCountries.includes(response.country) && achievements[3].achieved === false){
                 achievements[3].achieve()
                 achievements[3].achieved = true;
-                console.log("Test Passed - Europe")
-                console.log(achievements)
+                //console.log("Test Passed - Europe")
+                //console.log(achievements)
                 sendNotification(achievements[3])
             }else if(NorthAmerica.includes(response.country) && achievements[4].achieved === false){
                 achievements[4].achieve()
@@ -311,10 +362,11 @@ function getCountry(request, originalSite){
 
     xhr.open("GET", request, true);
     xhr.send();
+    //console.log("Request sent")
 }
 
 function sendNotification(achievement){
-    console.log("test Notification fired")
+    //console.log("test Notification fired")
     chrome.notifications.create('Achievement Completed', {
         type: 'basic',
         iconUrl: './staticimages/SmallLogo.png',
@@ -383,7 +435,7 @@ chrome.alarms.create('PASSIVEMODE-ALARM', {
 
 chrome.alarms.onAlarm.addListener((alarm) => {
     if(alarm.name === "PASSIVEMODE-ALARM"){
-        console.log('ALARM HEARD')
+        //console.log('ALARM HEARD')
         chrome.notifications.create('test', {
             type: 'basic',
             iconUrl: './staticimages/SmallLogo.png',

@@ -25,7 +25,6 @@ import BaseTimer from "../components/BaseTimer"
     <button @click="joinlobby" type="button">Join Lobby</button><br/>
     <button @click="options" type="button">Options</button>
     <button @click="leaderboards" type="button">LeaderBoards</button>
-    <button @click="passiveMode" type="button">View Passive Mode Stats</button>
   </div>
 
   <div v-if="LeaderBoard"  id = "Leader-Board">
@@ -49,7 +48,7 @@ import BaseTimer from "../components/BaseTimer"
     --->
     <ol v-if="SoloClassicLB">
     <!------Putt the W/L ratio here-->
-    <p>W/L = {{ gamesWon }}/{{gamesPlayed}}</p>
+    <p class="HelpText">W/L = {{ gamesWon }}/{{gamesPlayed}}</p>
     <li v-for="item in intSoloClassLB" :key="item" class="LeaderBoard">
         {{ item.username }}  |  {{ item.Score }}  |  {{ item.createdAt }}
     </li>
@@ -75,9 +74,10 @@ import BaseTimer from "../components/BaseTimer"
 
   <div v-if="OptionsPage"  id="Options-Page">
     <h2>TrackHunt</h2>
-    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/><button type="button">Light Mode</button><br/>
-    <button type="button">Dark Mode</button><br/>
+    <!-----<img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/><button type="button">Light Mode</button><br/>
+    <button type="button">Dark Mode</button><br/>--->
     <button @click="changeUsernamePage" type="button">Change Username</button>
+    <button @click="passiveMode" type="button">View Passive Mode Stats</button>
     <br/><br/>
     <button @click="exitToHomePage" type="button">Home Page</button><br/>
   </div>
@@ -120,8 +120,10 @@ import BaseTimer from "../components/BaseTimer"
     <h2>TrackHunt</h2>
     <p class="HelpText">Lobby ID: {{ playersLobby }}</p>
     <!----Animation of the wheel turning ----->
-    <input v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label v-if="isLobbyCreator">Classic</label>
-    <input v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label v-if="isLobbyCreator">Bingo</label>
+    <div class="RadioButtons">
+    <input id="Classic" v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label for="Classic" v-if="isLobbyCreator">Classic</label>
+    <input id="Bingo" v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label for="Bingo" v-if="isLobbyCreator">Bingo</label>
+    </div>
 
     <p class="HelpText">Connected Players:</p>
     <li v-for="(item, count) in UsersInLobby" class="LobbyUsers" :key="item">
@@ -132,9 +134,12 @@ import BaseTimer from "../components/BaseTimer"
     <!------<button class="Radio" type="button">Roulette</button>--->
     <br/>
     <!-----This should only be visible for the lobby leader: ---->
-    <input v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">2 min</label>
-    <input v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">5 min</label>
-    <input v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label v-if="isLobbyCreator">10 min</label>
+    <div class="RadioButtons">
+    <input id="2mins" v-if="isLobbyCreator" class="Radio" type="radio" value="45" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="2mins" v-if="isLobbyCreator">2 min</label>
+    <input id="5mins" v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="5mins" v-if="isLobbyCreator">5 min</label>
+    <input id="10mins" v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="10mins" v-if="isLobbyCreator">10 min</label>
+    </div>
+    <br/>
     <button v-if="isLobbyCreator" @click="closeLobby" type="button">Close Lobby</button>
     <button @click="multiGameInitiated" type="button">Begin Game</button>
     <!------<button @click="exitToHomePage" type="button">Cancel</button>---->
@@ -147,8 +152,11 @@ import BaseTimer from "../components/BaseTimer"
   <p class="PassiveText">Since you installed TackerHunt, you have been tracked: {{ passiveModeTotalTrackers }} times.</p>
   <p class="PassiveText">This was done by a total of {{ passiveModeUniqueHosts }} different entities.</p>
   <p class="PassiveText">These entities hailed from {{ passiveModeTotalCounties }} countries.</p>
-  <p class="PassiveText">To see a complete list of hosts and counts, click <button @click="PassiveToHost">here</button></p>
-  <p class="PassiveText">To see a complete list of countries and counts, click <button @click="PassiveToCountry">here</button></p>
+  <p class="PassiveText">To see a complete list of hosts and counts: </p>
+  <button @click="PassiveToHost">PassiveMode Hosts</button>
+  <p class="PassiveText">To see a complete list of countries and counts: </p>
+  <button @click="PassiveToCountry">PassiveMode Countries</button>
+  <p class="PassiveText">To view your achievements: </p>
   <button @click="achievementPage">Achievements</button>
   <br/>
   <button @click="exitToHomePage">HomePage</button>
@@ -189,8 +197,10 @@ import BaseTimer from "../components/BaseTimer"
   <div v-if="SoloPage" id="Solo-Mode">
     <h2>TrackHunt</h2>
     <p class="HelpText">Solo Mode</p>
-    <input class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label>Classic</label>
-    <input class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label>Bingo</label>
+    <div class="RadioButtons">
+    <input id="Classic" class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label for="Classic">Classic</label>
+    <input id="Bingo" class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label for="Bingo">Bingo</label>
+    </div>
 
 
     <p id="LeaderBoard">Previous Classic Scores:</p>
@@ -199,13 +209,13 @@ import BaseTimer from "../components/BaseTimer"
         {{ item.username }}  |  {{ item.Score }}  |  {{ item.createdAt }}
     </li>
     </ol>
-
-
-
     <br/>
-    <input class="Radio" type="radio" value="120" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label>2 min</label>
-    <input class="Radio" type="radio" value="300" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label>5 min</label>
-    <input class="Radio" type="radio" value="600" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label>10 min</label>
+    <!--- Radio Buttons adapted from https://markheath.net/post/customize-radio-button-css https://codepen.io/phusum/pen/VQrQqy-->
+    <div class="RadioButtons">
+    <input id="2min" class="Radio" type="radio" value="60" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label for="2min">2 min</label>
+    <input id="5min" class="Radio" type="radio" value="300" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label for="5min">5 min</label>
+    <input id="10min" class="Radio" type="radio" value="600" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label for="10min">10 min</label>
+    </div>
     <br/>
     <button @click="soloGameInitiated" type="button">Begin Game</button>
     <button @click="exitToHomePage" type="button">Cancel</button>
@@ -213,7 +223,7 @@ import BaseTimer from "../components/BaseTimer"
 
   <div v-if="SoloGame" id="Solo-Game" :key="componentVersion">
     <h2>TrackHunt</h2>
-    <p class="HelpText">Solo Mode - {{ GameMode }}</p>
+    <p class="HelpText">Solo Mode - {{ GameMode }}<button @click="displayInformation" class="InformationBox">i</button></p>
     <div v-if="(!gameOver)">
     <br/>
 
@@ -255,8 +265,18 @@ import BaseTimer from "../components/BaseTimer"
     </div>
     <div v-if="gameOver">
     <h2>GAME OVER</h2>
-    <p>Your score was: {{ userScore }}</p>
-    <p>You were tracked by {{ noOfCountries }} nation(s)</p>
+    <div v-if="GameMode === 'Classic'">
+    <p>Your score was: {{ this.userScore }}</p>
+    </div>
+    <div v-if="GameMode === 'Bingo'">
+    <p v-if="finishedGame">Well done! You managed to find all of the tracking nations!</p>
+    <p v-if="!(finishedGame)">Unfortunately, you did not manage to find the tracking nations in the given time period.</p>
+    </div>
+    <p class="CategoryText">You were tracked by {{ noOfCountries }} nation(s)</p>
+    <p v-if="APIEnabled" class="CategoryText">During your game, you were tracked when visiting the following categories of pages: </p>
+    <li v-for="item in categoryList" ref="ListOfCategories" :key="item.name" class="CategoryList">
+        {{ item.name }} | {{ item.count }}
+    </li>
     <button @click="exitToHomePageReset" type="button">HomePage</button>
     </div>
     <!--- --<button @click="gameSetup" type="button">Refresh</button> --->
@@ -301,13 +321,15 @@ import BaseTimer from "../components/BaseTimer"
     </ol>
     <ol v-if="allPlayersReady && (gameStarted)">
     
+    <div v-if="GameMode === 'Classic'">
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item">
         {{ item.userID }} - {{ item.score }}
     </li>
-    <p class="ErrorText"> {{ playerLeaveMessage }}</p>
+    </div>
+    <p class="ErrorText" v-if="playerLeaveMessage != 'false'"> {{ playerLeaveMessage }}</p>
     </ol>
     <button v-if="isLobbyCreator" @click="gameSetup" type="button">Start</button>
-    <button @click="playerReady">Ready Up</button>
+    <button v-if="!(allPlayersReady)" @click="playerReady">Ready Up</button>
     <button @click="leaveGame" type="button">Leave Game</button>
     </div>
 
@@ -317,15 +339,16 @@ import BaseTimer from "../components/BaseTimer"
     <p>You won! Congratulations</p>
     <img v-if="IntroPage" class="trophy" src="staticimages/trophy.png" alt="A picture of a trophy"/>
     </div>
-    <div v-if="!(didYouWin)">
+    <div v-if="!(didYouWin) && WinningUser != undefined">
     <p>Condolenses. The winner of the game was {{ WinningUser }}</p>
     </div>
+    <p v-if="WinningUser === undefined">Condlenses, no players successfully found all the tracking nations!</p>
 
     <div v-if="GameMode === 'Classic'">
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item.name">
         {{ item.userID }} - {{ item.score }}
     </li>
-    <p>Your score was: {{ userScore }}</p>
+    <p>Your score was: {{ this.userScore }}</p>
     <p>You were tracked by {{ noOfCountries }} nation(s) in total</p>
     </div>
 
@@ -333,7 +356,10 @@ import BaseTimer from "../components/BaseTimer"
     <p>You managed to get tracked by {{ noOfCountriesBingo }} of the bingo countries</p>
     <p>You were tracked by {{ noOfCountries }} nation(s) in total</p>
     </div>
-
+    <p v-if="APIEnabled" class="CategoryText">During your game, you were tracked when visiting the following categories of pages: </p>
+    <li v-for="item in categoryList" ref="ListOfCategories" :key="item.name" class="CategoryList">
+        {{ item.name }} | {{ item.count }}
+    </li>
 
     <button @click="exitToHomePageReset" type="button">HomePage</button>
     </div>
@@ -380,7 +406,6 @@ export default {
           if((this.playersLobby === lobby) && (this.UsersID != lobbyAndUser[1])){
             this.winningUser = lobbyAndUser[1];
             this.gameOver = true;
-            this.reset();
             this.didYouWin = false;
           }
       },
@@ -586,8 +611,11 @@ export default {
       AchievementPage: false,
 
       GameMode: 'Classic',
+      finishedGame: false,
 
       numberOfCookies: 0,
+
+      categoryList: [],
 
 
       userLeaveMessage: "",
@@ -605,7 +633,7 @@ export default {
 
 
       easyCountries: ["United States", "United Kingdom"],
-      medEasyCountries: ["Canada"],
+      medEasyCountries: ["Canada", "Ireland", "Germany", "Netherlands", "Belgium"],
       hardCountries: ["Russia"],
       //countriesIveFoundBeforeAndShouldIncludeAbove: ["Canada", "United Kingdom", "United States", "Germany", "Netherlands", "Ireland", "Belgium"],
       countriesToFind: [],
@@ -627,6 +655,10 @@ export default {
       timerClose: false,
 
       userSignedIn: false,
+
+      // Dev Variables
+
+      APIEnabled: false,
       }
     },
     computed: {
@@ -677,6 +709,9 @@ export default {
               this.timerClose = true;
           }else if(value === 0){
             this.endGame()
+            if(this.GameMode === 'Bingo'){
+              this.endBingoGame();
+            }
           }
         },
         immediate: true
@@ -746,6 +781,7 @@ export default {
         chrome.storage.onChanged.addListener(function(result) {
             vm.updateListOfCountries()
             vm.updateAchievements()
+            vm.updateCategories()
             vm.VisitedCountries = result.countryList.newValue;
             vm.gameStarted = true;
             //console.log(vm.GameMode)
@@ -764,6 +800,8 @@ export default {
 
           //Nabbed from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
       },
+
+      
       
       onGameModeChange(event){
         var gameModeSelected = event.target.value;
@@ -834,31 +872,38 @@ export default {
       },
       endGame(){
         var winningScore = 0;
+        const vm = this;
+
+        if(this.GameMode === 'Bingo'){
+          this.endBingoGame();
+        }
 
         if(this.MultiPlayer){
           for(var i = 0; i < this.noOfUsersInLobby; i++){
           if(this.UsersInLobby[i].score >= winningScore){
             winningScore = this.UsersInLobby[i].score;
             var winningUser = this.UsersInLobby[i].userID;
+            }
           }
-        }
+        }else{
+          winningUser = this.UsersID
         } 
         this.WinningUser = winningUser;
         var timePassed = this.startTime - this.timer;
 
         console.log(timePassed)
+        this.finishedGame = true;
 
         if(this.GameMode === "Classic"){
           this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, this.userScore, (this.MultiPlayer === true), this.startTime)
         }else if(this.GameMode === "Bingo"){
-          var finishedGame = true;
           for(var j = 0; j < this.VisitedCountries.length; j++){
               if(this.VisitedCountries[i].found != true){
-                finishedGame = false;
+                this.finishedGame = false;
                 console.log('unfinished')
               }
           }
-          if(finishedGame){
+          if(this.finishedGame){
             this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, timePassed, (this.MultiPlayer === true), this.startTime)
             console.log('sent bingo score to the server');
           }
@@ -880,7 +925,7 @@ export default {
         this.$socket.emit('closeLobby', this.playersLobby)
         this.gameOver = true;
 
-        this.reset();
+        //this.reset();
 
       },
       endBingoGame(){
@@ -891,10 +936,20 @@ export default {
           this.$socket.emit('gameWon', this.UserGoogleID);
           this.$socket.emit('closeLobby', this.playersLobby)
         }
-        this.noOfCountriesBingo = this.countriesToFind.length;
-        this.WinningUser = this.UsersID
-        this.didYouWin = true;
+        
+        var didUserWin = true;
+        for(var i = 0; i < this.countriesToFind.length; i++){
+          if(this.countriesToFind[i].found === false){
+            didUserWin = false;
+            
+          }
+        }
 
+        if(didUserWin){
+          this.WinningUser = this.UsersID
+          this.didYouWin = true;
+          this.noOfCountriesBingo = this.countriesToFind.length;
+        }
 
         this.gameOver = true;
         this.reset();
@@ -923,6 +978,12 @@ export default {
             vm.achievements = result.achievements;
           })
      },
+     updateCategories(){
+      var vm = this;
+      chrome.storage.local.get(["categoryList"], function(result){
+          vm.categoryList = result.categoryList;
+      })
+     },
 
      updateListOfCountries(){
         var vm = this;
@@ -933,7 +994,7 @@ export default {
 
           chrome.storage.local.get(["numberOfCookies"], function(result){
             vm.numberOfCookies = result;
-            console.log(vm.numberOfCookies);
+            //console.log(vm.numberOfCookies);
           })
           chrome.storage.local.get(["achievements"], function(result){
             vm.achievements = result.achievements;
@@ -970,6 +1031,7 @@ export default {
         })
 
         this.HomePage = false;
+        this.OptionsPage = false;
         this.PassivePage = true;
 
         console.log(this.passiveModeCountries);
@@ -985,16 +1047,14 @@ export default {
             let score = 0;
             for(var i = 0; i < result.countryList.length; i++){
                 count.value += result.countryList[i].count;
-                if(result.countryList[i].name === "United States"){
+                if(vm.easyCountries.includes(result.countryList[i].name)){
                     score += result.countryList[i].count;
-                }else if(result.countryList[i].name === "United Kingdom" || result.countryList[i].name === "Canada"){
+                }else if(vm.medEasyCountries.includes(result.countryList[i].name)){
                     score += (result.countryList[i].count)*2;
-                }else if(result.countryList[i].name === "Germany" || result.countryList[i].name === "Netherlands" || result.countryList[i].name === "Ireland"){
+                }else if(vm.hardCountries.includes(result.countryList[i])){
                     score += (result.countryList[i].count)*3
-                }else if(result.countryList[i].name === "Russia"){
-                    score += (result.countryList[i].count)*4
                 }else{
-                    score += (result.countryList[i].count)*5
+                    score += (result.countryList[i].count)*4
                 }
             }
             vm.noOfUsersInLobby = vm.UsersInLobby.length;
@@ -1332,12 +1392,13 @@ export default {
       this.timer = 0;
       this.allPlayersReady = false;
       this.didYouWin = false;
-      this.winningUser = false;
+      this.WinningUser = '';
       this.VisitedCountries = [];
       this.noOfUsersInLobby = 0;
       this.gameStarted = false;
       this.userLeaveMessage = "";
       this.countriesToVisit = [];
+      this.noOfCountriesBingo = 0;
     },
     createNewLobbyID(){
      /* adapted from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript */
@@ -1351,7 +1412,7 @@ export default {
     },
     displayInformation(){
       if(this.GameMode === "Classic"){
-        alert("In Classic mode, points are awarded through discovering tracking URLs located in different nations. The rarity of the nation discovered determines the amount of points received. The United States will have an (x1) multiplyer, whereas a Tuvalu would have a (x10) multiplyer. The player with the most points when the timer elapses will win.")
+        alert("In Classic mode, points are awarded through discovering tracking URLs located in different nations. The rarity of the nation discovered determines the amount of points received. The player with the most points when the timer elapses will win. \n Common Countries (x1 Multiplyer): United States, United Kingdom \n Uncommon Countries (x2 Multiplyer): EU nations \n Rare Countries (x3 Multiplyer): Russia \n Very Rare Countries (x5 Multiplyer): All other countries");
       }else{
         alert("In Bingo mode, users are challenged to discover tracking URLs from a specific list of countries. The first player to discover all listed countries is the winner of the game")
       }
@@ -1460,6 +1521,9 @@ p.CountryText {
 p.CookieText {
   font-size: 10px
 }
+p.CategoryText {
+  font-size: 12px
+}
 
 #timer {
   color: white;
@@ -1494,6 +1558,51 @@ div.ClassicGameMode {
   display: inline-block;
 }
 
+/* Style below adapted from this tutorial: https://markheath.net/post/customize-radio-button-css https://codepen.io/phusum/pen/VQrQqy */
+
+div.RadioButtons{
+  width: 200px;
+  height: 30px;
+}
+
+div.RadioButtons label, div.button input {
+
+}
+
+div.RadioButtons input[type="radio"] {
+  opacity: 0.011;
+  /*z-index: 100;*/
+  position: fixed;
+  width: 0;
+}
+
+div.RadioButtons input[type="radio"]:checked + label {
+  background: #20C20E;
+  border-radius: 4px;
+}
+div.RadioButtons label {
+  display: inline-block;
+  padding: 1px 1px;
+  font-family: sans-serif;
+  font-size: 15px;
+  border: 1px solid gray;
+  border-radius: 4px;
+  margin-right: 5px;
+}
+div.RadioButtons input[type="radio"]:focus + label {
+  border: 2px  #444
+}
+
+button {
+  border-radius: 4px;
+  border: 1px solid black;
+}
+
+button:hover {
+  background-color: darkgreen
+}
+
+
 BaseTimer {
   align-self: center;
 }
@@ -1515,7 +1624,7 @@ body {
 }
 p.HelpText {
   font-size: 9px;
-  color: white;
+  color: lightgrey;
 }
 p.ErrorText {
   font-size: 9px;
@@ -1532,6 +1641,11 @@ li.LeaderBoard {
   font-style: italic;
   font-size: x-small;
   margin-left: none;
+}
+li.CategoryList {
+  font-size: 10px;
+  list-style: none;
+  font-style: italic;
 }
 
 h2 {
