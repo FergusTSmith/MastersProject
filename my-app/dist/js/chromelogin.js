@@ -9,6 +9,8 @@ const STATE = encodeURIComponent('jfkls3n');
 const SCOPE = encodeURIComponent('openid');
 const PROMPT = encodeURIComponent('consent');
 var user_info = '';
+var user_id = '';
+var uniqueIDforUser = '';
 
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -16,37 +18,45 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if(isSignedIn()){
             console.log("Error. User is currently logged in");
             sendResponse('success');
+            console.log(user_id);
+            chrome.identity.getProfileUserInfo({'accountStatus': 'ANY'}, function(info){
+                console.log(info)
+                uniqueIDforUser = info.id;
+            })
         }else{
             chrome.identity.launchWebAuthFlow({
                 url: create_uri_oauth2(),
                 interactive: true,
             }, function(redirect_url){
 
-                let user_id = redirect_url.substring(redirect_url.indexOf('id_token=') + 9);
+                user_id = redirect_url.substring(redirect_url.indexOf('id_token=') + 9);
                 user_id = user_id.substring(0, user_id.indexOf('&'));
 
                 const user_information = KJUR.jws.JWS.readSafeJSONString(b64utoutf8(user_id.split(".")[1]));
                 user_info = user_information;
+                console.log(user_id)
                 
                 if((user_information.iss === 'https://accounts.google.com' || user_information.iss === 'accounts.google.com') && user_information.aud === CLIENT_ID){
                     isUserSignedIn = true;
                     sendResponse({response: 'success', userID: user_id});
                     console.log("We have successfully completed the login test");
-                    return true;
+                    
+                    //Get user identity - https://www.youtube.com/watch?v=_26ptq-6o_s&ab_channel=RustyZone
+                    chrome.identity.getProfileUserInfo({'accountStatus': 'ANY'}, function(info){
+                        console.log(info)
+                        uniqueIDforUser = info.id;
+                    })
                 }else{
                     console.log("Error, could not authenticate")
                 }
             });
             return true;
         }
-    }else if (request.message === 'logout'){
-
-    }else if (request.message === 'GoogleID'){
-        if(user_info === ''){
+    }else if (request.message === 'googleID'){
+        if(uniqueIDforUser === ''){
             console.log("no user found")
         }else{
-            sendResponse(user_info);
-            console.log(user_info + 'intrachrome');
+            sendResponse(uniqueIDforUser)
         }
         return true;
     }else if (request.message === 'reset'){
