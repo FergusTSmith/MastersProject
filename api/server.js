@@ -129,12 +129,20 @@ db.sequelize.sync().then((req) => {
         socket.on('closeLobby', (lobbyID) => {
             for(var i = 0; i < numberOfLobbies; i++){
                 if(availableLobbies[i].LobbyID === lobbyID){
-                    for(var j = i; j < numberOfLobbies-1; j++){
+                    /*for(var j = i; j < numberOfLobbies-1; j++){
                         availableLobbies[i] = availableLobbies[i+1]
                     }
-                    availableLobbies[numberOfLobbies--] = null;
+                    availableLobbies[numberOfLobbies--] = null;*/
+                    availableLobbies.splice(i, 1);
     
                     //Need code to notify all users in that lobby that it has been closed.
+                }
+            }
+            // Code to make sure that any random lobbies with no users are deleted:
+
+            for(var j = 0; j < availableLobbies.length; j++){
+                if(availableLobbies[j].lobbyUsers.length === 0){
+                    availableLobbies.splice(j, 1);
                 }
             }
         })

@@ -121,7 +121,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 
         //console.log(requestURL);
 
-        if(requestURL in tracker_domains){
+        if(FilterDomains.includes(requestURL)){
             if(!(detectedHosts.includes(requestURL))){
                 detectedHosts.push(requestURL)
                 //console.log(detectedHosts);
@@ -173,7 +173,7 @@ chrome.cookies.onChanged.addListener(function(result) {
         var cleanedDomain = result.cookie.domain.substring(1, result.cookie.domain.length)
         //console.log(cleanedDomain);
 
-        if(cleanedDomain in tracker_domains){
+        if(FilterDomains.includes(cleanedDomain)){
             //console.log('New Tracker Cookies discovered')
            // console.log(result.cookie.domain)
             totalTrackerCookies++
@@ -263,7 +263,7 @@ function getCountry(request, originalSite, originalURL){
                         detectedCountries[i].site.push(originalSite)
 
                         if(!(sitesCategorised.includes(originalSite))){
-                            // getCategory(CategoryEndpoint + originalSite) Disabling to Save API bandwidth
+                            getCategory(CategoryEndpoint + originalSite) // Disabling to Save API bandwidth
                             console.log(originalSite);
                             sitesCategorised.push(originalSite)
                         }
@@ -277,7 +277,7 @@ function getCountry(request, originalSite, originalURL){
                 detectedCountries.push(new Country(response.country, originalSite));
 
                 if(!(sitesCategorised.includes(originalSite))){
-                    // getCategory(CategoryEndpoint + originalSite); Disabing to save API bandwidth
+                    getCategory(CategoryEndpoint + originalSite); // Disabing to save API bandwidth
                     console.log(originalSite);
                     sitesCategorised.push(originalSite)
                 }

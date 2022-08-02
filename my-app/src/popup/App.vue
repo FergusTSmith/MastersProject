@@ -1,19 +1,25 @@
 <script setup>
 import { ref } from 'vue';
-import BaseTimer from "../components/BaseTimer"
+import BaseTimer from "../components/BaseTimer";
+import IntroPage from '@/components/IntroPage.vue';
+import LeaderBoard from '@/components/LeaderBoard.vue';
+import Options from '@/components/Options.vue';
+import UsernameChange from '@/components/UsernameChange.vue';
+import SetUsername from '@/components/SetUsername.vue';
+//import SetUsername from '@/components/SetUsername.vue';
+import Lobby from '@/components/Lobby.vue'
+import PassiveMode from '@/components/PassiveMode.vue'
+import Achievements from '@/components/Achievements.vue'
+import Hosts from '@/components/Hosts.vue'
+import SoloLobby from '@/components/SoloLobby.vue';
+import JoinLobby from '@/components/JoinLobby.vue';
+import Country from '@/components/Country.vue'
 </script>
 
 <template>
 <div id="app" :key="componentVersion">
-  <div v-if="IntroPage" id="Intro-Page" stle="width: 450px" ref="Intro-Page">
-      <Transition>
-      <h2 v-if="IntroPage">TrackHunt</h2>
-      </Transition>
-      <Transition><img v-if="IntroPage" class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/></Transition>
-      <h5>Who is watching you?</h5>
-      <Transition><button v-if="IntroPage" @click="googleLogin" ref="LoginButton">Login</button></Transition>
-      <!------<Transition><button v-if="IntroPage" @click="NoAccount">No-Login Mode</button></Transition> --->
-      <Transition><p v-if="IntroPage" class="HelpText">To use TrackHunt, sign in with Google and ensure you are signed in on your browser.</p></Transition>
+  <div v-if="IntroPage" id="Intro-Page" ref="Intro-Page">
+      <IntroPage @userLogin="googleLogin($event)"></IntroPage>
   </div>
 
   <div v-if="HomePage" id = "Home-Page">
@@ -27,198 +33,51 @@ import BaseTimer from "../components/BaseTimer"
     <button @click="leaderboards" type="button">LeaderBoards</button>
   </div>
 
-  <div v-if="LeaderBoard"  id = "Leader-Board">
-    <h2>TrackHunt</h2><br/>
-    <p class="HelpText">LeaderBoards</p>
-    <button @click="displaySoloClass" class="Radio" type="button">Solo Classic</button>
-    <button @click="displayMulClass" class="Radio" type="button">Multi Classic</button>
-    <!-----<button @click="displaySoloBing" class="Radio" type="button">Solo Bingo</button><br/>--->
-    <p>Username   |   Score   |  Date </p>
-    <ol v-if="MultiClassicLB">
-    <li v-for="item in intMultiClassLB" :key="item" class="LeaderBoard">
-        {{ item.username }}  |  {{ item.Score }}  |  {{ item.createdAt }}
-    </li>
-    </ol>
-    <!------
-    <ol v-if="MultiBingoLB">
-    <li v-for="item in multiBingoLeaderboard" :key="item" class="LeaderBoard">
-      {{ item.username }} - {{ item.Score }} - {{ item.createdAt }}
-    </li>
-    </ol>
-    --->
-    <ol v-if="SoloClassicLB">
-    <!------Putt the W/L ratio here-->
-    <p class="HelpText">W/L = {{ gamesWon }}/{{gamesPlayed}}</p>
-    <li v-for="item in intSoloClassLB" :key="item" class="LeaderBoard">
-        {{ item.username }}  |  {{ item.Score }}  |  {{ item.createdAt }}
-    </li>
-    </ol>
-    <!------
-    <ol v-if="SoloBingoLB">
-    <li v-for="item in soloBingoLeaderboard" :key="item" class="LeaderBoard">
-        {{ item.username }}
-    </li>
-    </ol>
-    ---->
-    <div id="Leaderboard">
-    </div>
-    
-    <!------<button @click="displayMulBing" class="Radio" type="button">Multi Bingo</button>--->
-    <!---<button class="Radio" type="button">Roulette</button>---->
-    <button @click="twoMinLB" class="TimeButton" type="button">2 min</button>
-    <button @click="fiveMinLB" class="TimeButton" type="button">5 min</button>
-    <button @click="tenMinLB" class="TimeButton" type="button">10 min</button>
-    <br/>
+  <div v-if="LeaderBoardPage"  id = "Leader-Board">
+    <LeaderBoard :intSoloClassLB="personalSoloHS" :intMultiClassLB="multiClassicLeaderboard" :soloClassicLeaderboard="soloClassicLeaderboard" :multiClassicLeaderboard="multiClassicLeaderboard"></LeaderBoard>
     <button @click="exitToHomePage" type="button">HomePage</button>
   </div>
 
   <div v-if="OptionsPage"  id="Options-Page">
-    <h2>TrackHunt</h2>
-    <!-----<img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/><button type="button">Light Mode</button><br/>
-    <button type="button">Dark Mode</button><br/>--->
-    <button @click="changeUsernamePage" type="button">Change Username</button>
-    <button @click="passiveMode" type="button">View Passive Mode Stats</button>
-    <br/><br/>
+    <Options @passiveMode="passiveMode" @changeUsernamePage="changeUsernamePage"></Options>
     <button @click="exitToHomePage" type="button">Home Page</button><br/>
   </div>
 
   <div v-if="UsernameChangePage" id="UsernameChangePage">
-    <h2>TrackHunt</h2>
-    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
-    <br/><br/>
-    <p>Your current username is: {{ UsersID }}</p>
-    <label>Enter a new username:</label><br/>
-    <input ref="NewUsername" type="text">
-    <br/>
-    <button @click="changeUsername" type="button">Save</button>
-    <button @click="exitToHomePage" type="button">Back</button>
+    <UsernameChange :UsersID="UsersID" @changeUsernamePage="changeUsernamePage" @exitToHomePage="exitToHomePage"></UsernameChange>
   </div>
 
   <div v-if="JoinLobbyPage" id="Join-Lobby">
-    <h2>TrackHunt</h2>
-    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
-    <br/><br/>
-    <label>Enter lobby ID:</label><br/>
-    <input ref="LobbyID" type="text">
-    <p class="ErrorText">{{ lobbyError }}</p>
-    <button @click="enterLobby" type="button">Join</button>
-    <button @click="exitToHomePage" type="button">Back</button>
+    <JoinLobby @enterLobby="enterLobby($event)" @exitToHomePage="exitToHomePage"></JoinLobby>
   </div>
     
   <div v-if="UsernamePage" id="UsernamePage">
-    <h2>TrackHunt</h2>
-    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
-    <br/><br/>
-    <label>Enter a username for your account:</label><br/>
-    <input ref="nickname" type="text">
-    <br/>
-    <button @click="noLoginMode" type="button">Join</button>
-    <button @click="noLoginToIntro" type="button">Back</button>
+    <SetUsername @setUsername="setUsername($event)" @usernameToIntro="usernameToIntro"></SetUsername>
   </div>
 
+
   <div v-if="LobbyPage" id="Lobby">
-    <h2>TrackHunt</h2>
-    <p class="HelpText">Lobby ID: {{ playersLobby }}</p>
-    <!----Animation of the wheel turning ----->
-    <div class="RadioButtons">
-    <input id="Classic" v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label for="Classic" v-if="isLobbyCreator">Classic</label>
-    <input id="Bingo" v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label for="Bingo" v-if="isLobbyCreator">Bingo</label>
-    </div>
-
-    <p class="HelpText">Connected Players:</p>
-    <li v-for="(item, count) in UsersInLobby" class="LobbyUsers" :key="item">
-        {{ ++count }}. {{ item.userID }}
-    </li>
-    <br/><br/>
-
-    <!------<button class="Radio" type="button">Roulette</button>--->
-    <br/>
-    <!-----This should only be visible for the lobby leader: ---->
-    <div class="RadioButtons">
-    <input id="2mins" v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="2mins" v-if="isLobbyCreator">2 min</label>
-    <input id="5mins" v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="5mins" v-if="isLobbyCreator">5 min</label>
-    <input id="10mins" v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="10mins" v-if="isLobbyCreator">10 min</label>
-    </div>
-    <br/>
-    <button v-if="isLobbyCreator" @click="closeLobby" type="button">Close Lobby</button>
-    <button @click="multiGameInitiated" type="button">Begin Game</button>
-    <!------<button @click="exitToHomePage" type="button">Cancel</button>---->
-    <button @click="leaveGame" type="button">Leave Game</button>
+    <Lobby :playersLobby="playersLobby" :UsersInLobby="UsersInLobby" :isLobbyCreator="isLobbyCreator" @onGameModeChange="onGameModeChange($event)" @onTimeChange="onTimeChange($event)" @exitToHomePageReset="exitToHomePageReset" @multiGameInitiated="multiGameInitiated" @leaveGame="leaveGame"></Lobby>
   </div>
 
   <div v-if="PassivePage">
-  <h2>TrackHunt</h2>
-  <p class="HelpText">"Passive Mode" engages whenever you install TrackerHunt. This will show a collection of all of the trackers encountered since the application was installed.</p>
-  <p class="PassiveText">Since you installed TackerHunt, you have been tracked: {{ passiveModeTotalTrackers }} times.</p>
-  <p class="PassiveText">This was done by a total of {{ passiveModeUniqueHosts }} different entities.</p>
-  <p class="PassiveText">These entities hailed from {{ passiveModeTotalCounties }} countries.</p>
-  <p class="PassiveText">To see a complete list of hosts and counts: </p>
-  <button @click="PassiveToHost">PassiveMode Hosts</button>
-  <p class="PassiveText">To see a complete list of countries and counts: </p>
-  <button @click="PassiveToCountry">PassiveMode Countries</button>
-  <p class="PassiveText">To view your achievements: </p>
-  <button @click="achievementPage">Achievements</button>
-  <br/>
-  <button @click="exitToHomePage">HomePage</button>
+    <PassiveMode :passiveModeTotalTrackers="passiveModeTotalTrackers" :passiveModeUniqueHosts="passiveModeUniqueHosts" :passiveModeTotalCounties="passiveModeTotalCounties" @PassiveToHost="PassiveToHost" @PassiveToCountry="PassiveToCountry" @achievementPage="achievementPage" @exitToHomePage="exitToHomePage"></PassiveMode>
   </div>
 
   <div v-if="AchievementPage">
-  <p>Passive Mode Achievements are unlocked while passively browsing. A notification will be received when this is achieved.</p>
-  <li class="Achievements" v-for="item in achievements" :key="item">
-      <p class="AchivementTitle">{{ item.name }} | {{ item.achieved }}</p>
-      <p class="HelpText">{{ item.text }}</p>
-      <hr/>
-  </li>
-  <button @click="backToPassive">Back</button>
-  <button @click="exitToHomePage">HomePage</button>
+    <Achievements :achievements="achievements" @backToPassive="backToPassive" @exitToHomePage="exitToHomePage"></Achievements>
   </div>
 
-
   <div v-if="HostPage">
-  <h2>TrackHunt</h2>
-  <p class="HelpText">Passive Mode - Complete list of Hosts</p>
-  <li v-for="item in passiveModeHosts" :key="item" class="TrackedCountry">
-      {{ item.URL }} - {{ item.count }}
-  </li>
-  <button @click="exitToHomePage">HomePage</button>
-  <button @click="HostToPassive">Back</button>
+    <Hosts :passiveModeHosts="passiveModeHosts" @exitToHomePage="exitToHomePage" @HostToPassive="HostToPassive"></Hosts>
   </div>
 
   <div v-if="CountryPage">
-  <h2>TrackHunt</h2>
-  <p class="HelpText">Passive Mode - Complete list of Countries</p>
-  <li v-for="item in passiveModeCountries" :key="item" class="TrackedCountry">
-      {{ item.name }} - {{ item.count }}
-  </li>
-  <button @click="exitToHomePage">HomePage</button>
-  <button @click="CountToPassive">Back</button>
+    <Country :passiveModeCountries="passiveModeCountries" @exitToHomePage="exitToHomePage" @CountToPassive="CountToPassive"></Country>
   </div>
 
   <div v-if="SoloPage" id="Solo-Mode">
-    <h2>TrackHunt</h2>
-    <p class="HelpText">Solo Mode</p>
-    <div class="RadioButtons">
-    <input id="Classic" class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label for="Classic">Classic</label>
-    <input id="Bingo" class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label for="Bingo">Bingo</label>
-    </div>
-
-
-    <p id="LeaderBoard">Previous Classic Scores:</p>
-    <ol>
-    <li v-for="item in personalSoloHS" :key="item" class="LeaderBoard">
-        {{ item.username }}  |  {{ item.Score }}  |  {{ item.createdAt }}
-    </li>
-    </ol>
-    <br/>
-    <!--- Radio Buttons adapted from https://markheath.net/post/customize-radio-button-css https://codepen.io/phusum/pen/VQrQqy-->
-    <div class="RadioButtons">
-    <input id="2min" class="Radio" type="radio" value="120" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label for="2min">2 min</label>
-    <input id="5min" class="Radio" type="radio" value="300" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label for="5min">5 min</label>
-    <input id="10min" class="Radio" type="radio" value="600" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label for="10min">10 min</label>
-    </div>
-    <br/>
-    <button @click="soloGameInitiated" type="button">Begin Game</button>
-    <button @click="exitToHomePage" type="button">Cancel</button>
+    <SoloLobby :personalSoloHS="personalSoloHS" @onGameModeChange="onGameModeChange($event)" @onTimeChange="onTimeChange($event)" @exitToHomePage="exitToHomePage" @soloGameInitiated="soloGameInitiated()"></SoloLobby>
   </div>
 
   <div v-if="SoloGame" id="Solo-Game" :key="componentVersion">
@@ -263,10 +122,14 @@ import BaseTimer from "../components/BaseTimer"
     <button @click="gameSetup" type="button">Start</button>
     <button @click="endGame" type="button">End Game</button>
     </div>
+    
     <div v-if="gameOver">
-    <h2>GAME OVER</h2>
+    <h2 class="GameOver">GAME OVER</h2>
     <div v-if="GameMode === 'Classic'">
     <p>Your score was: {{ this.userScore }}</p>
+    <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
+        <p class="EndScreenText">{{ item.name }} | {{ item.count }} |</p>
+    </li>
     </div>
     <div v-if="GameMode === 'Bingo'">
     <p v-if="finishedGame">Well done! You managed to find all of the tracking nations!</p>
@@ -326,6 +189,7 @@ import BaseTimer from "../components/BaseTimer"
         {{ item.userID }} - {{ item.score }}
     </li>
     </div>
+    <p class="CookieText">During this session, {{numberOfCookies.numberOfCookies}} tracking cookies have been set on your device.</p>
     <p class="ErrorText" v-if="playerLeaveMessage != 'false'"> {{ playerLeaveMessage }}</p>
     </ol>
     <button v-if="isLobbyCreator" @click="gameSetup" type="button">Start</button>
@@ -334,7 +198,7 @@ import BaseTimer from "../components/BaseTimer"
     </div>
 
     <div v-if="gameOver">
-    <h2>GAME OVER</h2>
+    <h2 class="GameOver">GAME OVER</h2>
     <div v-if="didYouWin">
     <p>You won! Congratulations</p>
     <img v-if="IntroPage" class="trophy" src="staticimages/trophy.png" alt="A picture of a trophy"/>
@@ -349,6 +213,14 @@ import BaseTimer from "../components/BaseTimer"
         {{ item.userID }} - {{ item.score }}
     </li>
     <p>Your score was: {{ this.userScore }}</p>
+    <div class="GameResults">
+    <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
+        <p class="CountryText">{{ item.name }} | {{ item.count }} |</p><p class = "TinyText"> {{ item.site }} </p>
+    </li>
+    <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item">
+        {{ item.userID }} - {{ item.score }}
+    </li>
+    </div>
     <p>You were tracked by {{ noOfCountries }} nation(s) in total</p>
     </div>
 
@@ -424,6 +296,7 @@ export default {
           this.IntroPage = false;
 
           this.getUserDetails(users[0].googleID);
+          console.log(users);
 
           this.UsersID = users[0].username;
           this.UserGoogleID = users[0].googleID;
@@ -498,9 +371,9 @@ export default {
           for(var i = 0; i < this.noOfUsersInLobby; i++){
             console.log(this.UsersInLobby[i]);
             if(this.UsersInLobby[i].userID === user.userID){
-              this.UsersInLobby[i].ready = true;
+              this.UsersInLobby[i].ready = "Ready";
             }
-            if(this.UsersInLobby[i].ready != true){
+            if(this.UsersInLobby[i].ready != "Ready"){
               allReady = false;
             }
           }
@@ -541,6 +414,7 @@ export default {
       sendSoloClassic(MessageDetails){
         if(this.UsersID === MessageDetails[1]){
           this.soloClassicLeaderboard = MessageDetails[0];
+          console.log('test fired')
 
           for(var i = 0; i < this.soloClassicLeaderboard.length; i++){
           this.soloClassicLeaderboard[i].createdAt = this.soloClassicLeaderboard[i].createdAt.toString().substring(0, 10)
@@ -550,6 +424,7 @@ export default {
 
           this.personalSoloHS = this.soloClassicLeaderboard.filter(item => item.username === this.UsersID);
           this.personalSoloHS = this.personalSoloHS.slice(0, 11);
+          console.log(this.personalSoloHS)
         }
         console.log(MessageDetails)
       },
@@ -576,7 +451,7 @@ export default {
       PasswordPage: false,
       RegistrationPage: false,
       HomePage: false,
-      LeaderBoard: false,
+      LeaderBoardPage: false,
       OptionsPage: false,
       JoinLobbyPage: false,
       LobbyPage: false,
@@ -658,7 +533,7 @@ export default {
 
       // Dev Variables
 
-      APIEnabled: false,
+      APIEnabled: true,
       }
     },
     computed: {
@@ -692,7 +567,19 @@ export default {
       }
     },
     components: {
-      BaseTimer
+      BaseTimer,
+      IntroPage,
+      LeaderBoard,
+      Options,
+      UsernameChange,
+      SetUsername,
+      Lobby,
+      PassiveMode,
+      Achievements,
+      Hosts,
+      SoloLobby,
+      JoinLobby,
+      Country
     },
     
     
@@ -720,7 +607,6 @@ export default {
     methods: {
       testMethod(){
         this.timerClose = true;
-        //console.log(BaseTimer)
       },
       getHighScores(){
         this.$socket.emit('retrieveLeaderBoards');
@@ -779,16 +665,18 @@ export default {
         }
 
         chrome.storage.onChanged.addListener(function(result) {
-            vm.updateListOfCountries()
-            vm.updateAchievements()
-            vm.updateCategories()
-            vm.VisitedCountries = result.countryList.newValue;
-            vm.gameStarted = true;
-            //console.log(vm.GameMode)
-            if(vm.GameMode === "Classic"){
-              vm.updateScoreClassic()
-            }else if(vm.GameMode === "Bingo"){
-              vm.updateScoreBingo()
+            if(!(this.gameOver)){
+              vm.updateListOfCountries()
+              vm.updateAchievements()
+              vm.updateCategories()
+              vm.VisitedCountries = result.countryList.newValue;
+              vm.gameStarted = true;
+              //console.log(vm.GameMode)
+               if(vm.GameMode === "Classic"){
+               vm.updateScoreClassic()
+              }else if(vm.GameMode === "Bingo"){
+                vm.updateScoreBingo()
+              }
             }
         }) 
 
@@ -801,16 +689,12 @@ export default {
           //Nabbed from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
       },
 
-      
-      
-      onGameModeChange(event){
-        var gameModeSelected = event.target.value;
-        this.GameMode = gameModeSelected;
+      onGameModeChange(gameMode){
+        this.GameMode = gameMode;
       },
       
 
-      onTimeChange(event){ // https://www.codecheef.org/article/how-to-get-selected-radio-button-value-in-vuejs
-        var timeSelected = event.target.value;
+      onTimeChange(timeSelected){ // https://www.codecheef.org/article/how-to-get-selected-radio-button-value-in-vuejs
         this.timer = timeSelected;
       },
       HostToPassive(){
@@ -843,6 +727,7 @@ export default {
       },
 
       changeUsername(){
+
           this.UsersID = this.$refs.NewUsername.value;
           this.userProfile.userID = this.UsersID;
           this.exitToHomePage();
@@ -897,8 +782,8 @@ export default {
         if(this.GameMode === "Classic"){
           this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, this.userScore, (this.MultiPlayer === true), this.startTime)
         }else if(this.GameMode === "Bingo"){
-          for(var j = 0; j < this.VisitedCountries.length; j++){
-              if(this.VisitedCountries[i].found != true){
+          for(var j = 0; j < this.countriesToFind.length; j++){
+              if(this.countriesToFind[i].found != true){
                 this.finishedGame = false;
                 console.log('unfinished')
               }
@@ -913,7 +798,7 @@ export default {
         console.log(this.UsersID);
         console.log(this.UserGoogleID);
 
-        if(this.WinningUser === this.UsersID){
+        if(this.WinningUser === this.UsersID && (this.MultiPlayer === true)){
           this.didYouWin = true;
           console.log("Winning game won test passed");
 
@@ -955,10 +840,10 @@ export default {
         this.reset();
       },
       playerReady(){
-          this.userProfile.ready = true;
+          this.userProfile.ready = "Ready";
           for(var i = 0; i< this.noOfUsersInLobby; i++){
             if(this.UsersInLobby[i].userID === this.userProfile.userID){
-              this.UsersInLobby[i].ready = true;
+              this.UsersInLobby[i].ready = "Ready";
             }
           }
 
@@ -1124,29 +1009,12 @@ export default {
         }
      },
      
-     googleLogin(){
-         var vm = this;
-         chrome.runtime.sendMessage({ message: 'login'}, function(response) {
-            if (response === 'success') {
-              vm.userSignedIn = true;
-              vm.IntroPage = false;
-              chrome.runtime.sendMessage({ message: 'googleID'}, function(response){
-                   if((response === '') || (response === undefined)){
-                    console.log("No google ID found");
-                   }else{
-                      var googleID = response;
-                      console.log(googleID);
-                      googleID = googleID.substring(0, 255);
-                      vm.UserGoogleID = googleID;
-
-                      console.log('test + ' + vm.UserGoogleID);
-                      vm.$socket.emit('doesUserExist', googleID);
-                    }
-                })
-              console.log(vm.UserGoogleID)
-            }
-         })
+     googleLogin(googleID){
+        var vm = this;
         this.getHighScores();
+        this.userSignedIn = true;
+        vm.IntroPage = false;
+        vm.UserGoogleID = googleID;
          
      },
      getGoogleID(){
@@ -1166,30 +1034,16 @@ export default {
             }
          })
      },
-     noLoginMode(){
-        this.UsersID = this.$refs.nickname.value;
+     setUsername(UsersID){
+        this.UsersID = UsersID;
         var userFound = false;
         this.userProfile = new User(this.UsersID);
         this.userProfile.userID = this.UsersID;
-        //this.userProfile.googleID = this.UserGoogleID;
-        //var vm = this;
+
         this.UsernamePage = false;
         this.HomePage = true;
         this.getUserDetails(this.UserGoogleID);
-        /*
 
-        for(var i = 0; i < this.allUsers.length; i++){
-          console.log(this.allUsers[i].googleID)
-          if(this.allUsers[i].googleID === this.UserGoogleID){
-            this.UserID = this.allUsers[i].googleID;
-            this.userProfile = this.allUsers[i];
-            this.UsernamePage = false;
-            this.HomePage = true;
-            userFound = true;
-            console.log('this should fire for the second')
-          }
-        }
-        */
         if(this.UsersID === '' && !(userFound)){
           alert("Please enter a name")
         }else if(this.UsersID in this.allUserIDs && !(userFound)){
@@ -1242,9 +1096,6 @@ export default {
         this.SoloPage = false;
         this.SoloGame = true;
 
-        //this.GameMode = 
-        //this.timer = $('input[name=time]:checked').val();
-
         console.log(this.GameMode)
         console.log(this.timer);
      },
@@ -1256,12 +1107,12 @@ export default {
 
         if(this.isLobbyCreator){
            this.$socket.emit('gameModeAndTime', this.playersLobby, this.GameMode, this.timer)
-           }
+          }
         
 
      },
      
-     noLoginToIntro(){
+     usernameToIntro(){
       this.UsernamePage = false;
       this.IntroPage = true;
      },
@@ -1276,15 +1127,9 @@ export default {
         this.exitToHomePageReset();
      },
      
-     enterLobby(){
-      if(this.$refs.LobbyID === null){
-        return;
-      }else{
-          var lobbyID = this.$refs.LobbyID.value;
-          this.playersLobby = lobbyID;
-          this.$socket.emit('JoinLobby', lobbyID, this.userProfile);
-      }
-
+     enterLobby(lobbyID){
+      this.playersLobby = lobbyID;
+      this.$socket.emit('JoinLobby', lobbyID, this.userProfile);
     },
     introToLogin(){
       this.LoginPage = true
@@ -1305,7 +1150,7 @@ export default {
     },
     leaderboards(){
       this.getHighScores();
-      this.LeaderBoard = true;
+      this.LeaderBoardPage = true;
       this.HomePage = false;
     },
     joinlobby(){
@@ -1367,7 +1212,7 @@ export default {
     exitToHomePage(){
       this.LobbyPage = false;
       this.JoinLobbyPage = false;
-      this.LeaderBoard = false;
+      this.LeaderBoardPage = false;
       this.SoloPage = false;
       this.OptionsPage = false;
       this.HomePage = true;
@@ -1386,7 +1231,7 @@ export default {
     },
     reset(){
       this.isLobbyCreator = false;
-      this.userProfile.ready = false;
+      this.userProfile.ready = "Not Ready";
       this.UsersInLobby = [];
       this.userScore = 0;
       this.timer = 0;
@@ -1426,7 +1271,7 @@ class User {
   constructor(userID){
     this.userID = userID;
     this.score = 0;
-    this.ready = false;
+    this.ready = "Not Ready";
     this.googleID = '';
     this.BingoCountries = [];
   }
@@ -1515,14 +1360,18 @@ p.TinyText{
 
 p.CountryText {
   color: white;
-  font-size: 13px
+  font-size: 13px;
 }
 
 p.CookieText {
-  font-size: 10px
+  font-size: 10px;
 }
 p.CategoryText {
-  font-size: 12px
+  font-size: 12px;
+}
+
+p.EndScreenText {
+  font-size: 10px;
 }
 
 #timer {
@@ -1543,9 +1392,11 @@ h5{
 }
 
 div {
-  width: 200px;
-  height: 200px;
   text-align: center;
+}
+
+div.GameResults {
+  width: 100%;
 }
 
 div.TimerSection {
@@ -1558,15 +1409,16 @@ div.ClassicGameMode {
   display: inline-block;
 }
 
+div.EndScreenText {
+  display: flex;
+  min-height: 300px;
+}
+
 /* Style below adapted from this tutorial: https://markheath.net/post/customize-radio-button-css https://codepen.io/phusum/pen/VQrQqy */
 
 div.RadioButtons{
   width: 200px;
   height: 30px;
-}
-
-div.RadioButtons label, div.button input {
-
 }
 
 div.RadioButtons input[type="radio"] {
@@ -1663,6 +1515,10 @@ h2 {
   color: #20C20E;
   margin-top: 0px;
   margin-bottom: 0px;
+}
+
+h2.GameOver {
+  font-size: 30px;
 }
 
 
