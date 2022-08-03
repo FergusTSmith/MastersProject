@@ -43,12 +43,6 @@ export default {
       colourOfTimer(){
         const { info, alert} = this.colours;
 
-        
-
-        console.log(this.timeToGo <= alert.threshold);
-        console.log(this.timeToGo);
-        console.log(alert.threshold)
-
         if(this.timeToGo <= alert.threshold){
           return alert.colour;
         }else{

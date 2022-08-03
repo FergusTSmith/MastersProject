@@ -87,7 +87,7 @@ import MultiPlayerGame from '../components/MultiPlayerGame.vue';
   </div>
 
   <div v-if="MultiPlayer" id="Multiplayer-Game" :key="componentVersion">
-    <MultiPlayerGame @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :didYouWin="didYouWin" :noOfCountries="noOfCountries" :WinningUser="WinningUser" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :gameStarted="gameStarted" :allPlayersReady="allPlayersReady" :categoryList="categoryList" :timer="timer" :GameMode="GameMode" :gameOver="gameOver" :timeLeft="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime"  :userScore="userScore" :VisitedCountries="VisitedCountries" :numberOfCookies="numberOfCookies" :countriesToFind="countriesToFind" :finishedGame="finishedGame" :APIEnabled="APIEnabled"></MultiPlayerGame>
+    <MultiPlayerGame @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :noOfCountriesBingo="noOfCountriesBingo" :didYouWin="didYouWin" :noOfCountries="noOfCountries" :WinningUser="WinningUser" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :gameStarted="gameStarted" :allPlayersReady="allPlayersReady" :categoryList="categoryList" :timer="timer" :GameMode="GameMode" :gameOver="gameOver" :timeLeft="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime"  :userScore="userScore" :VisitedCountries="VisitedCountries" :numberOfCookies="numberOfCookies" :countriesToFind="countriesToFind" :finishedGame="finishedGame" :APIEnabled="APIEnabled"></MultiPlayerGame>
   </div>
 
 
@@ -117,12 +117,14 @@ export default {
       },
       endBingoModeGame(lobbyAndUser){
           var lobby = lobbyAndUser[0];
+          var counter = 0;
 
           for(var i = 0; i < this.countriesToFind.length; i++){
             if(this.countriesToFind[i].found === true){
-              this.noOfCountriesBingo++
+              counter++
             }
           }
+          this.noOfCountriesBingo = counter;
 
           console.log(this.playersLobby === lobby);
 
@@ -527,7 +529,7 @@ export default {
               vm.VisitedCountries = result.countryList.newValue;
               vm.gameStarted = true;
               //console.log(vm.GameMode)
-               if(vm.GameMode === "Classic"){
+              if(vm.GameMode === "Classic"){
                vm.updateScoreClassic()
               }else if(vm.GameMode === "Bingo"){
                 vm.updateScoreBingo()
@@ -614,10 +616,6 @@ export default {
         var winningScore = 0;
         //const vm = this;
 
-        if(this.GameMode === 'Bingo'){
-          this.endBingoGame();
-        }
-
         if(this.MultiPlayer){
           for(var i = 0; i < this.noOfUsersInLobby; i++){
           if(this.UsersInLobby[i].score >= winningScore){
@@ -664,6 +662,10 @@ export default {
         //Close the Lobby
         this.$socket.emit('closeLobby', this.playersLobby)
         this.gameOver = true;
+
+        if(this.GameMode === 'Bingo'){
+          this.endBingoGame();
+        }
 
         //this.reset();
 
@@ -833,12 +835,13 @@ export default {
         })
 
         var allFound = true;
+        setTimeout(() => {console.log('done waiting'), 2000})
         console.log(this.countriesToFind)
 
         for(var j = 0; j < this.countriesToFind.length; j++){
             if(this.countriesToFind[j].found != true){
               allFound = false;
-            }else if(!(this.countriesToFind[j] in this.userProfile.BingoCountries) && this.countriesToFind[j].found === true){
+            }else if(!(this.userProfile.BingoCountries.includes(this.countriesToFind[j])) && this.countriesToFind[j].found === true){
               this.userProfile.BingoCountries.push(this.countriesToFind[j])
             }
             console.log(this.countriesToFind[j].found)
@@ -1052,6 +1055,7 @@ export default {
     reset(){
       this.isLobbyCreator = false;
       this.userProfile.ready = "Not Ready";
+      this.userProfile.BingoCountries = [];
       this.UsersInLobby = [];
       this.userScore = 0;
       this.timer = 0;
@@ -1141,11 +1145,7 @@ li.LobbyUsers{
   font-style: italic;
 }
 li.GameUsers{
-  color: white;
-  font-size: smaller;
   list-style: none;
-  font-style: italic;
-  margin-right: 33px;
 }
 
 li.BingoList{

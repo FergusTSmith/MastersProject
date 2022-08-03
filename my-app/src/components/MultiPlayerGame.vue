@@ -7,7 +7,7 @@
     <BaseTimer :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="30"></BaseTimer>
     <br/>
     <div v-if="GameMode === 'Classic'" class="ClassicGameMode">
-    <p>Current Score: {{ this.userScore }} </p>
+    <p class="HelpText">Current Score: </p><p class="UserScore">{{ this.userScore }}</p>
     <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item" class="TrackedCountry">
         <p class="CountryText">{{ item.name }} | {{ item.count }} |</p><p class = "TinyText"> {{ item.site }} </p>
     </li>
@@ -35,16 +35,19 @@
     <ol v-if="allPlayersReady && !(gameStarted)">
         <li class="GameUsers">All players are ready</li>
     </ol>
-    <ol v-if="allPlayersReady && (gameStarted)">
+    <ol v-if="allPlayersReady && (gameStarted) && (GameMode === 'Bingo')">
+    <li v-for="item in UsersInLobby" ref="BingoScores" class="GamesUsers" :key="item">
+        {{ item.userID }} | {{ item.BingoCountries.length }}
+    </li>
+    </ol>
     
-    <div v-if="GameMode === 'Classic'">
+    <div v-if="GameMode === 'Classic' && (gameStarted)">
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item">
         {{ item.userID }} - {{ item.score }}
     </li>
     </div>
     <p class="CookieText">During this session, {{numberOfCookies.numberOfCookies}} tracking cookies have been set on your device.</p>
     <p class="ErrorText" v-if="playerLeaveMessage != 'false'"> {{ playerLeaveMessage }}</p>
-    </ol>
     <button v-if="isLobbyCreator" @click="gameSetup" type="button">Start</button>
     <button v-if="!(allPlayersReady)" @click="playerReady">Ready Up</button>
     <button @click="leaveGame" type="button">Leave Game</button>
@@ -54,7 +57,7 @@
     <h2 class="GameOver">GAME OVER</h2>
     <div v-if="didYouWin">
     <p>You won! Congratulations</p>
-    <img class="trophy" src="staticimages/trophy.png" alt="A picture of a trophy"/>
+    <img class="trophy" src="staticimages/trophy-removebg-preview.png" alt="A picture of a trophy"/>
     </div>
     <div v-if="!(didYouWin) && WinningUser != undefined">
     <p>Condolenses. The winner of the game was {{ WinningUser }}</p>
@@ -78,10 +81,6 @@
 
     <div v-if="GameMode === 'Bingo'">
     <p v-if="WinningUser === undefined">Condlenses, no players successfully found all the tracking nations!</p>
-    <div v-if="didYouWin">
-    <p>You won! Congratulations</p>
-    <img class="trophy" src="staticimages/trophy.png" alt="A picture of a trophy"/>
-    </div>
     <p>You managed to get tracked by {{ noOfCountriesBingo }} of the bingo countries</p>
     <p>You were tracked by {{ noOfCountries }} nation(s) in total</p>
     </div>
@@ -175,6 +174,10 @@ export default {
         noOfCountries: {
             type: Number,
             required: true
+        },
+        noOfCountriesBingo: {
+            type: Number,
+            required: true
         }
 
     },
@@ -234,7 +237,21 @@ export default {
 
 <style>
 img.trophy {
-    width: 100px;
+    width: 150px;
     height: 150px;
+}
+
+p.UserScore {
+    font-family: 'digitalFont';
+    font-size: 25px;
+    color: #20C20E;
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+
+li.GameUsers {
+    font-family: 'digitalFont';
+    font-size: 12px;
+    color: #20C20E;
 }
 </style>
