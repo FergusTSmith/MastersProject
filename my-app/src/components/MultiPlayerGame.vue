@@ -60,7 +60,7 @@
     <img class="trophy" src="staticimages/trophy-removebg-preview.png" alt="A picture of a trophy"/>
     </div>
     <div v-if="!(didYouWin) && WinningUser != undefined">
-    <p>Condolenses. The winner of the game was {{ WinningUser }}</p>
+    <p>Condolences. The winner of the game was {{ WinningUser }}</p>
     </div>
 
     <div v-if="GameMode === 'Classic'">
@@ -80,7 +80,7 @@
     </div>
 
     <div v-if="GameMode === 'Bingo'">
-    <p v-if="WinningUser === undefined">Condlenses, no players successfully found all the tracking nations!</p>
+    <p v-if="WinningUser === undefined">Condlences, no players successfully found all the tracking nations!</p>
     <p>You managed to get tracked by {{ noOfCountriesBingo }} of the bingo countries</p>
     <p>You were tracked by {{ noOfCountries }} nation(s) in total</p>
     </div>

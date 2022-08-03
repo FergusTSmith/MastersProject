@@ -434,12 +434,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // https://blog.shahednasser.com/how-to-send-notifications-in-chrome-extensions/
 
 chrome.alarms.create('PASSIVEMODE-ALARM', {
-    periodInMinutes: 1440
+    periodInMinutes: 1
 })
 
 chrome.alarms.onAlarm.addListener((alarm) => {
     if(alarm.name === "PASSIVEMODE-ALARM"){
-        //console.log('ALARM HEARD')
+        console.log('ALARM HEARD')
         chrome.notifications.create('test', {
             type: 'basic',
             iconUrl: './staticimages/SmallLogo.png',
