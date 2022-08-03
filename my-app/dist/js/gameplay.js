@@ -141,6 +141,10 @@ chrome.webRequest.onBeforeRequest.addListener(
                 //getCategory(CategoryEndpoint + cleanedUpInitiator)
 
                 passiveUniqueHosts.push(new Host(requestURL))
+                
+                //https://stackoverflow.com/questions/18158297/blocking-request-in-chrome
+                console.log("Blocking request: " + requestURL)
+                return {cancel: true}
 
             }else{
                 var counted = false;
@@ -159,7 +163,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 
         }
 
-    }, {urls: ["<all_urls>"]});
+    }, {urls: ["<all_urls>"]}, ["blocking"]);
 
 
 

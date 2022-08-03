@@ -1,8 +1,8 @@
 <template>
 <h2>TrackHunt</h2><br/>
-    <p class="HelpText">LeaderBoards</p>
-    <button @click="displaySoloClass" class="Radio" type="button">Solo Classic</button>
-    <button @click="displayMulClass" class="Radio" type="button">Multi Classic</button>
+    <p class="HelpText">LeaderBoards - Classic Mode</p>
+    <button @click="displaySoloClass" class="Radio" type="button">Solo</button>
+    <button @click="displayMulClass" class="Radio" type="button">MultiPlayer</button>
     <p>Username   |   Score   |  Date </p>
     <ol v-if="MultiClassicLB">
     <li v-for="item in intMultiClassLB" :key="item" class="LeaderBoard">
@@ -26,20 +26,31 @@
 
 <script>
 export default {
+    data(){
+        return {
+            intSoloClassLB: [],
+            intMultiClassLB: [],
+
+            MultiClassicLB: false,
+            SoloClassicLB: true,
+        }
+    },
     props: {
-        intSoloClassLB: {
+        personalSoloHS: {
             type: Array,
             required: true
         },
-        intMultiClassLB: {
-            type: Array,
-            required: true
-        }, 
         soloClassicLeaderboard: {
             type: Array,
             required: true
         }, multiClassicLeaderboard: {
             type: Array,
+            required: true
+        }, gamesWon: {
+            type: Number,
+            required: true
+        }, gamesPlayed: {
+            type: Number,
             required: true
         }
     },
@@ -55,7 +66,15 @@ export default {
         tenMinLB(){
             this.intSoloClassLB = this.soloClassicLeaderboard.filter(item => item.startTime === 600)
             this.intMultiClassLB = this.multiClassicLeaderboard.filter(item => item.startTime === 600);
-        }
+        },
+        displaySoloClass(){
+            this.MultiClassicLB = false;
+            this.SoloClassicLB = true;
+        },
+        displayMulClass(){
+            this.MultiClassicLB = true;
+            this.SoloClassicLB = false;
+        },
     }
     
 }</script>

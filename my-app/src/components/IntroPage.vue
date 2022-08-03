@@ -1,6 +1,7 @@
 <template>
       <h2>TrackHunt</h2>
       <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/>
+      <p>🇺🇸 🇬🇧</p>
       <h5>Who is watching you?</h5>
       <button @click="googleLogin" ref="LoginButton">Login</button>
       <!------<Transition><button v-if="IntroPage" @click="NoAccount">No-Login Mode</button></Transition> --->

@@ -86,7 +86,7 @@ export default {
 <style scoped lang="scss">
 .base-timer {
   position: relative;
-  margin-left: 60px;
+  margin-left: 45px;
   width: 75px;
   height: 75px;
 

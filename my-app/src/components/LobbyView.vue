@@ -18,7 +18,7 @@
     <br/>
     <!-----This should only be visible for the lobby leader: ---->
     <div class="RadioButtons">
-    <input id="2mins" v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="2mins" v-if="isLobbyCreator">2 min</label>
+    <input id="2mins" v-if="isLobbyCreator" class="Radio" type="radio" value="10" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="2mins" v-if="isLobbyCreator">2 min</label>
     <input id="5mins" v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="5mins" v-if="isLobbyCreator">5 min</label>
     <input id="10mins" v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="10mins" v-if="isLobbyCreator">10 min</label>
     </div>

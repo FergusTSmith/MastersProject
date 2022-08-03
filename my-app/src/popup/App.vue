@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import BaseTimer from "../components/BaseTimer";
+//import BaseTimer from "../components/BaseTimer";
 import IntroPage from '@/components/IntroPage.vue';
 import LeaderBoard from '@/components/LeaderBoard.vue';
 import OptionsView from '@/components/OptionsView.vue';
@@ -14,6 +14,8 @@ import HostsView from '@/components/HostsView.vue'
 import SoloLobby from '@/components/SoloLobby.vue';
 import JoinLobby from '@/components/JoinLobby.vue';
 import CountryView from '@/components/CountryView.vue';
+import SoloGamePage from '@/components/SoloGamePage.vue';
+import MultiPlayerGame from '../components/MultiPlayerGame.vue';
 </script>
 
 <template>
@@ -34,7 +36,7 @@ import CountryView from '@/components/CountryView.vue';
   </div>
 
   <div v-if="LeaderBoardPage"  id = "Leader-Board">
-    <LeaderBoard :intSoloClassLB="personalSoloHS" :intMultiClassLB="multiClassicLeaderboard" :soloClassicLeaderboard="soloClassicLeaderboard" :multiClassicLeaderboard="multiClassicLeaderboard"></LeaderBoard>
+    <LeaderBoard :gamesWon="gamesWon" :gamesPlayed="gamesPlayed" :personalSoloHS="personalSoloHS" :soloClassicLeaderboard="soloClassicLeaderboard" :multiClassicLeaderboard="multiClassicLeaderboard"></LeaderBoard>
     <button @click="exitToHomePage" type="button">HomePage</button>
   </div>
 
@@ -81,161 +83,11 @@ import CountryView from '@/components/CountryView.vue';
   </div>
 
   <div v-if="SoloGame" id="Solo-Game" :key="componentVersion">
-    <h2>TrackHunt</h2>
-    <p class="HelpText">Solo Mode - {{ GameMode }}<button @click="displayInformation" class="InformationBox">i</button></p>
-    <div v-if="(!gameOver)">
-    <br/>
-
-    <!-----<p class="timer" ref="timer" id="timer" :class="{timer:timerClose}">Time Remaining: {{ timer }}</p>--->
-
-    <!-----Using a more sophisticated solution for the timer. Adapted from https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f-->
-    <BaseTimer :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="30"></BaseTimer>
-    <!------<div class="TimerSection">---->
-    <!-----<BaseTimer :timeToGo="timeLeft"/>-->
-
-
-    <!------</div>--->
-    <div v-if="GameMode === 'Classic'" class="ClassicGameMode">
-    <p>Current Score: {{ this.userScore }} </p>
-    <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
-        <p class="CountryText">{{ item.name }} | {{ item.count }} |</p><p class = "TinyText"> {{ item.site }} </p>
-    </li>
-    <p class="CookieText">During this session, {{numberOfCookies.numberOfCookies}} tracking cookies have been set on your device.</p>
-    <br/>
-    
-    </div>
-    <div v-if="GameMode === 'Bingo'">
-    <label>Countries To Locate:</label>
-    <ol>
-    <li v-for="item in countriesToFind" ref="CountriesToFind" :class="{found:item.found}" :key="item">
-        {{ item.country }}
-    </li>  
-    </ol>
-    <label>Countries Located</label>
-    <ol>
-      <li v-for="item in VisitedCountries" ref="ListOfCountries" class="BingoList" :key="item">
-          {{ item.name }}
-      </li>
-    </ol>
-    </div>
-
-    <button @click="gameSetup" type="button">Start</button>
-    <button @click="endGame" type="button">End Game</button>
-    </div>
-    
-    <div v-if="gameOver">
-    <h2 class="GameOver">GAME OVER</h2>
-    <div v-if="GameMode === 'Classic'">
-    <p>Your score was: {{ this.userScore }}</p>
-    <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
-        <p class="EndScreenText">{{ item.name }} | {{ item.count }} |</p>
-    </li>
-    </div>
-    <div v-if="GameMode === 'Bingo'">
-    <p v-if="finishedGame">Well done! You managed to find all of the tracking nations!</p>
-    <p v-if="!(finishedGame)">Unfortunately, you did not manage to find the tracking nations in the given time period.</p>
-    </div>
-    <p class="CategoryText">You were tracked by {{ noOfCountries }} nation(s)</p>
-    <p v-if="APIEnabled" class="CategoryText">During your game, you were tracked when visiting the following categories of pages: </p>
-    <li v-for="item in categoryList" ref="ListOfCategories" :key="item.name" class="CategoryList">
-        {{ item.name }} | {{ item.count }}
-    </li>
-    <button @click="exitToHomePageReset" type="button">HomePage</button>
-    </div>
-    <!--- --<button @click="gameSetup" type="button">Refresh</button> --->
+    <SoloGamePage @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :categoryList="categoryList" :timer="timer" :GameMode="GameMode" :gameOver="gameOver" :timeLeft="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime"  :userScore="userScore" :VisitedCountries="VisitedCountries" :numberOfCookies="numberOfCookies" :countriesToFind="countriesToFind" :finishedGame="finishedGame" :APIEnabled="APIEnabled"></SoloGamePage>
   </div>
 
   <div v-if="MultiPlayer" id="Multiplayer-Game" :key="componentVersion">
-    <h2>TrackHunt</h2>
-    <p class="HelpText">MultiPlayer - {{ GameMode }} <button @click="displayInformation" class="InformationBox">i</button></p>
-    <div v-if="(!gameOver)">
-    <br/>
-    <!----<label>Time remaining: </label><p> {{ timer }}</p>-->
-    <BaseTimer :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="30"></BaseTimer>
-    <br/>
-    <div v-if="GameMode === 'Classic'" class="ClassicGameMode">
-    <p>Current Score: {{ this.userScore }} </p>
-    <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item" class="TrackedCountry">
-        <p class="CountryText">{{ item.name }} | {{ item.count }} |</p><p class = "TinyText"> {{ item.site }} </p>
-    </li>
-    <br/>
-    </div>
-    <div v-if="GameMode === 'Bingo'">
-    <label>Countries To Locate:</label>
-    <ol>
-    <li v-for="item in countriesToFind" ref="CountriesToFind" :class="{found:item.found}" :key="item">
-        {{ item.country }}
-    </li>  
-    </ol>
-    <label>Countries Located</label>
-    <ol>
-      <li v-for="item in VisitedCountries" ref="ListOfCountries" class="BingoList" :key="item">
-          {{ item.name }}
-      </li>
-    </ol>
-    </div>
-    <ol v-if="!(allPlayersReady)">
-    <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item">
-        {{ item.userID }} - {{ item.ready }}
-    </li>
-    </ol>
-    <ol v-if="allPlayersReady && !(gameStarted)">
-        <li class="GameUsers">All players are ready</li>
-    </ol>
-    <ol v-if="allPlayersReady && (gameStarted)">
-    
-    <div v-if="GameMode === 'Classic'">
-    <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item">
-        {{ item.userID }} - {{ item.score }}
-    </li>
-    </div>
-    <p class="CookieText">During this session, {{numberOfCookies.numberOfCookies}} tracking cookies have been set on your device.</p>
-    <p class="ErrorText" v-if="playerLeaveMessage != 'false'"> {{ playerLeaveMessage }}</p>
-    </ol>
-    <button v-if="isLobbyCreator" @click="gameSetup" type="button">Start</button>
-    <button v-if="!(allPlayersReady)" @click="playerReady">Ready Up</button>
-    <button @click="leaveGame" type="button">Leave Game</button>
-    </div>
-
-    <div v-if="gameOver">
-    <h2 class="GameOver">GAME OVER</h2>
-    <div v-if="didYouWin">
-    <p>You won! Congratulations</p>
-    <img v-if="IntroPage" class="trophy" src="staticimages/trophy.png" alt="A picture of a trophy"/>
-    </div>
-    <div v-if="!(didYouWin) && WinningUser != undefined">
-    <p>Condolenses. The winner of the game was {{ WinningUser }}</p>
-    </div>
-    <p v-if="WinningUser === undefined">Condlenses, no players successfully found all the tracking nations!</p>
-
-    <div v-if="GameMode === 'Classic'">
-    <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item.name">
-        {{ item.userID }} - {{ item.score }}
-    </li>
-    <p>Your score was: {{ this.userScore }}</p>
-    <div class="GameResults">
-    <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
-        <p class="CountryText">{{ item.name }} | {{ item.count }} |</p><p class = "TinyText"> {{ item.site }} </p>
-    </li>
-    <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item">
-        {{ item.userID }} - {{ item.score }}
-    </li>
-    </div>
-    <p>You were tracked by {{ noOfCountries }} nation(s) in total</p>
-    </div>
-
-    <div v-if="GameMode === 'Bingo'">
-    <p>You managed to get tracked by {{ noOfCountriesBingo }} of the bingo countries</p>
-    <p>You were tracked by {{ noOfCountries }} nation(s) in total</p>
-    </div>
-    <p v-if="APIEnabled" class="CategoryText">During your game, you were tracked when visiting the following categories of pages: </p>
-    <li v-for="item in categoryList" ref="ListOfCategories" :key="item.name" class="CategoryList">
-        {{ item.name }} | {{ item.count }}
-    </li>
-
-    <button @click="exitToHomePageReset" type="button">HomePage</button>
-    </div>
-    <!--- --<button @click="gameSetup" type="button">Refresh</button> --->
+    <MultiPlayerGame @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :didYouWin="didYouWin" :noOfCountries="noOfCountries" :WinningUser="WinningUser" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :gameStarted="gameStarted" :allPlayersReady="allPlayersReady" :categoryList="categoryList" :timer="timer" :GameMode="GameMode" :gameOver="gameOver" :timeLeft="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime"  :userScore="userScore" :VisitedCountries="VisitedCountries" :numberOfCookies="numberOfCookies" :countriesToFind="countriesToFind" :finishedGame="finishedGame" :APIEnabled="APIEnabled"></MultiPlayerGame>
   </div>
 
 
@@ -262,7 +114,6 @@ export default {
       UserNotFound(){
           this.UsernamePage = true;
           this.IntroPage = false;
-
       },
       endBingoModeGame(lobbyAndUser){
           var lobby = lobbyAndUser[0];
@@ -535,6 +386,8 @@ export default {
       // Dev Variables
 
       APIEnabled: true,
+
+      //Emoji Object
       }
     },
     computed: {
@@ -568,7 +421,7 @@ export default {
       }
     },
     components: {
-      BaseTimer,
+      //BaseTimer,
       IntroPage,
       LeaderBoard,
       OptionsView,
@@ -580,7 +433,8 @@ export default {
       HostsView,
       SoloLobby,
       JoinLobby,
-      CountryView
+      CountryView,
+      SoloGamePage
     },
     
     
@@ -1162,42 +1016,7 @@ export default {
       this.OptionsPage = true;
       this.HomePage = false;
     },
-    displayMulClass(){
-      this.MultiClassicLB = true;
-      this.MultiBingoLB = false;
-      this.SoloClassicLB = false;
-      this.SoloBingoLB = false;
-    },
-    displayMulBing(){
-      this.MultiClassicLB = false;
-      this.MultiBingoLB = true;
-      this.SoloClassicLB = false;
-      this.SoloBingoLB = false;
-    },
-    displaySoloClass(){
-      this.MultiClassicLB = false;
-      this.MultiBingoLB = false;
-      this.SoloClassicLB = true;
-      this.SoloBingoLB = false;
-    },
-    displaySoloBing(){
-      this.MultiClassicLB = false;
-      this.MultiBingoLB = false;
-      this.SoloClassicLB = false;
-      this.SoloBingoLB = true;
-    },
-    twoMinLB(){
-      this.intSoloClassLB = this.soloClassicLeaderboard.filter(item => item.startTime === 120);
-      this.intMultiClassLB = this.multiClassicLeaderboard.filter(item => item.startTime === 120);
-    },
-    fiveMinLB(){
-      this.intSoloClassLB = this.soloClassicLeaderboard.filter(item => item.startTime === 300);
-      this.intMultiClassLB = this.multiClassicLeaderboard.filter(item => item.startTime === 300);
-    },
-    tenMinLB(){
-      this.intSoloClassLB = this.soloClassicLeaderboard.filter(item => item.startTime === 600)
-      this.intMultiClassLB = this.multiClassicLeaderboard.filter(item => item.startTime === 600);
-    },
+   
     createLobby(){
       var newLobbyID = this.createNewLobbyID();
       this.$socket.emit('CreateNewLobby', newLobbyID, this.userProfile);
@@ -1255,13 +1074,6 @@ export default {
     }
     return id;
     
-    },
-    displayInformation(){
-      if(this.GameMode === "Classic"){
-        alert("In Classic mode, points are awarded through discovering tracking URLs located in different nations. The rarity of the nation discovered determines the amount of points received. The player with the most points when the timer elapses will win. \n Common Countries (x1 Multiplyer): United States, United Kingdom \n Uncommon Countries (x2 Multiplyer): EU nations \n Rare Countries (x3 Multiplyer): Russia \n Very Rare Countries (x5 Multiplyer): All other countries");
-      }else{
-        alert("In Bingo mode, users are challenged to discover tracking URLs from a specific list of countries. The first player to discover all listed countries is the winner of the game")
-      }
     }
 }}
 
@@ -1307,7 +1119,6 @@ li.TrackedCountry{
   color: white;
   font-size: smaller;
   list-style: none;
-  font-style: italic;
 }
 li.Achievements{
   color: white;
@@ -1357,6 +1168,7 @@ p.PassiveText{
 p.TinyText{
   color: white;
   font-size: 7px;
+  font-style: italic;
 }
 
 p.CountryText {
