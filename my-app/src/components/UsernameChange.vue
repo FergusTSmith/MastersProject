@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import yeast from 'yeast';
 
 export default {
     methods: {

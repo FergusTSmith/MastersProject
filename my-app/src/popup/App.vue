@@ -3,17 +3,17 @@ import { ref } from 'vue';
 import BaseTimer from "../components/BaseTimer";
 import IntroPage from '@/components/IntroPage.vue';
 import LeaderBoard from '@/components/LeaderBoard.vue';
-import Options from '@/components/Options.vue';
+import OptionsView from '@/components/OptionsView.vue';
 import UsernameChange from '@/components/UsernameChange.vue';
 import SetUsername from '@/components/SetUsername.vue';
 //import SetUsername from '@/components/SetUsername.vue';
-import Lobby from '@/components/Lobby.vue'
+import LobbyView from '@/components/LobbyView.vue'
 import PassiveMode from '@/components/PassiveMode.vue'
-import Achievements from '@/components/Achievements.vue'
-import Hosts from '@/components/Hosts.vue'
+import AchievementsView from '@/components/AchievementsView.vue'
+import HostsView from '@/components/HostsView.vue'
 import SoloLobby from '@/components/SoloLobby.vue';
 import JoinLobby from '@/components/JoinLobby.vue';
-import Country from '@/components/Country.vue'
+import CountryView from '@/components/CountryView.vue';
 </script>
 
 <template>
@@ -39,7 +39,7 @@ import Country from '@/components/Country.vue'
   </div>
 
   <div v-if="OptionsPage"  id="Options-Page">
-    <Options @passiveMode="passiveMode" @changeUsernamePage="changeUsernamePage"></Options>
+    <OptionsView @passiveMode="passiveMode" @changeUsernamePage="changeUsernamePage"></OptionsView>
     <button @click="exitToHomePage" type="button">Home Page</button><br/>
   </div>
 
@@ -57,7 +57,7 @@ import Country from '@/components/Country.vue'
 
 
   <div v-if="LobbyPage" id="Lobby">
-    <Lobby :playersLobby="playersLobby" :UsersInLobby="UsersInLobby" :isLobbyCreator="isLobbyCreator" @onGameModeChange="onGameModeChange($event)" @onTimeChange="onTimeChange($event)" @exitToHomePageReset="exitToHomePageReset" @multiGameInitiated="multiGameInitiated" @leaveGame="leaveGame"></Lobby>
+    <LobbyView :playersLobby="playersLobby" :UsersInLobby="UsersInLobby" :isLobbyCreator="isLobbyCreator" @onGameModeChange="onGameModeChange($event)" @onTimeChange="onTimeChange($event)" @exitToHomePageReset="exitToHomePageReset" @multiGameInitiated="multiGameInitiated" @leaveGame="leaveGame"></LobbyView>
   </div>
 
   <div v-if="PassivePage">
@@ -65,15 +65,15 @@ import Country from '@/components/Country.vue'
   </div>
 
   <div v-if="AchievementPage">
-    <Achievements :achievements="achievements" @backToPassive="backToPassive" @exitToHomePage="exitToHomePage"></Achievements>
+    <AchievementsView :achievements="achievements" @backToPassive="backToPassive" @exitToHomePage="exitToHomePage"></AchievementsView>
   </div>
 
   <div v-if="HostPage">
-    <Hosts :passiveModeHosts="passiveModeHosts" @exitToHomePage="exitToHomePage" @HostToPassive="HostToPassive"></Hosts>
+    <HostsView :passiveModeHosts="passiveModeHosts" @exitToHomePage="exitToHomePage" @HostToPassive="HostToPassive"></HostsView>
   </div>
 
   <div v-if="CountryPage">
-    <Country :passiveModeCountries="passiveModeCountries" @exitToHomePage="exitToHomePage" @CountToPassive="CountToPassive"></Country>
+    <CountryView :passiveModeCountries="passiveModeCountries" @exitToHomePage="exitToHomePage" @CountToPassive="CountToPassive"></CountryView>
   </div>
 
   <div v-if="SoloPage" id="Solo-Mode">
@@ -444,10 +444,8 @@ export default {
     },
   data(){
     return {
-      message: "This is a test",
       LoginPage: false,
       IntroPage: true,
-      count: 69,
       PasswordPage: false,
       RegistrationPage: false,
       HomePage: false,
@@ -457,33 +455,37 @@ export default {
       LobbyPage: false,
       SoloPage: false,
       UsernamePage: false,
-      playersLobby: '',
-      UsersID: '1234',
-      UsersInLobby: [],
-      noOfUsersInLobby: 0,
-      componentVersion: 0,
-      UserGoogleID: '',
       SoloGame: false,
-      VisitedCountries: [],
-      componentKey: 0,
-      userScore: 0,
-      gameStarted: false,
-      gameOver: false,
-      noOfCountries: 0,
-      userProfile: undefined,
-      allUserIDs: [],
-      allUsers: [],
-      MultiPlayer: false,
-      WinningUser: undefined,
-      didYouWin: false,
-      lobbyError: '',
-      isLobbyCreator: false,
-      allPlayersReady: false,
       UsernameChangePage: false,
       PassivePage: false,
       HostPage: false,
       CountryPage: false,
       AchievementPage: false,
+      MultiPlayer: false,
+
+      playersLobby: '',
+      UsersID: '1234',
+      UserGoogleID: '',
+      VisitedCountries: [],
+      gameStarted: false,
+      gameOver: false,
+      noOfCountries: 0,
+      userProfile: undefined,
+      WinningUser: undefined,
+      didYouWin: false,
+      isLobbyCreator: false,
+
+      UsersInLobby: [],
+      noOfUsersInLobby: 0,
+      userScore: 0,
+      allPlayersReady: false,
+      lobbyError: '',
+
+      componentVersion: 0,
+      componentKey: 0,
+
+      allUserIDs: [],
+      allUsers: [],
 
       GameMode: 'Classic',
       finishedGame: false,
@@ -491,7 +493,6 @@ export default {
       numberOfCookies: 0,
 
       categoryList: [],
-
 
       userLeaveMessage: "",
 
@@ -570,16 +571,16 @@ export default {
       BaseTimer,
       IntroPage,
       LeaderBoard,
-      Options,
+      OptionsView,
       UsernameChange,
       SetUsername,
-      Lobby,
+      LobbyView,
       PassiveMode,
-      Achievements,
-      Hosts,
+      AchievementsView,
+      HostsView,
       SoloLobby,
       JoinLobby,
-      Country
+      CountryView
     },
     
     
