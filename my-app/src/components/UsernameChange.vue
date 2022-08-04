@@ -16,7 +16,7 @@ export default {
     methods: {
         changeUsername(){
             if(this.$refs.NewUsername.value != null){
-                this.$emit('changeUsernamePage', this.$refs.NewUsername.value);
+                this.$emit('changeUsername', this.$refs.NewUsername.value);
             }
         },
         exitToHomePage(){

@@ -329,6 +329,16 @@ db.sequelize.sync().then((req) => {
                 }
             }
         })
+
+        socket.on('nameTaken', (userID) => {
+            UserAccount.findAll({ where: { username: userID }}).then((users) => {
+                if(users.length === 0){
+                    socket.emit('nameAvailable', userID)
+                }else{
+                    socket.emit('nameUnavailable', userID)
+                }
+            })
+        })
     
         socket.on('bingoScoreUpdate', (userProfile, lobbyID) => {
             for(var i = 0; i < numberOfLobbies; i++){

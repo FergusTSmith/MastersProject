@@ -83,11 +83,11 @@ import MultiPlayerGame from '../components/MultiPlayerGame.vue';
   </div>
 
   <div v-if="SoloGame" id="Solo-Game" :key="componentVersion">
-    <SoloGamePage @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :categoryList="categoryList" :timer="timer" :GameMode="GameMode" :gameOver="gameOver" :timeLeft="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime"  :userScore="userScore" :VisitedCountries="VisitedCountries" :numberOfCookies="numberOfCookies" :countriesToFind="countriesToFind" :finishedGame="finishedGame" :APIEnabled="APIEnabled"></SoloGamePage>
+    <SoloGamePage @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :categoryList="categoryList" :timer="timer" :GameMode="GameMode" :gameOver="gameOver" :timeLeft="timeLeft" :startTime="startTime"  :userScore="userScore" :VisitedCountries="VisitedCountries" :numberOfCookies="numberOfCookies" :countriesToFind="countriesToFind" :finishedGame="finishedGame" :APIEnabled="APIEnabled"></SoloGamePage>
   </div>
 
   <div v-if="MultiPlayer" id="Multiplayer-Game" :key="componentVersion">
-    <MultiPlayerGame @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :noOfCountriesBingo="noOfCountriesBingo" :didYouWin="didYouWin" :noOfCountries="noOfCountries" :WinningUser="WinningUser" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :gameStarted="gameStarted" :allPlayersReady="allPlayersReady" :categoryList="categoryList" :timer="timer" :GameMode="GameMode" :gameOver="gameOver" :timeLeft="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime"  :userScore="userScore" :VisitedCountries="VisitedCountries" :numberOfCookies="numberOfCookies" :countriesToFind="countriesToFind" :finishedGame="finishedGame" :APIEnabled="APIEnabled"></MultiPlayerGame>
+    <MultiPlayerGame @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :noOfCountriesBingo="noOfCountriesBingo" :didYouWin="didYouWin" :noOfCountries="noOfCountries" :WinningUser="WinningUser" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :gameStarted="gameStarted" :allPlayersReady="allPlayersReady" :categoryList="categoryList" :timer="timer" :GameMode="GameMode" :gameOver="gameOver" :timeLeft="timeLeft" :startTime="startTime"  :userScore="userScore" :VisitedCountries="VisitedCountries" :numberOfCookies="numberOfCookies" :countriesToFind="countriesToFind" :finishedGame="finishedGame" :APIEnabled="APIEnabled"></MultiPlayerGame>
   </div>
 
 
@@ -293,6 +293,17 @@ export default {
         this.gamesWon = MessageDetails[0].wonGames
         console.log(this.gamesPlayed);
         console.log(this.gamesWon);
+      },
+      nameAvailable(MessageDetails){
+        console.log(MessageDetails)
+        this.UsersID = MessageDetails[0];
+        this.userProfile.userID = this.UsersID;
+
+        this.$socket.emit('newUser', this.UsersID, this.UserGoogleID);
+      },
+      nameUnavailable(MessageDetails){
+        console.log(MessageDetails);
+        console.log("Error: Name " + MessageDetails[0] + " is already in use");
       }
     },
   data(){
@@ -387,33 +398,9 @@ export default {
 
       // Dev Variables
 
-      APIEnabled: true,
+      APIEnabled: false,
 
       //Emoji Object
-      }
-    },
-    computed: {
-      // https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f
-      formattedTimeLeft(){
-        const timeTG = this.timer;
-
-        const minutes = Math.floor(timeTG/60);
-        var seconds = timeTG % 60;
-
-        if(seconds < 10){
-          seconds = `0${seconds}`;
-        }
-        return `${minutes}:${seconds}`;
-
-      },
-      timePassed(){
-        return this.startTime - this.timer;
-      },//,
-      //orderedCountries: function(){
-        //return _.orderBy(this.BingoCountries, 'count')
-      //}
-      timeLeft(){
-        return this.startTime - (this.startTime - this.timer);
       }
     },
     props: {
@@ -462,9 +449,6 @@ export default {
       }
     },
     methods: {
-      testMethod(){
-        this.timerClose = true;
-      },
       getHighScores(){
         this.$socket.emit('retrieveLeaderBoards');
         this.$socket.emit('retreiveSoloScores', this.UsersID);
@@ -549,7 +533,6 @@ export default {
       onGameModeChange(gameMode){
         this.GameMode = gameMode;
       },
-      
 
       onTimeChange(timeSelected){ // https://www.codecheef.org/article/how-to-get-selected-radio-button-value-in-vuejs
         this.timer = timeSelected;
@@ -583,9 +566,9 @@ export default {
         this.PassivePage = true;
       },
 
-      changeUsername(){
+      changeUsername(newUsername){
 
-          this.UsersID = this.$refs.NewUsername.value;
+          this.UsersID = newUsername
           this.userProfile.userID = this.UsersID;
           this.exitToHomePage();
           console.log(this.UserGoogleID)
@@ -596,10 +579,6 @@ export default {
         console.log(this.UsersInLobby)
         for(var i = 0; i < this.UsersInLobby.length; i++){
           if(this.UsersInLobby[i].userID === this.UsersID){
-            /*for(var j = i; j < this.UsersInLobby.length-1; j++){
-              this.UsersInLobby[j] = this.UsersInLobby[j+1];
-            }
-            this.UsersInLobby[this.UsersInLobby.length] = undefined;*/
             this.UsersInLobby.splice(i, i+1)
             console.log("Player deleted")
             console.log(this.UsersInLobby)
@@ -894,7 +873,6 @@ export default {
      },
      setUsername(UsersID){
         this.UsersID = UsersID;
-        var userFound = false;
         this.userProfile = new User(this.UsersID);
         this.userProfile.userID = this.UsersID;
 
@@ -902,15 +880,12 @@ export default {
         this.HomePage = true;
         this.getUserDetails(this.UserGoogleID);
 
-        if(this.UsersID === '' && !(userFound)){
+        if(this.UsersID === ''){
           alert("Please enter a name")
-        }else if(this.UsersID in this.allUserIDs && !(userFound)){
-          alert("Error, that name has been taken");
+        }else{
+          this.$socket.emit('nameTaken', this.UsersID)
         }
-
-        this.$socket.emit('newUser', this.UsersID, this.UserGoogleID);
-        console.log("reached here");
-
+        
         /*
         chrome.storage.local.get(["userQueryResult"], function(result){
           console.log(result);
@@ -1120,11 +1095,6 @@ li{
   /*display: flex;*/
 }
 li.TrackedCountry{
-  color: white;
-  font-size: smaller;
-  list-style: none;
-}
-li.Achievements{
   color: white;
   font-size: smaller;
   list-style: none;

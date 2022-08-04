@@ -267,7 +267,7 @@ function getCountry(request, originalSite, originalURL){
                         detectedCountries[i].site.push(originalSite)
 
                         if(!(sitesCategorised.includes(originalSite))){
-                            getCategory(CategoryEndpoint + originalSite) // Disabling to Save API bandwidth
+                            //getCategory(CategoryEndpoint + originalSite) // Disabling to Save API bandwidth
                             console.log(originalSite);
                             sitesCategorised.push(originalSite)
                         }
@@ -281,7 +281,7 @@ function getCountry(request, originalSite, originalURL){
                 detectedCountries.push(new Country(response.country, originalSite));
 
                 if(!(sitesCategorised.includes(originalSite))){
-                    getCategory(CategoryEndpoint + originalSite); // Disabing to save API bandwidth
+                    //getCategory(CategoryEndpoint + originalSite); // Disabing to save API bandwidth
                     console.log(originalSite);
                     sitesCategorised.push(originalSite)
                 }

@@ -27,3 +27,11 @@ export default {
     }
 }
 </script>
+
+<style>
+li.Achievements{
+  color: white;
+  font-size: smaller;
+  list-style: none;
+}
+</style>
