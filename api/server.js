@@ -372,6 +372,7 @@ db.sequelize.sync().then((req) => {
                     for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
                         if(availableLobbies[i].lobbyUsers[j].userID === userProfile.userID){
                             availableLobbies[i].lobbyUsers[j].BingoCountries = userProfile.BingoCountries;
+                            console.log("Should update bingo score here");
                             socket.nsp.to(availableLobbies[i]).emit('updateUsers', availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID)
                         }
                     }
