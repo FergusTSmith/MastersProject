@@ -127,6 +127,7 @@ export default {
           this.noOfCountriesBingo = counter;
 
           console.log(this.playersLobby === lobby);
+          console.log(lobbyAndUser);
 
           if((this.playersLobby === lobby) && (this.UsersID != lobbyAndUser[1])){
             this.WinningUser = lobbyAndUser[1];
@@ -174,6 +175,15 @@ export default {
       lobbyFailure() {
         console.log("there was an error when attempting to connect to the server")
         this.lobbyError = 'Error: Lobby Not Found';
+      },
+      playerInvitedToLobby(inviteUsername){
+        if(this.UsersID === inviteUsername){
+          var inviteAccepted = confirm("You have been invited to Lobby" + lobbyID + " by user " + invitingUser + ".\n Do you wish to accept?");
+
+          if(inviteAccepted){
+              this.$emit('enterLobby', lobbyID)
+          }
+        }
       },
       startGame(lobbyID){
         if(lobbyID === this.playersLobby){
@@ -662,7 +672,7 @@ export default {
 
         this.didYouWin = true;
         if(this.MultiPlayer){
-          this.$socket.emit('endBingoGame', this.playersLobby, this.UserGoogleID)
+          this.$socket.emit('endBingoGame', this.playersLobby, this.UsersID)
           this.$socket.emit('closeLobby', this.playersLobby)
         }
         

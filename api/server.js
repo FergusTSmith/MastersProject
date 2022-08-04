@@ -125,6 +125,10 @@ db.sequelize.sync().then((req) => {
             socket.emit('lobbyFailure');
             console.log("Lobby failure, my g");
         })
+
+        socket.on('playerInvited', (inviteUsername) => {
+            io.emit('playerInvitedToLobby', inviteUsername);
+        })
     
         socket.on('CreateNewLobby', (newLobbyID, user) => {
             console.log('Creating new Lobby with ID: ' + newLobbyID);
