@@ -366,7 +366,7 @@ db.sequelize.sync().then((req) => {
         })
     
         socket.on('bingoScoreUpdate', (userProfile, lobbyID) => {
-            for(var i = 0; i < numberOfLobbies; i++){
+            for(var i = 0; i < availableLobbies.length; i++){
                 if(availableLobbies[i].LobbyID === lobbyID){
                     for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
                         if(availableLobbies[i].lobbyUsers[j].userID === userProfile.userID){
@@ -379,7 +379,7 @@ db.sequelize.sync().then((req) => {
         })
     
         socket.on('startTheGame', (lobbyID) => {
-            for(var i = 0; i < numberOfLobbies; i++){
+            for(var i = 0; i < availableLobbies.length; i++){
                 if(availableLobbies[i].LobbyID === lobbyID){
                     socket.nsp.to(availableLobbies[i]).emit('startGame', availableLobbies[i].LobbyID)
                     for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){

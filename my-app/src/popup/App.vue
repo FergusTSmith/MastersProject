@@ -681,6 +681,8 @@ export default {
           this.noOfCountriesBingo = this.countriesToFind.length;
         }
 
+        console.log(this.noOfCountriesBingo)
+
         this.gameOver = true;
         this.reset();
       },
