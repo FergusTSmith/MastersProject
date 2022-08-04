@@ -839,9 +839,10 @@ export default {
         console.log(allFound);
         console.log(this.userProfile.BingoCountries)
         console.log(this.userProfile.BingoCountries.length)
+        console.log(this.MultiPlayer)
 
         if(this.MultiPlayer){
-          this.$socket.emit('bingoScoreUpdate', this.userProfile, this.lobbyID)
+          this.$socket.emit('bingoScoreUpdate', this.userProfile, this.playersLobby)
         }
 
         if(allFound){
