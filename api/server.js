@@ -127,6 +127,7 @@ db.sequelize.sync().then((req) => {
         })
 
         socket.on('playerInvited', (inviteUsername) => {
+            console.log('Server received the invitiation request')
             io.emit('playerInvitedToLobby', inviteUsername);
         })
     

@@ -177,6 +177,7 @@ export default {
         this.lobbyError = 'Error: Lobby Not Found';
       },
       playerInvitedToLobby(inviteUsername){
+        console.log('Client received the invitation request.')
         if(this.UsersID === inviteUsername){
           var inviteAccepted = confirm("You have been invited to Lobby" + lobbyID + " by user " + invitingUser + ".\n Do you wish to accept?");
 
