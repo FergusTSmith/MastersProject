@@ -97,6 +97,9 @@ db.sequelize.sync().then((req) => {
                             isUserAlreadyInLobby = true;
                         }
                     }
+                    console.log(availableLobbies[i]);
+                    console.log(isUserAlreadyInLobby);
+                    console.log(UserID)
                     
                     if(!isUserAlreadyInLobby){
                         socket.join(availableLobbies[i]);
