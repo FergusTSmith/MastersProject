@@ -138,9 +138,7 @@ db.sequelize.sync().then((req) => {
     
             console.log(availableLobbies[numberOfLobbies-1].lobbyUsers)
     
-            for(var i = 0; i< availableLobbies.length; i++){
-                console.log(availableLobbies[i].LobbyID);
-            }
+            console.log(availableLobbies);
             console.log(numberOfLobbies);
         })
     
