@@ -64,9 +64,6 @@
     </div>
 
     <div v-if="GameMode === 'Classic'">
-    <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item.name">
-        {{ item.userID }} - {{ item.score }}
-    </li>
     <p>Your score was: {{ this.userScore }}</p>
     <div class="GameResults">
     <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
