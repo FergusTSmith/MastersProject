@@ -51,6 +51,10 @@ export default {
         isLobbyCreator: {
             type: Boolean,
             required: true
+        },
+        UsersID: {
+            type: String,
+            required: true
         }
     },
     methods: {
@@ -71,14 +75,7 @@ export default {
         },
         leaveGame(){
             this.$emit('leaveGame');
-        }
-    },
-    data(){
-        return {
-            playerInvite: false,
-        }
-    },
-    methods: {
+        },
         openInvite(){
             if(this.playerInvite === false){
                 this.playerInvite = true;
@@ -88,7 +85,12 @@ export default {
         },
         invitePlayer(){
             var inviteUsername = this.$refs.usernameInvite.value;
-            this.$socket.emit('playerInvited', inviteUsername);
+            this.$socket.emit('playerInvited', inviteUsername, this.UsersID, this.playersLobby);
+        }
+    },
+    data(){
+        return {
+            playerInvite: false,
         }
     }
 }

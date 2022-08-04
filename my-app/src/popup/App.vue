@@ -59,7 +59,7 @@ import MultiPlayerGame from '../components/MultiPlayerGame.vue';
 
 
   <div v-if="LobbyPage" id="Lobby">
-    <LobbyView :playersLobby="playersLobby" :UsersInLobby="UsersInLobby" :isLobbyCreator="isLobbyCreator" @onGameModeChange="onGameModeChange($event)" @onTimeChange="onTimeChange($event)" @exitToHomePageReset="exitToHomePageReset" @multiGameInitiated="multiGameInitiated" @leaveGame="leaveGame"></LobbyView>
+    <LobbyView :UsersID="UsersID" :playersLobby="playersLobby" :UsersInLobby="UsersInLobby" :isLobbyCreator="isLobbyCreator" @onGameModeChange="onGameModeChange($event)" @onTimeChange="onTimeChange($event)" @exitToHomePageReset="exitToHomePageReset" @multiGameInitiated="multiGameInitiated" @leaveGame="leaveGame"></LobbyView>
   </div>
 
   <div v-if="PassivePage">
@@ -176,7 +176,10 @@ export default {
         console.log("there was an error when attempting to connect to the server")
         this.lobbyError = 'Error: Lobby Not Found';
       },
-      playerInvitedToLobby(inviteUsername){
+      playerInvitedToLobby(MessageDetails){
+        var inviteUsername = MessageDetails[0];
+        var invitingUser = MessageDetails[1];
+        var lobbyID = MessageDetails[2];
         console.log('Client received the invitation request.')
         if(this.UsersID === inviteUsername){
           var inviteAccepted = confirm("You have been invited to Lobby" + lobbyID + " by user " + invitingUser + ".\n Do you wish to accept?");
