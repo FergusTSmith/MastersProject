@@ -129,6 +129,7 @@ db.sequelize.sync().then((req) => {
         socket.on('CreateNewLobby', (newLobbyID, user) => {
             console.log('Creating new Lobby with ID: ' + newLobbyID);
             var newLobby = new Lobby(newLobbyID);
+            numberOfLobbies = availableLobbies.length;
             availableLobbies[numberOfLobbies] = newLobby;
             
             socket.join(availableLobbies[numberOfLobbies]);
