@@ -463,6 +463,7 @@ export default {
       },
       getUserDetails(userGoogleID){
         this.$socket.emit('retrieveDetails', userGoogleID)
+        this.gameStarted = false;
       },
       initiateGame(){
         var vm = this;
@@ -518,14 +519,14 @@ export default {
               vm.updateListOfCountries()
               vm.updateAchievements()
               vm.updateCategories()
-              vm.VisitedCountries = result.countryList.newValue;
-              vm.gameStarted = true;
               //console.log(vm.GameMode)
               if(vm.GameMode === "Classic"){
                vm.updateScoreClassic()
               }else if(vm.GameMode === "Bingo"){
                 vm.updateScoreBingo()
               }
+              vm.VisitedCountries = result.countryList.newValue;
+              vm.gameStarted = true;
             }
         }) 
 
@@ -985,6 +986,8 @@ export default {
       this.HostPage = false;
       this.CountryPage = false;
       this.AchievementPage = false;
+
+      this.gameStarted = false;
     },
     exitToHomePageReset(){
       this.reset();

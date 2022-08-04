@@ -152,6 +152,7 @@ db.sequelize.sync().then((req) => {
                     }
                     availableLobbies[numberOfLobbies--] = null;*/
                     availableLobbies.splice(i, 1);
+                    console.log(availableLobbies)
     
                     //Need code to notify all users in that lobby that it has been closed.
                 }
@@ -161,6 +162,7 @@ db.sequelize.sync().then((req) => {
             for(var j = 0; j < availableLobbies.length; j++){
                 if(availableLobbies[j].lobbyUsers.length === 0){
                     availableLobbies.splice(j, 1);
+                    console.log(availableLobbies);
                 }
             }
         })
@@ -174,6 +176,7 @@ db.sequelize.sync().then((req) => {
                         socket.in(availableLobbies[i]).broadcast.emit('updateUsers', availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID);
                         console.log('emitted update to front end');
                         socket.in(availableLobbies[i]).broadcast.emit('player_leave_message', userID);
+                        console.log(availableLobbies)
                     }
                 }   
             }
