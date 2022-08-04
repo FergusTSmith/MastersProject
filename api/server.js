@@ -93,7 +93,7 @@ db.sequelize.sync().then((req) => {
                 if(availableLobbies[i].LobbyID === lobbyID){
                     var isUserAlreadyInLobby = false;
                     for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
-                        if(availableLobbies.lobbyUsers[j].userID === UserID){
+                        if(availableLobbies[i].lobbyUsers[j].userID === UserID){
                             isUserAlreadyInLobby = true;
                         }
                     }
