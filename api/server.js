@@ -113,6 +113,7 @@ db.sequelize.sync().then((req) => {
                         socket.join(availableLobbies[i]);
                         console.log("This shouldn't add the user again");
                         socket.emit('lobbySuccess', [lobbyID, availableLobbies[i].lobbyUsers]);
+                        return;
                     }
                 }else{
                     continue;
