@@ -91,30 +91,32 @@ db.sequelize.sync().then((req) => {
             console.log("User is trying to join lobby: " + lobbyID);
             for(var i = 0; i < availableLobbies.length; i++){
                 console.log(availableLobbies)
-                if(availableLobbies[i].LobbyID === lobbyID){
-                    var isUserAlreadyInLobby = false;
-                    for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
-                        if(availableLobbies[i].lobbyUsers[j].userID === UserID.userID){
-                            isUserAlreadyInLobby = true;
+                if(availableLobbies[i] != undefined){
+                    if(availableLobbies[i].LobbyID === lobbyID){
+                        var isUserAlreadyInLobby = false;
+                        for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
+                            if(availableLobbies[i].lobbyUsers[j].userID === UserID.userID){
+                                isUserAlreadyInLobby = true;
+                            }
                         }
-                    }
-                    console.log(availableLobbies[i]);
-                    console.log(isUserAlreadyInLobby);
-                    console.log(UserID)
-                    
-                    if(!isUserAlreadyInLobby){
-                        socket.join(availableLobbies[i]);
-                        console.log("User has successfully joined the lobby " + lobbyID);
-                        availableLobbies[i].addUser(UserID);
-                        socket.emit('lobbySuccess', [lobbyID, availableLobbies[i].lobbyUsers]);
-                        socket.nsp.to(availableLobbies[i]).emit('updateUsers', [availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID])
-                        return;
-                    }else{
-                        // Rejoins the user to the lobby but doesn't add them as a new user.
-                        socket.join(availableLobbies[i]);
-                        console.log("This shouldn't add the user again");
-                        socket.emit('lobbySuccess', [lobbyID, availableLobbies[i].lobbyUsers]);
-                        return;
+                        console.log(availableLobbies[i]);
+                        console.log(isUserAlreadyInLobby);
+                        console.log(UserID)
+                        
+                        if(!isUserAlreadyInLobby){
+                            socket.join(availableLobbies[i]);
+                            console.log("User has successfully joined the lobby " + lobbyID);
+                            availableLobbies[i].addUser(UserID);
+                            socket.emit('lobbySuccess', [lobbyID, availableLobbies[i].lobbyUsers]);
+                            socket.nsp.to(availableLobbies[i]).emit('updateUsers', [availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID])
+                            return;
+                        }else{
+                            // Rejoins the user to the lobby but doesn't add them as a new user.
+                            socket.join(availableLobbies[i]);
+                            console.log("This shouldn't add the user again");
+                            socket.emit('lobbySuccess', [lobbyID, availableLobbies[i].lobbyUsers]);
+                            return;
+                        }
                     }
                 }else{
                     continue;
