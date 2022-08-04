@@ -2,6 +2,7 @@
     <h2>TrackHunt</h2>
     <p class="HelpText">Solo Mode</p>
     <div class="RadioButtons">
+        <label class="HelpText">Choose Game Mode:</label>
         <input id="Classic" class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label for="Classic">Classic</label>
         <input id="Bingo" class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label for="Bingo">Bingo</label>
     </div>
@@ -14,6 +15,7 @@
     <br/>
     <!--- Radio Buttons adapted from https://markheath.net/post/customize-radio-button-css https://codepen.io/phusum/pen/VQrQqy-->
     <div class="RadioButtons">
+        <label class="HelpText">Choose Round Length:</label>
         <input id="2min" class="Radio" type="radio" value="120" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label for="2min">2 min</label>
         <input id="5min" class="Radio" type="radio" value="300" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label for="5min">5 min</label>
         <input id="10min" class="Radio" type="radio" value="600" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label for="10min">10 min</label>

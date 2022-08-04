@@ -167,10 +167,11 @@ export default {
         this.UsersInLobby = listOfUsers;
         this.noOfUsersInLobby++;
         this.JoinLobbyPage = false;
+        this.HomePage = false;
         this.LobbyPage = true;
         //this.$socket.join(lobbyID)
         this.lobbyError = false;
-        this.allPlayersReady = false;
+        this.allPlayersReady = false; 
       },
       lobbyFailure() {
         console.log("there was an error when attempting to connect to the server")
@@ -182,10 +183,11 @@ export default {
         var lobbyID = MessageDetails[2];
         console.log('Client received the invitation request.')
         if(this.UsersID === inviteUsername){
-          var inviteAccepted = confirm("You have been invited to Lobby" + lobbyID + " by user " + invitingUser + ".\n Do you wish to accept?");
+          var inviteAccepted = confirm("You have been invited to Lobby " + lobbyID + " by user " + invitingUser + ".\n Do you wish to accept?");
+          console.log(inviteAccepted);
 
           if(inviteAccepted){
-              this.$emit('enterLobby', lobbyID)
+              this.enterLobby(lobbyID);
           }
         }
       },
@@ -211,6 +213,11 @@ export default {
             this.playerLeaveMessage += "You are the only player in this multiplayer game."
           }
           console.log(this.playerLeaveMessage)
+
+          if(messageDetails === this.UsersID){
+            this.SoloGame = false;
+            this.HomePage = true;
+          }
       },
 
       updateUsers(lobbyDetails){
