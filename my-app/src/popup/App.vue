@@ -129,7 +129,7 @@ export default {
           console.log(this.playersLobby === lobby);
 
           if((this.playersLobby === lobby) && (this.UsersID != lobbyAndUser[1])){
-            this.winningUser = lobbyAndUser[1];
+            this.WinningUser = lobbyAndUser[1];
             this.gameOver = true;
             this.didYouWin = false;
           }
@@ -840,6 +840,7 @@ export default {
         console.log(this.userProfile.BingoCountries)
         console.log(this.userProfile.BingoCountries.length)
         console.log(this.MultiPlayer)
+        this.noOfCountriesBingo = this.userProfile.BingoCountries.length;
 
         if(this.MultiPlayer){
           this.$socket.emit('bingoScoreUpdate', this.userProfile, this.playersLobby)
