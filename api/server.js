@@ -146,6 +146,7 @@ db.sequelize.sync().then((req) => {
     
         socket.on('closeLobby', (lobbyID) => {
             for(var i = 0; i < numberOfLobbies; i++){
+                console.log(availableLobbies);
                 if(availableLobbies[i].LobbyID === lobbyID){
                     /*for(var j = i; j < numberOfLobbies-1; j++){
                         availableLobbies[i] = availableLobbies[i+1]
