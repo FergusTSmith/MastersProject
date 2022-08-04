@@ -108,7 +108,7 @@ db.sequelize.sync().then((req) => {
                     }else{
                         // Rejoins the user to the lobby but doesn't add them as a new user.
                         socket.join(availableLobbies[i]);
-                        console.log("User has successfully joined the lobby " + lobbyID);
+                        console.log("This shouldn't add the user again");
                         socket.emit('lobbySuccess', [lobbyID, availableLobbies[i].lobbyUsers]);
                     }
                 }else{
