@@ -90,6 +90,7 @@ db.sequelize.sync().then((req) => {
         socket.on('JoinLobby', (lobbyID, UserID) => {
             console.log("User is trying to join lobby: " + lobbyID);
             for(var i = 0; i < availableLobbies.length; i++){
+                console.log(availableLobbies)
                 if(availableLobbies[i].LobbyID === lobbyID){
                     var isUserAlreadyInLobby = false;
                     for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
