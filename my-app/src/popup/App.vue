@@ -154,6 +154,7 @@ export default {
           this.UsersID = users[0].username;
           this.UserGoogleID = users[0].googleID;
           this.userProfile = new User(this.UsersID);
+          this.userProfile.googleID = this.UserGoogleID;
 
       },
       lobbySuccess(lobbyDetails) {
@@ -296,14 +297,21 @@ export default {
       },
       nameAvailable(MessageDetails){
         console.log(MessageDetails)
-        this.UsersID = MessageDetails[0];
-        this.userProfile.userID = this.UsersID;
+        this.UsersID = MessageDetails;
 
         this.$socket.emit('newUser', this.UsersID, this.UserGoogleID);
+
+        this.userProfile = new User(this.UsersID);
+        this.userProfile.userID = this.UsersID;
+
+        this.UsernamePage = false;
+        this.HomePage = true;
+        this.getUserDetails(this.UserGoogleID);
       },
       nameUnavailable(MessageDetails){
         console.log(MessageDetails);
-        console.log("Error: Name " + MessageDetails[0] + " is already in use");
+        console.log("Error: Name " + MessageDetails + " is already in use");
+        alert("Error: Name " + MessageDetails + " is already in use");
       }
     },
   data(){
@@ -872,57 +880,12 @@ export default {
          })
      },
      setUsername(UsersID){
-        this.UsersID = UsersID;
-        this.userProfile = new User(this.UsersID);
-        this.userProfile.userID = this.UsersID;
 
-        this.UsernamePage = false;
-        this.HomePage = true;
-        this.getUserDetails(this.UserGoogleID);
-
-        if(this.UsersID === ''){
+        if(UsersID === ''){
           alert("Please enter a name")
         }else{
-          this.$socket.emit('nameTaken', this.UsersID)
+          this.$socket.emit('nameTaken', UsersID)
         }
-        
-        /*
-        chrome.storage.local.get(["userQueryResult"], function(result){
-          console.log(result);
-          if(result === false){
-              vm.userProfile = new User(vm.UsersID);
-              vm.userProfile.googleID = vm.UserGoogleID;
-              vm.UsernamePage = false;
-              vm.HomePage = true;
-              vm.allUserIDs.push(vm.UsersID);
-              vm.allUsers.push(vm.userProfile);
-              vm.$socket.emit('newUser', vm.userProfile.userID, vm.userProfile.googleID)
-          }else if(result === true){
-              chrome.storage.local.get(["usersFromQuery"], function(result){
-                console.log(result)
-              })
-          }else{
-            console.log("Error, query resulted in neither false nor true")
-          }
-        }) */
-
-
-        /*
-        if(this.UsersID === '' && !(userFound)){
-          alert("Please enter a name")
-        }else if(this.UsersID in this.allUserIDs && !(userFound)){
-          alert("Error, that name has been taken");
-        }else if(!(userFound)){
-          console.log('This should fire for the first round')
-          this.userProfile = new User(this.UsersID);
-          this.userProfile.googleID = this.UserGoogleID;
-          this.UsernamePage = false;
-          this.HomePage = true;
-          this.allUserIDs.push(this.UsersID);
-          this.allUsers.push(this.userProfile);
-
-          this.$socket.emit('newUser', this.userProfile.userID, this.userProfile.googleID)
-          */
         },
      soloGameInitiated(){
         this.gameOver = false;

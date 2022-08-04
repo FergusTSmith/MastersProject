@@ -91,12 +91,26 @@ db.sequelize.sync().then((req) => {
             console.log("User is trying to join lobby: " + lobbyID);
             for(var i = 0; i < numberOfLobbies; i++){
                 if(availableLobbies[i].LobbyID === lobbyID){
-                    socket.join(availableLobbies[i]);
-                    console.log("User has successfully joined the lobby " + lobbyID);
-                    availableLobbies[i].addUser(UserID);
-                    socket.emit('lobbySuccess', [lobbyID, availableLobbies[i].lobbyUsers]);
-                    socket.nsp.to(availableLobbies[i]).emit('updateUsers', [availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID])
-                    return;
+                    var isUserAlreadyInLobby = false;
+                    for(var j = 0; j < availableLobbies.lobbyUsers.length; j++){
+                        if(availableLobbies.lobbyUsers[j].userID === UserID){
+                            isUserAlreadyInLobby = true;
+                        }
+                    }
+                    
+                    if(!isUserAlreadyInLobby){
+                        socket.join(availableLobbies[i]);
+                        console.log("User has successfully joined the lobby " + lobbyID);
+                        availableLobbies[i].addUser(UserID);
+                        socket.emit('lobbySuccess', [lobbyID, availableLobbies[i].lobbyUsers]);
+                        socket.nsp.to(availableLobbies[i]).emit('updateUsers', [availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID])
+                        return;
+                    }else{
+                        // Rejoins the user to the lobby but doesn't add them as a new user.
+                        socket.join(availableLobbies[i]);
+                        console.log("User has successfully joined the lobby " + lobbyID);
+                        socket.emit('lobbySuccess', [lobbyID, availableLobbies[i].lobbyUsers]);
+                    }
                 }else{
                     continue;
                 }
