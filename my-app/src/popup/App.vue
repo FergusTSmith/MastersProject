@@ -217,6 +217,7 @@ export default {
           if(messageDetails === this.UsersID){
             this.SoloGame = false;
             this.HomePage = true;
+            this.LobbyPage = false;
           }
       },
 

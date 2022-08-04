@@ -34,8 +34,10 @@
     </ol>
     </div>
 
+    <div class="buttonBar">
     <button @click="gameSetup" type="button">Start</button>
     <button @click="endGame" type="button">End Game</button>
+    </div>
     </div>
     
     <div v-if="gameOver">
@@ -171,5 +173,10 @@ p.UserScore {
     color: #20C20E;
     margin-top: 0px;
     margin-bottom: 5px;
+}
+div.buttonBar {
+    position: sticky;
+    width: 100%;
+    bottom: 0;
 }
 </style>

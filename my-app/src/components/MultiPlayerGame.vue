@@ -27,6 +27,7 @@
       </li>
     </ol>
     </div>
+    <div class="ReadyArea">
     <ol v-if="!(allPlayersReady)">
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item">
         {{ item.userID }} - {{ item.ready }}
@@ -40,6 +41,7 @@
         {{ item.userID }} | {{ item.BingoCountries.length }}
     </li>
     </ol>
+    </div>
     
     <div v-if="GameMode === 'Classic' && (gameStarted)">
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item">
@@ -48,9 +50,11 @@
     </div>
     <p class="CookieText">During this session, {{numberOfCookies.numberOfCookies}} tracking cookies have been set on your device.</p>
     <p class="ErrorText" v-if="playerLeaveMessage != 'false'"> {{ playerLeaveMessage }}</p>
+    <div class="buttonBar">
     <button v-if="isLobbyCreator" @click="gameSetup" type="button">Start</button>
     <button v-if="!(allPlayersReady)" @click="playerReady">Ready Up</button>
     <button @click="leaveGame" type="button">Leave Game</button>
+    </div>
     </div>
 
     <div v-if="gameOver">
@@ -250,5 +254,15 @@ li.GameUsers {
     font-family: 'digitalFont';
     font-size: 12px;
     color: #20C20E;
+}
+
+div.buttonBar {
+    position: sticky;
+    width: 100%;
+    bottom: 0;
+}
+div.ReadyArea {
+    width: 100%;
+    margin-right: 10px;
 }
 </style>

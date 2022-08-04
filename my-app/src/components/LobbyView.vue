@@ -13,7 +13,7 @@
     <p class="HelpText">Connected Players:</p>
     <!----https://codesandbox.io/s/7jmjmjp7q1?file=/src/App.vue - Kick buttons inspired by this tutorial-->
     <li v-for="(item, count) in UsersInLobby" class="LobbyUsers" :class="{ active: show === count}" :key="count" @mouseover="show = count" @mouseout="show = false">
-        {{ ++count }}. {{ item.userID }} <button v-if="(item.userID != this.UsersID)" @click="kickPlayer(item.userID)">Kick</button> 
+        {{ ++count }}. {{ item.userID }} <button v-if="(item.userID != this.UsersID) && this.isLobbyCreator" @click="kickPlayer(item.userID)">Kick</button> 
     </li>
     <br/><br/>
     </div>
@@ -31,7 +31,7 @@
     <button v-if="isLobbyCreator" @click="closeLobby" type="button">Close Lobby</button>
     <button v-if="isLobbyCreator" type="button" @click="openInvite">Invite Player</button>
     <div v-if="playerInvite">
-    <input class="textBox" v-if="playerInvite" ref="usernameInvite" type="text" id="Invite"/><label v-if="playerInvite" class="HelpText">Username</label>
+    <transition name="fade"><input class="textBox" v-if="playerInvite" ref="usernameInvite" type="text" id="Invite"/></transition><label v-if="playerInvite" class="HelpText">Username</label>
     <br/>
     <button v-if="playerInvite" @click="invitePlayer">Invite</button>
     <br/>
@@ -94,11 +94,11 @@ export default {
         kickPlayer(userID){
             console.log(userID)
 
-            var newLobbyUsers = [];
+            var newLobbyUsers = this.UsersInLobby.slice();
 
             for(var i = 0; i < this.UsersInLobby.length; i++){
                 if(this.UsersInLobby[i].userID === userID){
-                    newLobbyUsers = this.UsersInLobby.splice(i, 1);
+                    newLobbyUsers.splice(i, 1);
                 }
             }
 
@@ -132,5 +132,19 @@ li:hover {
 
 li.active {
     color: red;
+}
+
+/* Transitions */
+
+/* https://learnvue.co/tutorials/vue-animation */
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 5s ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
 }
 </style>
