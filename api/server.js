@@ -89,7 +89,7 @@ db.sequelize.sync().then((req) => {
     
         socket.on('JoinLobby', (lobbyID, UserID) => {
             console.log("User is trying to join lobby: " + lobbyID);
-            for(var i = 0; i < numberOfLobbies; i++){
+            for(var i = 0; i < availableLobbies.length; i++){
                 if(availableLobbies[i].LobbyID === lobbyID){
                     var isUserAlreadyInLobby = false;
                     for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
@@ -143,7 +143,7 @@ db.sequelize.sync().then((req) => {
         })
     
         socket.on('closeLobby', (lobbyID) => {
-            for(var i = 0; i < numberOfLobbies; i++){
+            for(var i = 0; i < availableLobbies.length; i++){
                 console.log(availableLobbies);
                 if(availableLobbies[i] != undefined){
                     if(availableLobbies[i].LobbyID === lobbyID){
@@ -333,7 +333,7 @@ db.sequelize.sync().then((req) => {
         })
     
         socket.on('playerReady', (user, lobbyID) => {
-            for(var i = 0; i < numberOfLobbies; i++){
+            for(var i = 0; i < availableLobbies.length; i++){
                 if(availableLobbies[i].LobbyID === lobbyID){
                     socket.nsp.to(availableLobbies[i]).emit('player_is_ready', user, lobbyID);
                 }
@@ -341,7 +341,7 @@ db.sequelize.sync().then((req) => {
         })
     
         socket.on('scoreUpdate', (user, lobbyID, userScore) => {
-            for(var i = 0; i < numberOfLobbies; i++){
+            for(var i = 0; i < availableLobbies.length; i++){
                 if(availableLobbies[i].LobbyID === lobbyID){
                     for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
                         if(availableLobbies[i].lobbyUsers[j].userID === user.userID){

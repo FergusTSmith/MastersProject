@@ -663,7 +663,6 @@ export default {
         this.didYouWin = true;
         if(this.MultiPlayer){
           this.$socket.emit('endBingoGame', this.playersLobby, this.UserGoogleID)
-          this.$socket.emit('gameWon', this.UserGoogleID);
           this.$socket.emit('closeLobby', this.playersLobby)
         }
         
