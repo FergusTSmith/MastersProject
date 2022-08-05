@@ -340,7 +340,7 @@ export default {
       },
       sendGameDetails(MessageDetails){
         if(this.playersLobby === MessageDetails){
-          this.$socket.emit('sendingGameDetails', this.GameMode, this.timer, this.UsersInLobby)
+          this.$socket.emit('sendingGameDetails', this.GameMode, this.timer, this.UsersInLobby, this.playersLobby)
         }
       },
       RejoinGame(MessageDetails){

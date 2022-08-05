@@ -424,8 +424,12 @@ db.sequelize.sync().then((req) => {
             }
         })
 
-        socket.on('sendingGameDetails', (GameMode, timer, LobbyUsers) => {
-            socket.emit('RejoinGame', GameMode, timer, LobbyUsers)
+        socket.on('sendingGameDetails', (GameMode, timer, LobbyUsers, lobbyID) => {
+            for(var i = 0; i < availableLobbies.length; i++){
+                if(availableLobbies[i].LobbyID === lobbyID){
+                    socket.nsp.to('RejoinGame', GameMode, timer, LobbyUsers)
+                }
+            }
         })
     })
     
