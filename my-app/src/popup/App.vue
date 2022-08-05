@@ -33,7 +33,7 @@ import MultiPlayerGame from '../components/MultiPlayerGame.vue';
     <button @click="joinlobby" type="button">Join Lobby</button><br/>
     <button @click="options" type="button">Options</button>
     <button @click="leaderboards" type="button">LeaderBoards</button>
-    <button v-if="userInAMultiGame || userInASoloGame">Rejoin Your Game</button>
+    <button v-if="userInAMultiGame || userInASoloGame" @click="RejoinGame">Rejoin Your Game</button>
   </div>
 
   <div v-if="LeaderBoardPage" id = "Leader-Board">
@@ -283,11 +283,6 @@ export default {
           this.multiClassicLeaderboard[i].createdAt = this.multiClassicLeaderboard[i].createdAt.toString().substring(0, 10)
         }
       },
-      sendBingoLeaderBoards(MessageDetails){
-        this.multiBingoLeaderboard = MessageDetails;
-        
-        console.log(this.multiBingoLeaderboard);
-      },
       sendSoloClassic(MessageDetails){
         if(this.UsersID === MessageDetails[1]){
           this.soloClassicLeaderboard = MessageDetails[0];
@@ -302,12 +297,6 @@ export default {
           this.personalSoloHS = this.soloClassicLeaderboard.filter(item => item.username === this.UsersID);
           this.personalSoloHS = this.personalSoloHS.slice(0, 11);
           console.log(this.personalSoloHS)
-        }
-        console.log(MessageDetails)
-      },
-      sendSoloBingo(MessageDetails){
-        if(this.UsersID === MessageDetails[1]){
-          this.soloBingoLeaderboard = MessageDetails;
         }
         console.log(MessageDetails)
       },
@@ -338,6 +327,20 @@ export default {
       },
       UserInMultiplayer(MessageDetails){
         console.log(MessageDetails);
+        this.userInAMultiGame = true;
+
+        this.playersLobby = MessageDetails[0];
+        this.UsersInLobby = MessageDetails[1];
+
+        this.$socket.emit('getGameDetails', this.playersLobby)
+        
+
+
+
+
+        this.HomePage = false;
+        this.MultiPlayer = true;
+
       }
     },
   data(){
