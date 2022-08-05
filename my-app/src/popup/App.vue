@@ -339,14 +339,22 @@ export default {
         var vm = this;
         if(this.UserGoogleID === MessageDetails){
             chrome.storage.local.get(['backupGameDetails'], function(result){
-              console.log(result.backupGameDetails);
-              console.log(vm);
+              var backupGame = result.backupGameDetails;
+              vm.GameMode = backupGame.GameMode;
+              vm.VisitedCountries = backupGame.VisitedCountries;
+              vm.userScore = backupGame.score;
+              vm.timer = backupGame.timer;
+
             })
         }
 
         this.IntroPage = false;
         this.SoloGame = true;
         this.HomePage = false;
+        vm.gameStarted = true;
+        vm.gameOver = false;
+
+        this.initiateListener();
       },
       sendGameDetails(MessageDetails){
         console.log(MessageDetails);
@@ -624,6 +632,7 @@ export default {
               }else if(vm.GameMode === "Bingo"){
                 vm.updateScoreBingo()
               }
+              vm.backupGameDetails();
               vm.VisitedCountries = result.countryList.newValue;
               vm.gameStarted = true;
             }
