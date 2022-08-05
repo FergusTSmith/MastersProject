@@ -343,7 +343,7 @@ export default {
           this.$socket.emit('sendingGameDetails', this.GameMode, this.timer, this.UsersInLobby)
         }
       },
-      rejoinGame(MessageDetails){
+      RejoinGame(MessageDetails){
         console.log(MessageDetails);
       }
     },
