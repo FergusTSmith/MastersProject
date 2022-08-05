@@ -348,7 +348,11 @@ export default {
         console.log(MessageDetails)
       },
       RejoinGame(MessageDetails){
-        console.log(MessageDetails);
+        this.GameMode = MessageDetails[0];
+        this.timer = MessageDetails[1];
+        this.UsersInLobby = MessageDetails[3];
+
+        this.gameStarted = true;
       }
     },
   data(){
