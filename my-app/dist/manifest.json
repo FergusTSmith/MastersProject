@@ -27,7 +27,7 @@
   "background": {
     "scripts": [
       "js/background.js",
-      "js/NoTrackBlocklist.js",
+      "js/CombinedBlockList.js",
       "js/gameplay.js",
       "js/socket.io.js",
       "js/client.js",

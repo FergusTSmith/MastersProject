@@ -52,7 +52,7 @@
     <p v-if="finishedGame">Well done! You managed to find all of the tracking nations!</p>
     <p v-if="!(finishedGame)">Unfortunately, you did not manage to find the tracking nations in the given time period.</p>
     </div>
-    <p class="CategoryText">You were tracked by {{ noOfCountries }} nation(s)</p>
+    <p class="CategoryText">You were tracked by {{ VisitedCountries.length }} nation(s)</p>
     <p v-if="APIEnabled" class="CategoryText">During your game, you were tracked when visiting the following categories of pages: </p>
     <li v-for="item in categoryList" ref="ListOfCategories" :key="item.name" class="CategoryList">
         {{ item.name }} | {{ item.count }}

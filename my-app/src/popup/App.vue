@@ -21,7 +21,7 @@ import MultiPlayerGame from '../components/MultiPlayerGame.vue';
 <template>
 <div id="app" :key="componentVersion">
   <div v-if="IntroPage" id="Intro-Page" ref="Intro-Page">
-      <IntroPage @userLogin="googleLogin($event)"></IntroPage>
+      <IntroPage @userLogin="googleLogin($event)" :userInASoloGame="userInASoloGame" :userInAMultiGame="userInAMultiGame"></IntroPage>
   </div>
 
   <div v-if="HomePage" id = "Home-Page">
@@ -33,9 +33,10 @@ import MultiPlayerGame from '../components/MultiPlayerGame.vue';
     <button @click="joinlobby" type="button">Join Lobby</button><br/>
     <button @click="options" type="button">Options</button>
     <button @click="leaderboards" type="button">LeaderBoards</button>
+    <button v-if="UserInAMultiGame || userInASoloGame">Rejoin Your Game</button>
   </div>
 
-  <div v-if="LeaderBoardPage"  id = "Leader-Board">
+  <div v-if="LeaderBoardPage" id = "Leader-Board">
     <LeaderBoard :gamesWon="gamesWon" :gamesPlayed="gamesPlayed" :personalSoloHS="personalSoloHS" :soloClassicLeaderboard="soloClassicLeaderboard" :multiClassicLeaderboard="multiClassicLeaderboard"></LeaderBoard>
     <button @click="exitToHomePage" type="button">HomePage</button>
   </div>
@@ -334,6 +335,9 @@ export default {
         console.log(MessageDetails);
         console.log("Error: Name " + MessageDetails + " is already in use");
         alert("Error: Name " + MessageDetails + " is already in use");
+      },
+      UserInMultiplayer(MessageDetails){
+        console.log(MessageDetails);
       }
     },
   data(){
@@ -419,6 +423,9 @@ export default {
       MultiBingoLB: false,
       SoloClassicLB: false,
       SoloBingoLB: false,
+
+      userInASoloGame: false,
+      userInAMultiGame: false,
 
       timer: 120,
       startTime: 120,
@@ -641,6 +648,8 @@ export default {
 
         console.log(timePassed)
         this.finishedGame = true;
+        this.userInAMultiGame = false;
+        this.userInASoloGame = false;
 
         if(this.GameMode === "Classic"){
           this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, this.userScore, (this.MultiPlayer === true), this.startTime)
@@ -877,8 +886,10 @@ export default {
      gameSetup(){ 
         if(this.allPlayersReady){
           this.$socket.emit('startTheGame', this.playersLobby)
+          this.userInAMultiGame = true;
         }else if(this.MultiPlayer === false){
           this.initiateGame();
+          this.userInASoloGame = true;
         }
      },
      
@@ -919,6 +930,7 @@ export default {
         this.gameOver = false;
         this.SoloPage = false;
         this.SoloGame = true;
+        this.userInASoloGame = true;
 
         console.log(this.GameMode)
         console.log(this.timer);
@@ -928,6 +940,7 @@ export default {
         this.gameOver = false;
         this.LobbyPage = false;
         this.MultiPlayer = true; 
+        this.userInAMultiGame = true;
 
         if(this.isLobbyCreator){
            this.$socket.emit('gameModeAndTime', this.playersLobby, this.GameMode, this.timer)
