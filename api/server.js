@@ -345,7 +345,8 @@ db.sequelize.sync().then((req) => {
                             console.log(availableLobbies[i].lobbyUsers)
                             if(availableLobbies[i].lobbyUsers[j].googleID === userGoogleID){
                                 socket.emit('UserInMultiplayer', availableLobbies[i].LobbyID, availableLobbies[i].lobbyUsers);
-                                console.log("Found the player")
+                                console.log("Found the player");
+                                socket.join(availableLobbies[i]);
                             }
                         }
                     }
