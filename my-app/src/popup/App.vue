@@ -189,6 +189,7 @@ export default {
 
           if(inviteAccepted){
               this.enterLobby(lobbyID);
+              this.isLobbyCreator = false;
           }
         }
       },
@@ -339,7 +340,7 @@ export default {
         console.log(MessageDetails);
         console.log(this.playersLobby)
         if(this.playersLobby === MessageDetails[0] && this.UsersID != MessageDetails[1]){
-          this.$socket.emit('sendingGameDetails', this.GameMode, this.timer, this.UsersInLobby, this.playersLobby, this.UsersID)
+          this.$socket.emit('sendingGameDetails', this.GameMode, this.timer, this.UsersInLobby, this.playersLobby, this.UsersID, this.allPlayersReady)
           console.log('should have sent the details by now!')
         }
         console.log(MessageDetails)
@@ -351,11 +352,29 @@ export default {
           this.UsersInLobby = MessageDetails[3];
 
           console.log(MessageDetails)
+          var vm = this;
 
           if(this.GameMode === "Classic"){
             chrome.storage.local.get(["backupCountryList"], function(result){
               vm.VisitedCountries = result;
             })
+            for(var i = 0; i < vm.UsersInLobby; i++){
+              if(vm.UsersInLobby[i].userID === vm.UsersID){
+                vm.userScore = vm.UsersInLobby[i].score
+              }
+            }
+          }
+
+          this.VisitedCountries = vm.VisitedCountries;
+          console.log(this.VisitedCountries)
+          this.userScore = vm.userScore;
+
+          this.allPlayersReady = true;
+
+          for(var j = 0; j < this.UsersInLobby; j++){
+            if(this.UsersInlobby[j].ready != true){
+              this.allPlayersReady = false;
+            }
           }
 
           this.gameStarted = true;
