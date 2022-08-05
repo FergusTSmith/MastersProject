@@ -356,9 +356,11 @@ export default {
 
           if(this.GameMode === "Classic"){
             chrome.storage.local.get(["backupCountryList"], function(result){
-              vm.VisitedCountries = result;
+              vm.VisitedCountries = result.backupCountryList;
+              //console.log(vm.VisitedCountries);
             })
             for(var i = 0; i < vm.UsersInLobby; i++){
+              console.log(vm.UsersInLobby)
               if(vm.UsersInLobby[i].userID === vm.UsersID){
                 vm.userScore = vm.UsersInLobby[i].score
               }
@@ -811,6 +813,7 @@ export default {
         })
 
         chrome.storage.local.set({backupCountryList: vm.VisitedCountries});
+        console.log(vm.VisitedCountries);
      },
      passiveMode(){
         var vm = this;
