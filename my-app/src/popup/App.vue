@@ -348,11 +348,21 @@ export default {
         if(this.UsersID != MessageDetails[4]){
           this.GameMode = MessageDetails[0];
           this.timer = MessageDetails[1];
-          this.UsersInLobby = MessageDetails[3];
+          this.UsersInLobby = MessageDetails[3]
+
+          this.updateUsers(MessageDetails[5]);
+
+          if(this.GameMode === "Classic"){
+            chrome.storage.local.get(["backupCountryList"], function(result){
+              vm.VisitedCountries = result;
+            })
+          }
 
           this.gameStarted = true;
           this.HomePage = false;
           this.MultiPlayer = true;
+
+
         }
       }
     },
@@ -780,6 +790,8 @@ export default {
             vm.achievements = result.achievements;
           })
         })
+
+        chrome.storage.local.set(['backupCountryList', vm.VisitedCountries]);
      },
      passiveMode(){
         var vm = this;
