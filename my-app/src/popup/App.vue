@@ -340,6 +340,7 @@ export default {
         if(this.UserGoogleID === MessageDetails){
             chrome.storage.local.get(['backupGameDetails'], function(result){
               console.log(result);
+              console.log(vm);
             })
         }
 
@@ -633,7 +634,7 @@ export default {
         backupGame.score = this.userScore;
         backupGame.VisitedCountries = this.VisitedCountries;
 
-        chrome.storage.local.set({backupGameDetails: backUpGame})
+        chrome.storage.local.set({backupGameDetails: backupGame})
       },  
       
       
