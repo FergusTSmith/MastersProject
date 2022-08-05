@@ -337,12 +337,15 @@ db.sequelize.sync().then((req) => {
                     socket.emit('UserNotFound')
                 }else{
                     socket.emit('UserFound', users)
+                    console.log('Found user')
                     for(var i = 0; i < availableLobbies.length; i++){
                         console.log(availableLobbies[i]);
                         for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
+                            console.log('Attempting to search through lobby for players')
                             console.log(availableLobbies[i].lobbyUsers)
                             if(availableLobbies[i].lobbyUsers[j].googleID === userGoogleID){
                                 socket.emit('UserInMultiplayer', availableLobbies[i].LobbyID, availableLobbies[i].lobbyUsers);
+                                console.log("Found the player")
                             }
                         }
                     }
