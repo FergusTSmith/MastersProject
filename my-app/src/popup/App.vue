@@ -339,8 +339,11 @@ export default {
         this.MultiPlayer = true;
       },
       sendGameDetails(MessageDetails){
+        console.log(MessageDetails);
+        console.log(this.playersLobby)
         if(this.playersLobby === MessageDetails){
           this.$socket.emit('sendingGameDetails', this.GameMode, this.timer, this.UsersInLobby, this.playersLobby)
+          console.log('should have sent the details by now!')
         }
         console.log(MessageDetails)
       },
