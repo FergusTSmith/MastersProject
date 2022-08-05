@@ -339,7 +339,7 @@ db.sequelize.sync().then((req) => {
                 }else{
                     socket.emit('UserFound', users)
                     console.log('Found user')
-                    console.log(users.UserAccount.username);
+                    console.log(users);
                     if(playersInASoloGame.includes(users[0].username)){
                         socket.emit('UserInSinglePlayer', userGoogleID)
                     }
