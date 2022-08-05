@@ -348,9 +348,9 @@ export default {
         if(this.UsersID != MessageDetails[4]){
           this.GameMode = MessageDetails[0];
           this.timer = MessageDetails[1];
-          this.UsersInLobby = MessageDetails[3]
+          this.UsersInLobby = MessageDetails[3];
 
-          this.updateUsers(MessageDetails[5]);
+          console.log(MessageDetails)
 
           if(this.GameMode === "Classic"){
             chrome.storage.local.get(["backupCountryList"], function(result){
