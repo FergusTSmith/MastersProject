@@ -332,7 +332,7 @@ export default {
         this.playersLobby = MessageDetails[0];
         this.UsersInLobby = MessageDetails[1];
 
-        this.$socket.emit('getGameDetails', this.playersLobby)
+        this.$socket.emit('getGameDetails', this.playersLobby, this.UsersID)
 
 
         this.HomePage = false;
@@ -341,7 +341,7 @@ export default {
       sendGameDetails(MessageDetails){
         console.log(MessageDetails);
         console.log(this.playersLobby)
-        if(this.playersLobby === MessageDetails){
+        if(this.playersLobby === MessageDetails[0] && this.UsersID != MessageDetails[1]){
           this.$socket.emit('sendingGameDetails', this.GameMode, this.timer, this.UsersInLobby, this.playersLobby)
           console.log('should have sent the details by now!')
         }

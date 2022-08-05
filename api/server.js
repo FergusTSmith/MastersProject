@@ -416,10 +416,10 @@ db.sequelize.sync().then((req) => {
             }
         })
 
-        socket.on('getGameDetails', (lobbyID) => {
+        socket.on('getGameDetails', (lobbyID, userID) => {
             for(var i = 0; i < availableLobbies.length; i++){
                 if(availableLobbies[i].LobbyID === lobbyID){
-                    socket.nsp.to(availableLobbies[i]).emit('sendGameDetails', lobbyID);
+                    socket.nsp.to(availableLobbies[i]).emit('sendGameDetails', lobbyID, userID);
                     console.log("asked other users for details");
                 }
             }
