@@ -443,6 +443,7 @@ db.sequelize.sync().then((req) => {
         })
 
         socket.on('playerInSoloGame', (userID) => {
+            console.log(playersInASoloGame)
             if(!(playersInASoloGame.includes(userID))){
                 playersInASoloGame.push(userID);
                 console.log("Solo game players: " + playersInASoloGame)
