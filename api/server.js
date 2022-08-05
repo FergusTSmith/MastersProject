@@ -54,6 +54,7 @@ const PORT = 3080;
 var availableLobbies = [];
 var numberOfLobbies = 0;
 //var socketServ = undefined;
+var playersInASoloGame = [];
 
 
 //db.sequelize.sync().then((req) => { 
@@ -338,6 +339,10 @@ db.sequelize.sync().then((req) => {
                 }else{
                     socket.emit('UserFound', users)
                     console.log('Found user')
+                    if(playersInASoloGame.includes(users[0].username)){
+                        socket.emit('UserInSinglePlayer', userGoogleID)
+                    }
+
                     for(var i = 0; i < availableLobbies.length; i++){
                         console.log(availableLobbies[i]);
                         for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
@@ -433,6 +438,12 @@ db.sequelize.sync().then((req) => {
                     console.log("Found lobby and rejoining game");
                     socket.nsp.to(availableLobbies[i]).emit('updateUsers', [availableLobbies[i].lobbyUsers, availableLobbies[i].LobbyID])
                 }
+            }
+        })
+
+        socket.on('playerInSoloGame', (userID) => {
+            if(!(playersInASoloGame.includes(userID))){
+                playersInASoloGame.push(userID);
             }
         })
     })

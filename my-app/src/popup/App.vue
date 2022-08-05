@@ -334,7 +334,17 @@ export default {
         this.UsersInLobby = MessageDetails[1];
 
         this.$socket.emit('getGameDetails', this.playersLobby, this.UsersID)
+      },
+      UserInSinglePlayer(MessageDetails){
+        var vm = this;
+        if(this.UserGoogleID === MessageDetails){
+            chrome.storage.local.get(['backupGameDetails'], function(result){
+              console.log(result);
+            })
+        }
 
+        this.IntroPage = false;
+        this.SoloGame = true;
       },
       sendGameDetails(MessageDetails){
         console.log(MessageDetails);
@@ -594,6 +604,7 @@ export default {
 
         this.initiateListener();
 
+
           /* chrome.windows.create({
             url: 'https://www.google.com',
           }) */
@@ -615,7 +626,15 @@ export default {
               vm.gameStarted = true;
             }
         }) 
-      },
+      },backupGameDetails(){
+        var backupGame = {}
+        backupGame.GameMode = this.GameMode;
+        backupGame.timer = this.timer;
+        backupGame.score = this.userScore;
+        backupGame.VisitedCountries = this.VisitedCountries;
+
+        chrome.storage.local.set({backupGameDetails: backUpGame})
+      },  
       
       
       generateRandomIntHelper(max){
@@ -997,6 +1016,8 @@ export default {
 
         console.log(this.GameMode)
         console.log(this.timer);
+
+        this.$socket.emit("playerInSoloGame", this.UsersID)
      },
      multiGameInitiated(){
         this.countriesToFind = [];
