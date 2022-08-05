@@ -333,14 +333,18 @@ export default {
         this.UsersInLobby = MessageDetails[1];
 
         this.$socket.emit('getGameDetails', this.playersLobby)
-        
-
-
 
 
         this.HomePage = false;
         this.MultiPlayer = true;
-
+      },
+      sendGameDetails(MessageDetails){
+        if(this.playersLobby === MessageDetails){
+          this.$socket.emit('sendingGameDetails', this.GameMode, this.timer, this.UsersInLobby)
+        }
+      },
+      rejoinGame(MessageDetails){
+        console.log(MessageDetails);
       }
     },
   data(){
@@ -625,6 +629,8 @@ export default {
             console.log(this.UsersInLobby)
           }
         }
+        this.userInAMultiGame = false;
+        this.userInASoloGame = false;
 
         this.$socket.emit('playerLeft', this.UsersInLobby, this.playersLobby, this.UsersID)
         console.log('we reached here');

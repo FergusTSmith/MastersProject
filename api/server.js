@@ -357,6 +357,12 @@ db.sequelize.sync().then((req) => {
             for(var i = 0; i < availableLobbies.length; i++){
                 if(availableLobbies[i].LobbyID === lobbyID){
                     socket.nsp.to(availableLobbies[i]).emit('player_is_ready', user, lobbyID);
+                    for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
+                        console.log(availableLobbies[i].lobbyUsers)
+                        if(availableLobbies[i].lobbyUsers[j].userID === user.userID){
+                            availableLobbies[i].lobbyUsers[j] = user;
+                        }
+                    }
                 }
             }
         })
@@ -407,6 +413,18 @@ db.sequelize.sync().then((req) => {
                     }
                 }
             }
+        })
+
+        socket.on('getGameDetails', (lobbyID) => {
+            for(var i = 0; i < availableLobbies.length; i++){
+                if(availableLobbies[i].LobbyID === lobbyID){
+                    socket.nsp.to(availableLobbies[i]).emit('sendGameDetails', lobbyID);
+                }
+            }
+        })
+
+        socket.on('sendingGameDetails', (GameMode, timer, LobbyUsers) => {
+            socket.on('RejoinGame', GameMode, timer, LobbyUsers)
         })
     })
     
