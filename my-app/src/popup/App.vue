@@ -339,13 +339,14 @@ export default {
         var vm = this;
         if(this.UserGoogleID === MessageDetails){
             chrome.storage.local.get(['backupGameDetails'], function(result){
-              console.log(result);
+              console.log(result.backupGameDetails);
               console.log(vm);
             })
         }
 
         this.IntroPage = false;
         this.SoloGame = true;
+        this.HomePage = false;
       },
       sendGameDetails(MessageDetails){
         console.log(MessageDetails);
@@ -762,6 +763,10 @@ export default {
 
         if(this.GameMode === 'Bingo'){
           this.endBingoGame();
+        }
+
+        if(!(this.MultiPlayer)){
+          this.$socket.emit('soloGameFinished', this.UserGoogleID)
         }
 
         //this.reset();

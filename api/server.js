@@ -448,6 +448,14 @@ db.sequelize.sync().then((req) => {
                 console.log("Solo game players: " + playersInASoloGame)
             }
         })
+
+        socket.on('soloGameFinished', (userGoogleID) => {
+            for(var i = 0; i < playersInASoloGame.length; i++){
+                if(playersInASoloGame[i] === userGoogleID){
+                    playersInASoloGame.splice(i, 1);
+                }
+            }
+        })
     })
     
     var nodeServer = http.createServer(app);
