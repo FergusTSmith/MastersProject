@@ -289,7 +289,7 @@ db.sequelize.sync().then((req) => {
 
             GameDetails.findAll({ where: {gameType: 'Classic', Multiplayer: true}, order:[['Score', 'DESC']], limit: 10}).then((res) => {
                 MultiClassic = res;
-                console.log(MultiClassic);
+                //console.log(MultiClassic);
 
                 for(var i = 0; i < MultiClassic.length; i++){
                     MultiClassic[i].createdAt = MultiClassic[i].createdAt.toString().substr(0, 9)
@@ -301,7 +301,7 @@ db.sequelize.sync().then((req) => {
 
             GameDetails.findAll({ where: {gameType: 'Bingo', Multiplayer: true}, order:[['Score', 'DESC']]}).then((res) => {
                 MultiBingo = res; 
-                console.log(MultiBingo);
+                //console.log(MultiBingo);
                 socket.emit('sendBingoLeaderBoards', MultiBingo);
             })
         })
@@ -311,7 +311,7 @@ db.sequelize.sync().then((req) => {
 
             GameDetails.findAll({ where: {gameType: 'Classic', Multiplayer: false, username: userID}, order:[['Score', 'DESC']], limit: 10}).then((res) => {
                 SoloClassic = res;
-                console.log(SoloClassic);
+                //console.log(SoloClassic);
 
                 for(var i = 0; i < SoloClassic.length; i++){
                     SoloClassic[i].createdAt = SoloClassic[i].createdAt.toString().substr(0, 9)
@@ -323,7 +323,7 @@ db.sequelize.sync().then((req) => {
 
             GameDetails.findAll({ where: {gameType: 'Bingo', Multiplayer: false, username: userID}}).then((res) => {
                 SoloBingo = res; 
-                console.log(SoloBingo);
+                //console.log(SoloBingo);
                 socket.emit('sendSoloBingo›', SoloBingo, userID);
             })
         })
