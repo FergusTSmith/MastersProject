@@ -215,6 +215,16 @@ db.sequelize.sync().then((req) => {
                 }
             }
         })
+
+        socket.on('BingoRejoin', (lobbyID, usersID) => {
+            for(var i = 0; i < availableLobbies.length; i++){
+                if(availableLobbies[i] != undefined){
+                    if(availableLobbies[i].LobbyID === lobbyID){
+                        socket.in(availableLobbies[i]).broadcast.emit('resendBingo', lobbyID, usersID);
+                    }
+                }
+            }
+        })
     
         socket.on('newUser', (userID, usergoogleID) => {
             UserAccount.findAll({ where: { googleID: usergoogleID}}).then((users => {

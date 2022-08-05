@@ -356,6 +356,13 @@ export default {
 
         this.initiateListener();
       },
+      resendBingo(MessageDetails){
+        if(this.playersLobby === MessageDetails[0]){
+          if(this.UsersID != MessageDetails[1]){
+            this.$socket.emit('countriesToVisit', this.playersLobby, this.countriesToFind)
+          }
+        }
+      },
       sendGameDetails(MessageDetails){
         console.log(MessageDetails);
         console.log(this.playersLobby)
@@ -385,6 +392,10 @@ export default {
                 vm.userScore = vm.UsersInLobby[i].score
               }
             }
+          }
+
+          if(this.GameMode === "Bingo"){
+            this.$socket.emit("BingoRejoin", this.playersLobby, this.UsersID)
           }
 
           this.VisitedCountries = vm.VisitedCountries;
