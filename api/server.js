@@ -343,6 +343,7 @@ db.sequelize.sync().then((req) => {
             for(var i = 0; i < availableLobbies.length; i++){
                 console.log(availableLobbies[i]);
                 for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
+                    console.log(availableLobbies[i].lobbyUsers)
                     if(availableLobbies[i].lobbyUsers[j].googleID === userGoogleID){
                         socket.emit('UserInMultiplayer', availableLobbies[i].LobbyID, availableLobbies[i].lobbyUsers);
                     }
