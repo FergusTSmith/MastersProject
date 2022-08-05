@@ -1018,7 +1018,7 @@ export default {
         console.log(this.GameMode)
         console.log(this.timer);
 
-        this.$socket.emit("playerInSoloGame", this.UsersID)
+        this.$socket.emit("playerInSoloGame", this.UserGoogleID)
      },
      multiGameInitiated(){
         this.countriesToFind = [];

@@ -333,14 +333,13 @@ db.sequelize.sync().then((req) => {
             console.log("Query received");
             console.log(userGoogleID);
             UserAccount.findAll({ where: { googleID: userGoogleID }}).then((users) => {
-                console.log(users);
                 if(users.length === 0){
                     socket.emit('UserNotFound')
                 }else{
                     socket.emit('UserFound', users)
                     console.log('Found user')
                     console.log(users);
-                    if(playersInASoloGame.includes(users[0].username)){
+                    if(playersInASoloGame.includes(userGoogleID)){
                         socket.emit('UserInSinglePlayer', userGoogleID)
                     }
 
@@ -442,10 +441,10 @@ db.sequelize.sync().then((req) => {
             }
         })
 
-        socket.on('playerInSoloGame', (userID) => {
+        socket.on('playerInSoloGame', (userGoogleID) => {
             console.log(playersInASoloGame)
-            if(!(playersInASoloGame.includes(userID))){
-                playersInASoloGame.push(userID);
+            if(!(playersInASoloGame.includes(userGoogleID))){
+                playersInASoloGame.push(userGoogleID);
                 console.log("Solo game players: " + playersInASoloGame)
             }
         })
