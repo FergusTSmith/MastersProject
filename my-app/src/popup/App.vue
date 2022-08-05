@@ -334,25 +334,26 @@ export default {
 
         this.$socket.emit('getGameDetails', this.playersLobby, this.UsersID)
 
-
-        this.HomePage = false;
-        this.MultiPlayer = true;
       },
       sendGameDetails(MessageDetails){
         console.log(MessageDetails);
         console.log(this.playersLobby)
         if(this.playersLobby === MessageDetails[0] && this.UsersID != MessageDetails[1]){
-          this.$socket.emit('sendingGameDetails', this.GameMode, this.timer, this.UsersInLobby, this.playersLobby)
+          this.$socket.emit('sendingGameDetails', this.GameMode, this.timer, this.UsersInLobby, this.playersLobby, this.UsersID)
           console.log('should have sent the details by now!')
         }
         console.log(MessageDetails)
       },
       RejoinGame(MessageDetails){
-        this.GameMode = MessageDetails[0];
-        this.timer = MessageDetails[1];
-        this.UsersInLobby = MessageDetails[3];
+        if(this.UsersID != MessageDetails[4]){
+          this.GameMode = MessageDetails[0];
+          this.timer = MessageDetails[1];
+          this.UsersInLobby = MessageDetails[3];
 
-        this.gameStarted = true;
+          this.gameStarted = true;
+          this.HomePage = false;
+          this.MultiPlayer = true;
+        }
       }
     },
   data(){

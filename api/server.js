@@ -425,11 +425,11 @@ db.sequelize.sync().then((req) => {
             }
         })
 
-        socket.on('sendingGameDetails', (GameMode, timer, LobbyUsers, lobbyID) => {
+        socket.on('sendingGameDetails', (GameMode, timer, LobbyUsers, lobbyID, UsersID) => {
             for(var i = 0; i < availableLobbies.length; i++){
                 console.log("looking for lobby to rejoin..." + lobbyID)
                 if(availableLobbies[i].LobbyID === lobbyID){
-                    socket.nsp.to(availableLobbies[i]).emit('RejoinGame', GameMode, timer, LobbyUsers)
+                    socket.nsp.to(availableLobbies[i]).emit('RejoinGame', GameMode, timer, LobbyUsers, UsersID)
                     console.log("Found lobby and rejoining game");
                 }
             }
