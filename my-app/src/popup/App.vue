@@ -379,6 +379,8 @@ export default {
             }
           }
 
+          this.initiateListener();
+
           this.gameStarted = true;
           this.HomePage = false;
           this.MultiPlayer = true;
@@ -590,6 +592,14 @@ export default {
 
         }
 
+        this.initiateListener();
+
+          /* chrome.windows.create({
+            url: 'https://www.google.com',
+          }) */
+      },initiateListener(){
+        var vm = this;
+        
         chrome.storage.onChanged.addListener(function(result) {
             if(!(vm.gameOver)){
               vm.updateListOfCountries()
@@ -605,11 +615,10 @@ export default {
               vm.gameStarted = true;
             }
         }) 
-
-          /* chrome.windows.create({
-            url: 'https://www.google.com',
-          }) */
-      },generateRandomIntHelper(max){
+      },
+      
+      
+      generateRandomIntHelper(max){
           return Math.floor(Math.random() * max)
 
           //Nabbed from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
