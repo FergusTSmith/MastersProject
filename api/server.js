@@ -419,6 +419,7 @@ db.sequelize.sync().then((req) => {
             for(var i = 0; i < availableLobbies.length; i++){
                 if(availableLobbies[i].LobbyID === lobbyID){
                     socket.nsp.to(availableLobbies[i]).emit('sendGameDetails', lobbyID);
+                    console.log("asked other users for details");
                 }
             }
         })
