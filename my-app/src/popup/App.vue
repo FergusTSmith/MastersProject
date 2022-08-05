@@ -33,7 +33,7 @@ import MultiPlayerGame from '../components/MultiPlayerGame.vue';
     <button @click="joinlobby" type="button">Join Lobby</button><br/>
     <button @click="options" type="button">Options</button>
     <button @click="leaderboards" type="button">LeaderBoards</button>
-    <button v-if="UserInAMultiGame || userInASoloGame">Rejoin Your Game</button>
+    <button v-if="userInAMultiGame || userInASoloGame">Rejoin Your Game</button>
   </div>
 
   <div v-if="LeaderBoardPage" id = "Leader-Board">
