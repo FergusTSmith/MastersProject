@@ -570,13 +570,13 @@ export default {
         }
 
         chrome.storage.onChanged.addListener(function(result) {
-            if(!(this.gameOver)){
+            if(!(vm.gameOver)){
               vm.updateListOfCountries()
               vm.updateAchievements()
               vm.updateCategories()
               //console.log(vm.GameMode)
               if(vm.GameMode === "Classic"){
-               vm.updateScoreClassic()
+                vm.updateScoreClassic()
               }else if(vm.GameMode === "Bingo"){
                 vm.updateScoreBingo()
               }
@@ -791,7 +791,7 @@ export default {
           })
         })
 
-        chrome.storage.local.set(['backupCountryList', vm.VisitedCountries]);
+        chrome.storage.local.set({backupCountryList: vm.VisitedCountries});
      },
      passiveMode(){
         var vm = this;
@@ -832,6 +832,8 @@ export default {
      }, 
 
      updateScoreClassic(){
+        console.log('Updating score');
+        
         var vm = this;
 
         chrome.storage.local.get(["countryList"], function(result){
