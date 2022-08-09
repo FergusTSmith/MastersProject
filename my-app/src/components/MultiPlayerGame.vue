@@ -9,18 +9,18 @@
     <div v-if="GameMode === 'Classic'" class="ClassicGameMode">
     <p class="HelpText">Current Score: </p><p class="UserScore">{{ this.userScore }}</p>
     <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item" class="TrackedCountry">
-        <p class="CountryText">{{ item.name }} | {{ item.count }} |</p><p class = "TinyText"> {{ item.site }} </p>
+        <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/><p class="CountryText">{{ item.name }} | {{ item.count }} tracker(s) | {{ item.multiplyer*item.count }} point(s)</p><p class = "TinyText"> {{ item.site }} </p>
     </li>
     <br/>
     </div>
     <div v-if="GameMode === 'Bingo'">
-    <label>Countries To Locate:</label>
+    <label class="Guide">Countries To Locate:</label>
     <ol>
-    <li v-for="item in countriesToFind" ref="CountriesToFind" :class="{found:item.found}" :key="item">
+    <li class="CountriesToFind" v-for="item in countriesToFind" ref="CountriesToFind" :class="{found:item.found}" :key="item">
         {{ item.country }}
     </li>  
     </ol>
-    <label>Countries Located</label>
+    <label class="Guide">Countries Located</label>
     <ol>
       <li v-for="item in VisitedCountries" ref="ListOfCountries" class="BingoList" :key="item">
           {{ item.name }}
@@ -37,7 +37,7 @@
         <li class="GameUsers">All players are ready</li>
     </ol>
     <ol v-if="allPlayersReady && (gameStarted) && (GameMode === 'Bingo')">
-    <li v-for="item in UsersInLobby" ref="BingoScores" class="GamesUsers" :key="item">
+    <li v-for="item in UsersInLobby" ref="BingoScores" class="BingoScores" :key="item">
         {{ item.userID }} | {{ item.BingoCountries.length }}
     </li>
     </ol>
@@ -68,10 +68,10 @@
     </div>
 
     <div v-if="GameMode === 'Classic'">
-    <p>Your score was: {{ this.userScore }}</p>
+    <p>Your score was: </p><p class="UserScore">{{ this.userScore }}</p>
     <div class="GameResults">
     <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
-        <p class="CountryText">{{ item.name }} | {{ item.count }} |</p><p class = "TinyText"> {{ item.site }} </p>
+         <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/><p class="EndScreenText"> {{ item.count }} tracker(s) | {{ item.multiplyer*item.count }} point(s)</p>
     </li>
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item">
         {{ item.userID }} - {{ item.score }}
@@ -254,6 +254,28 @@ li.GameUsers {
     font-family: 'digitalFont';
     font-size: 12px;
     color: #20C20E;
+    list-style: none;
+}
+li.BingoList {
+    font-size: 12px;
+    list-style: none;
+}
+
+li.TrackedCountry {
+    list-style: none;
+}
+
+li.CountriesToFind {
+    list-style: none;
+    align-items: center;
+    margin-right: 30px;
+}
+li.BingoScores {
+    list-style: none; 
+    font-family: 'digitalFont';
+    font-size: 15px;
+    color: #20C20E;
+    margin-right: 20px;
 }
 
 div.buttonBar {
@@ -264,5 +286,15 @@ div.buttonBar {
 div.ReadyArea {
     width: 100%;
     margin-right: 10px;
+}
+img.CountryFlag {
+    width: 15px;
+    height: 10px;
+    float: left;
+    margin-right: 10px;
+}
+label.Guide {
+    font-size: 12px;
+    color: lightgrey;
 }
 </style>

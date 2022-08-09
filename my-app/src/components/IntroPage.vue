@@ -3,7 +3,7 @@
       <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/>
       <!----<p>🇺🇸 🇬🇧</p> --->
       <h5>Who is watching you?</h5>
-      <button @click="googleLogin" ref="LoginButton">Login</button>
+      <button class="loginButton" @click="googleLogin" ref="LoginButton">Login</button>
       <!------<Transition><button v-if="IntroPage" @click="NoAccount">No-Login Mode</button></Transition> --->
       <button v-if="userInAMultiGame || userInASoloGame">Rejoin Game</button>
       <p class="HelpText">To use TrackHunt, sign in with Google and ensure you are signed in on your browser</p>
@@ -51,5 +51,8 @@ export default {
 h5 {
     margin-top: 2px;
     margin-bottom: 2px;
+}
+button.loginButton {
+    width: 80%;
 }
 </style>

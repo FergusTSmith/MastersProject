@@ -5,7 +5,7 @@
     <br/>
 
     <!-----Using a more sophisticated solution for the timer. Adapted from https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f-->
-    
+    <!-----<img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>--->
 
     <div class="timer">
     <BaseTimer :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="30"></BaseTimer>
@@ -13,20 +13,20 @@
     <div v-if="GameMode === 'Classic'" class="ClassicGameMode">
     <p class="HelpText">Current Score: </p><p class="UserScore">{{ this.userScore }}</p>
     <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
-        <p class="CountryText">{{ item.name }} | {{ item.count }} |</p><p class = "TinyText"> {{ item.site }} </p>
+        <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/><p class="CountryText">{{ item.name }} | {{ item.count }} tracker(s) | {{ item.multiplyer*item.count }} point(s)</p><p class = "TinyText"> {{ item.site }} </p>
     </li>
     <p class="CookieText">During this session, {{numberOfCookies.numberOfCookies}} tracking cookies have been set on your device.</p>
     <br/>
     
     </div>
     <div v-if="GameMode === 'Bingo'">
-    <label>Countries To Locate:</label>
+    <label class="Guide">Countries To Locate:</label>
     <ol>
     <li v-for="item in countriesToFind" ref="CountriesToFind" :class="{found:item.found}" :key="item">
         {{ item.country }}
     </li>  
     </ol>
-    <label>Countries Located</label>
+    <label class="Guide">Countries Located</label>
     <ol>
       <li v-for="item in VisitedCountries" ref="ListOfCountries" class="BingoList" :key="item">
           {{ item.name }}
@@ -43,9 +43,9 @@
     <div v-if="gameOver">
     <h2 class="GameOver">GAME OVER</h2>
     <div v-if="GameMode === 'Classic'">
-    <p>Your score was: {{ this.userScore }}</p>
+    <p>Your score was: </p><p class="UserScore">{{ this.userScore }}</p>
     <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
-        <p class="EndScreenText">{{ item.name }} | {{ item.count }} |</p>
+        <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/><p class="EndScreenText">| {{ item.count }} tracker(s) | {{ item.multiplyer*item.count }} point(s)</p>
     </li>
     </div>
     <div v-if="GameMode === 'Bingo'">
@@ -120,7 +120,7 @@ export default {
     methods: {
         displayInformation(){
             if(this.GameMode === "Classic"){
-                alert("In Classic mode, points are awarded through discovering tracking URLs located in different nations. The rarity of the nation discovered determines the amount of points received. The player with the most points when the timer elapses will win. \n Common Countries (x1 Multiplyer): United States, United Kingdom \n Uncommon Countries (x2 Multiplyer): EU nations \n Rare Countries (x3 Multiplyer): Russia \n Very Rare Countries (x5 Multiplyer): All other countries");
+                alert("In Classic mode, points are awarded through discovering tracking URLs located in different nations. The rarity of the nation discovered determines the amount of points received. The player with the most points when the timer elapses will win. \n Common Countries (x1 Multiplyer): United States, United Kingdom \n Uncommon Countries (x2 Multiplyer): EU Nations/North American Nations \n Rare Countries (x3 Multiplyer): Asian Nations \n Very Rare Countries (x4 Multiplyer): African Nations \n All other countries (x5 Multiplyer)");
             }else{
                 alert("In Bingo mode, users are challenged to discover tracking URLs from a specific list of countries. The first player to discover all listed countries is the winner of the game")
             }
@@ -178,5 +178,16 @@ div.buttonBar {
     position: sticky;
     width: 100%;
     bottom: 0;
+}
+
+img.CountryFlag {
+    width: 15px;
+    height: 10px;
+    float: left;
+    margin-right: 10px;
+}
+label.Guide {
+    font-size: 12px;
+    color: lightgrey;
 }
 </style>

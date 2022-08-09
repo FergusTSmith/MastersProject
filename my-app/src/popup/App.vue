@@ -28,12 +28,12 @@ import MultiPlayerGame from '../components/MultiPlayerGame.vue';
     <h2>TrackHunt</h2>
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
     <p class="HelpText" v-if="userSignedIn">Welcome back, {{ UsersID }}!</p>
-    <button @click="solomode" type="button">Play Solo</button><br/>
-    <button @click="createLobby" type="button">Create Lobby</button>
-    <button @click="joinlobby" type="button">Join Lobby</button><br/>
-    <button @click="options" type="button">Options</button>
-    <button @click="leaderboards" type="button">LeaderBoards</button>
-    <button v-if="userInAMultiGame || userInASoloGame" @click="RejoinGame">Rejoin Your Game</button>
+    <button class="homepageButton" @click="solomode" type="button">Play Solo</button><br/>
+    <button class="homepageButton" @click="createLobby" type="button">Create Lobby</button>
+    <button class="homepageButton" @click="joinlobby" type="button">Join Lobby</button><br/>
+    <button class="homepageButton" @click="options" type="button">Options</button>
+    <button class="homepageButton" @click="leaderboards" type="button">LeaderBoards</button>
+    <button class="homepageButton" v-if="userInAMultiGame || userInASoloGame" @click="RejoinGame">Rejoin Your Game</button>
   </div>
 
   <div v-if="LeaderBoardPage" id = "Leader-Board">
@@ -376,7 +376,7 @@ export default {
         if(this.UsersID != MessageDetails[4]){
           this.GameMode = MessageDetails[0];
           this.timer = MessageDetails[1];
-          this.UsersInLobby = MessageDetails[3];
+          this.UsersInLobby = MessageDetails[2];
 
           console.log(MessageDetails)
           var vm = this;
@@ -445,8 +445,6 @@ export default {
       UsersID: '1234',
       UserGoogleID: '',
       VisitedCountries: [],
-      gameStarted: false,
-      gameOver: false,
       noOfCountries: 0,
       userProfile: undefined,
       WinningUser: undefined,
@@ -467,6 +465,8 @@ export default {
 
       GameMode: 'Classic',
       finishedGame: false,
+      gameStarted: false,
+      gameOver: false,
 
       numberOfCookies: 0,
 
@@ -489,6 +489,15 @@ export default {
       easyCountries: ["United States", "United Kingdom"],
       medEasyCountries: ["Canada", "Ireland", "Germany", "Netherlands", "Belgium"],
       hardCountries: ["Russia"],
+
+      CountriesInAsia: ["Japan", "Indonesia", "India", "China", "Thailand", "South Korea", "Philippines", "Singapore", "Vietnam", "Malaysia", "Hong Kong", "Saudi Arabia", "Pakistan", "Myanmar", "Cambodia", "Taiwan", "Laos", "Iran", "Sri Lanka", "Israel", "Maldives", "Afghanistan", "Bangladesh", "Nepal", "Qatar", "Mongolia", "Brunei", "Lebanon", "North Korea", "Iraq", "Uzbekistan", "Syria", "Macao", "Christmas Islands", "United Arab Emirates", "Jordan", "Armenia", "Timor-Leste", "Kyrgzstan", "Yemen", "Paliestine", "Bhutan", "Kuwait", "Turkmenistan", "Bahrain", "Tajikistan", "Oman"],
+      AfricanCountries: ["Nigeria", "Ethiopia", "Eygpt", "Democratic Republic of the Congo", "Tanzania", "South Africa", "Kenya", "Sudan", "Algeria", "Uganda", "Morocco", "Angola", "Mozambique", "Ghana", "Cameroon", "Madagascar", "Ivory Coast", "Niger", "Burkina Faso", "Mali", "Malawi", "Zambia", "Senegal", "Chad", "Somalia", "Zimbabwe", "South Sudan", "Rwanda", "Guinea", "Burundi", "Benin", "Tunisia", "Sierra Leone", "Togo", "Libya", "Repbulic of the Congo", "Central African Republic", "Liberia", "Mauritania", "Eritrea", "Namibia", "Gambia", "Botswana", "Gabon", "Lesotho", "Guimea-Bissau", "Equatorial Guinea", "Mauritius", "Eswatini", "Djibouti", "Cape Verde"],
+      EuropeanCountries: ["Hungary", "Belarus", "Austria", "Serbia", "Switzerland", "Germany", "Holy See", "Andorra", "Bulgaria", "United Kingdom", "France", "Montenegro", "Luxembourg", "Italy", "Denmark", "Finland", "Slovakia", "Norway", "Ireland", "Spain", "Malta", "Ukraine", "Croatia", "Moldova", "Monaco", "Liechtenstein", "Poland", "Iceland", "San Marino", "Bosnia and Herzegovina", "Albania", "Lithuania", "North Macedonia", "Slovenia", "Romania", "Latvia", "Netherlands", "Russia", "Estonia", "Belgium", "Czechia", "Portugal", "Greece", "Sweden"],
+      NorthAmerica: ["United States", "USA", "United States of America", "Canada", "Mexico"],
+      Oceania: ["Australia", "New Zealand"],
+      onePointCountries: ["United Kingdom", "United States"],
+
+
       //countriesIveFoundBeforeAndShouldIncludeAbove: ["Canada", "United Kingdom", "United States", "Germany", "Netherlands", "Ireland", "Belgium"],
       countriesToFind: [],
       noOfCountriesBingo: 0,
@@ -730,7 +739,6 @@ export default {
       },
       endGame(){
         var winningScore = 0;
-        //const vm = this;
 
         if(this.MultiPlayer){
           for(var i = 0; i < this.noOfUsersInLobby; i++){
@@ -917,14 +925,16 @@ export default {
             let score = 0;
             for(var i = 0; i < result.countryList.length; i++){
                 count.value += result.countryList[i].count;
-                if(vm.easyCountries.includes(result.countryList[i].name)){
+                if(vm.onePointCountries.includes(result.countryList[i].name)){
                     score += result.countryList[i].count;
-                }else if(vm.medEasyCountries.includes(result.countryList[i].name)){
+                }else if(vm.EuropeanCountries.includes(result.countryList[i].name) || vm.NorthAmerica.includes(result.countryList[i].name)){
                     score += (result.countryList[i].count)*2;
-                }else if(vm.hardCountries.includes(result.countryList[i])){
+                }else if(vm.CountriesInAsia.includes(result.countryList[i])){
                     score += (result.countryList[i].count)*3
-                }else{
+                }else if(vm.AfricanCountries.includes(result.countryList[i])){
                     score += (result.countryList[i].count)*4
+                }else{
+                    score += (result.countryList[i].count);
                 }
             }
             vm.noOfUsersInLobby = vm.UsersInLobby.length;
@@ -1230,17 +1240,7 @@ li.LobbyUsers{
   list-style: none;
   font-style: italic;
 }
-li.GameUsers{
-  list-style: none;
-}
 
-li.BingoList{
-  color: white;
-  font-size: x-small;
-  list-style: none;
-  font-style: italic;
-  display: flex;
-}
 
 p{
   color: white;
@@ -1259,7 +1259,7 @@ p.TinyText{
 
 p.CountryText {
   color: white;
-  font-size: 13px;
+  font-size: 11.5px;
 }
 
 p.CookieText {
@@ -1348,6 +1348,9 @@ button {
   border-radius: 4px;
   border: 1px solid black;
 }
+button.homepageButton {
+   width: 10%;
+}
 
 button:hover {
   background-color: darkgreen
@@ -1432,6 +1435,7 @@ button {
   text-align: center;
   margin-left: 5px;
   padding-right: 5px;
+  font-weight: bold;
   
 }
 #app {
