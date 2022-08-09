@@ -8,7 +8,7 @@
     <br/>
     <div v-if="GameMode === 'Classic'" class="ClassicGameMode">
     <p class="HelpText">Current Score: </p><p class="UserScore">{{ this.userScore }}</p>
-    <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item" class="TrackedCountry">
+    <li v-for="item in orderedCountries" ref="ListOfScores" :key="item" class="TrackedCountry">
         <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/><p class="CountryText">{{ item.name }} | {{ item.count }} tracker(s) | {{ item.multiplyer*item.count }} point(s)</p><p class = "TinyText"> {{ item.site }} </p>
     </li>
     <br/>
@@ -17,23 +17,22 @@
     <label class="Guide">Countries To Locate:</label>
     <ol>
     <li class="CountriesToFind" v-for="item in countriesToFind" ref="CountriesToFind" :class="{found:item.found}" :key="item">
-        {{ item.country }}
+        <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.country + '.jpeg'"/>{{ item.country }}
     </li>  
     </ol>
     <label class="Guide">Countries Located</label>
-    <ol>
+    <ol class="LocatedCountries">
       <li v-for="item in VisitedCountries" ref="ListOfCountries" class="BingoList" :key="item">
-          {{ item.name }}
+          <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/>{{ item.name }}
       </li>
     </ol>
     </div>
-    <div class="ReadyArea">
-    <ol v-if="!(allPlayersReady)">
+    <ol class="BingoPlayers" v-if="!(allPlayersReady)">
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item">
         {{ item.userID }} - {{ item.ready }}
     </li>
     </ol>
-    <ol v-if="allPlayersReady && !(gameStarted)">
+    <ol class="BingoPlayers" v-if="allPlayersReady && !(gameStarted)">
         <li class="GameUsers">All players are ready</li>
     </ol>
     <ol v-if="allPlayersReady && (gameStarted) && (GameMode === 'Bingo')">
@@ -41,7 +40,6 @@
         {{ item.userID }} | {{ item.BingoCountries.length }}
     </li>
     </ol>
-    </div>
     
     <div v-if="GameMode === 'Classic' && (gameStarted)">
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item">
@@ -51,7 +49,7 @@
     <p class="CookieText">During this session, {{numberOfCookies.numberOfCookies}} tracking cookies have been set on your device.</p>
     <p class="ErrorText" v-if="playerLeaveMessage != 'false'"> {{ playerLeaveMessage }}</p>
     <div class="buttonBar">
-    <button v-if="isLobbyCreator" @click="gameSetup" type="button">Start</button>
+    <button v-if="isLobbyCreator && !(gameStarted)" @click="gameSetup" type="button">Start</button>
     <button v-if="!(allPlayersReady)" @click="playerReady">Ready Up</button>
     <button @click="leaveGame" type="button">Leave Game</button>
     </div>
@@ -70,7 +68,7 @@
     <div v-if="GameMode === 'Classic'">
     <p>Your score was: </p><p class="UserScore">{{ this.userScore }}</p>
     <div class="GameResults">
-    <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
+    <li v-for="item in orderedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
          <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/><p class="EndScreenText"> {{ item.count }} tracker(s) | {{ item.multiplyer*item.count }} point(s)</p>
     </li>
     <li v-for="item in UsersInLobby" ref="ListOfScores" class="GameUsers" :key="item">
@@ -98,6 +96,7 @@
 
 <script>
 import BaseTimer from "../components/BaseTimer";
+import _ from 'lodash';
 
 export default {
     components: {
@@ -231,6 +230,9 @@ export default {
       //}
       timeLeft(){
         return this.startTime - (this.startTime - this.timer);
+      },
+      orderedCountries(){
+        return _.orderBy(this.VisitedCountries, 'count', 'desc');
       }
     },
 }
@@ -248,6 +250,13 @@ p.UserScore {
     color: #20C20E;
     margin-top: 0px;
     margin-bottom: 5px;
+}
+
+ol.BingoPlayers {
+    margin-right: 30px;
+}
+ol.LocatedCountries {
+    margin-right: 30px;
 }
 
 li.GameUsers {

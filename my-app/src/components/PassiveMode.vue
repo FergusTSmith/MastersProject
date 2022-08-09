@@ -1,17 +1,20 @@
 <template>
     <h2>TrackHunt</h2>
     <p class="HelpText">"Passive Mode" engages whenever you install TrackerHunt. This will show a collection of all of the trackers encountered since the application was installed.</p>
-    <p class="PassiveText">Since you installed TackerHunt, you have been tracked: {{ passiveModeTotalTrackers }} times.</p>
+
+    <p class="Stats">Blocked Requests: {{ passiveModeTotalTrackers}} </p>
+    <p class="Stats">Total Requests: 123</p>
+    <p class="PassiveText">Since you installed TackerHunt, you have been tracked: {{ passiveModeTotalTrackers }} times. This means that, whilst browsing, your browser submitted requests to {{ passiveModeTotalTrackers }} different tracking URLs</p>
     <p class="PassiveText">This was done by a total of {{ passiveModeUniqueHosts }} different entities.</p>
     <p class="PassiveText">These entities hailed from {{ passiveModeTotalCounties }} countries.</p>
     <p class="PassiveText">To see a complete list of hosts and counts: </p>
-    <button @click="PassiveToHost">PassiveMode Hosts</button>
+    <button class="passiveButton" @click="PassiveToHost">PassiveMode Hosts</button>
     <p class="PassiveText">To see a complete list of countries and counts: </p>
-    <button @click="PassiveToCountry">PassiveMode Countries</button>
+    <button class="passiveButton" @click="PassiveToCountry">PassiveMode Countries</button>
     <p class="PassiveText">To view your achievements: </p>
-    <button @click="achievementPage">Achievements</button>
+    <button class="passiveButton" @click="achievementPage">Achievements</button>
     <br/>
-    <button @click="exitToHomePage">HomePage</button>
+    <button class="passiveButton" @click="exitToHomePage">HomePage</button>
 </template>
 
 <script>
@@ -47,3 +50,21 @@ export default {
     }
 }
 </script>
+
+<style>
+p.PassiveText{
+  color: white;
+  font-size: 12px;
+  text-align: justify;
+  display: flex;
+}
+
+button.passiveButton {
+    width: 80%;
+    font-weight: bold;
+    font-size: 11px;
+}
+p.stats {
+    float: left;
+}
+</style>

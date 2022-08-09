@@ -1,7 +1,7 @@
 <template>
     <h2>TrackHunt</h2>
   <p class="HelpText">Passive Mode - Complete list of Hosts</p>
-  <li v-for="item in passiveModeHosts" :key="item" class="TrackedCountry">
+  <li v-for="item in orderedHosts" :key="item" class="TrackedCountry">
       {{ item.URL }} - {{ item.count }}
   </li>
   <button @click="exitToHomePage">HomePage</button>
@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import _ from 'lodash';
+
 export default {
     props: {
         passiveModeHosts: {
@@ -22,6 +24,11 @@ export default {
         },
         HostToPassive(){
             this.$emit('HostToPassive');
+        }
+    },
+    computed: {
+        orderedHosts(){
+            return _.orderBy(this.passiveModeHosts, 'count', 'desc')
         }
     }
 }

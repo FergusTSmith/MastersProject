@@ -25,6 +25,7 @@ export default {
     methods: {
         googleLogin(){
             var vm = this;
+            this.getHighScores();
             chrome.runtime.sendMessage({ message: 'login'}, function(response) {
                 if (response === 'success') {
                 chrome.runtime.sendMessage({ message: 'googleID'}, function(response){
@@ -41,7 +42,10 @@ export default {
                     })
                 }
             })
-        }
+        },
+        getHighScores(){
+        this.$socket.emit('retrieveLeaderBoards');
+      },
     }
       
     

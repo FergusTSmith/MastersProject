@@ -28,9 +28,10 @@ import MultiPlayerGame from '../components/MultiPlayerGame.vue';
     <h2>TrackHunt</h2>
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
     <p class="HelpText" v-if="userSignedIn">Welcome back, {{ UsersID }}!</p>
-    <button class="homepageButton" @click="solomode" type="button">Play Solo</button><br/>
+    <button class="homepageButton" @click="solomode" type="button">Play Solo</button>
     <button class="homepageButton" @click="createLobby" type="button">Create Lobby</button>
-    <button class="homepageButton" @click="joinlobby" type="button">Join Lobby</button><br/>
+     <button class="homepageButton" @click="passiveMode" type="button">Passive Mode</button>
+    <button class="homepageButton" @click="joinlobby" type="button">Join Lobby</button>
     <button class="homepageButton" @click="options" type="button">Options</button>
     <button class="homepageButton" @click="leaderboards" type="button">LeaderBoards</button>
     <button class="homepageButton" v-if="userInAMultiGame || userInASoloGame" @click="RejoinGame">Rejoin Your Game</button>
@@ -84,7 +85,7 @@ import MultiPlayerGame from '../components/MultiPlayerGame.vue';
   </div>
 
   <div v-if="SoloGame" id="Solo-Game" :key="componentVersion">
-    <SoloGamePage @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :categoryList="categoryList" :timer="timer" :GameMode="GameMode" :gameOver="gameOver" :timeLeft="timeLeft" :startTime="startTime"  :userScore="userScore" :VisitedCountries="VisitedCountries" :numberOfCookies="numberOfCookies" :countriesToFind="countriesToFind" :finishedGame="finishedGame" :APIEnabled="APIEnabled"></SoloGamePage>
+    <SoloGamePage @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :categoryList="categoryList" :timer="timer" :GameMode="GameMode" :gameOver="gameOver" :timeLeft="timeLeft" :startTime="startTime"  :userScore="userScore" :VisitedCountries="VisitedCountries" :numberOfCookies="numberOfCookies" :gameStarted="gameStarted" :countriesToFind="countriesToFind" :finishedGame="finishedGame" :APIEnabled="APIEnabled"></SoloGamePage>
   </div>
 
   <div v-if="MultiPlayer" id="Multiplayer-Game" :key="componentVersion">
@@ -104,10 +105,10 @@ export default {
   // https://manage.auth0.com/dashboard/eu/dev-li-9809u/applications/s449g7DqINXUA9dZNRPdVTwPswnMX9qJ/quickstart
     sockets: {
       connect() {
-        console.log('no worries, goose');
+        console.log('Client has successfully connected to the Socket.IO websocket.');
       },
       disconnect() {
-        console.log("socket has been disconnected")
+        console.log('Client has disconnected from the Socket.IO websocket.');
       },
       testMessage(){
         console.log('test passed')
@@ -575,6 +576,8 @@ export default {
       }
     },
     methods: {
+      
+      
       getHighScores(){
         this.$socket.emit('retrieveLeaderBoards');
         this.$socket.emit('retreiveSoloScores', this.UsersID);
@@ -1245,12 +1248,6 @@ li.LobbyUsers{
 p{
   color: white;
 }
-p.PassiveText{
-  color: white;
-  font-size: small;
-  font-style: none;
-  display: flex;
-}
 p.TinyText{
   color: white;
   font-size: 7px;
@@ -1349,7 +1346,8 @@ button {
   border: 1px solid black;
 }
 button.homepageButton {
-   width: 10%;
+   width: 45%;
+  font-size: 11px;
 }
 
 button:hover {
@@ -1436,7 +1434,6 @@ button {
   margin-left: 5px;
   padding-right: 5px;
   font-weight: bold;
-  
 }
 #app {
   max-width: 1280px;

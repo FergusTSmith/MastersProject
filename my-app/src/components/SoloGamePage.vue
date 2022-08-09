@@ -12,7 +12,7 @@
     </div>
     <div v-if="GameMode === 'Classic'" class="ClassicGameMode">
     <p class="HelpText">Current Score: </p><p class="UserScore">{{ this.userScore }}</p>
-    <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
+    <li v-for="item in orderedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
         <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/><p class="CountryText">{{ item.name }} | {{ item.count }} tracker(s) | {{ item.multiplyer*item.count }} point(s)</p><p class = "TinyText"> {{ item.site }} </p>
     </li>
     <p class="CookieText">During this session, {{numberOfCookies.numberOfCookies}} tracking cookies have been set on your device.</p>
@@ -35,7 +35,7 @@
     </div>
 
     <div class="buttonBar">
-    <button @click="gameSetup" type="button">Start</button>
+    <button v-if="!(gameStarted)" @click="gameSetup" type="button">Start</button>
     <button @click="endGame" type="button">End Game</button>
     </div>
     </div>
@@ -44,8 +44,8 @@
     <h2 class="GameOver">GAME OVER</h2>
     <div v-if="GameMode === 'Classic'">
     <p>Your score was: </p><p class="UserScore">{{ this.userScore }}</p>
-    <li v-for="item in VisitedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
-        <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/><p class="EndScreenText">| {{ item.count }} tracker(s) | {{ item.multiplyer*item.count }} point(s)</p>
+    <li v-for="item in orderedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
+        <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/><p class="EndScreenText"> {{ item.count }} tracker(s) | {{ item.multiplyer*item.count }} point(s)</p>
     </li>
     </div>
     <div v-if="GameMode === 'Bingo'">
@@ -64,6 +64,7 @@
 
 <script>
 import BaseTimer from "../components/BaseTimer";
+import _ from 'lodash';
 
 export default {
     components: {
@@ -114,6 +115,10 @@ export default {
         categoryList: {
             type: Array,
             required: true
+        },
+        gameStarted: {
+            type: Boolean,
+            required: true
         }
 
     },
@@ -157,6 +162,10 @@ export default {
       //}
       timeLeft(){
         return this.startTime - (this.startTime - this.timer);
+      },
+
+      orderedCountries(){
+        return _.orderBy(this.VisitedCountries, 'count', 'desc');
       }
     },
 }
