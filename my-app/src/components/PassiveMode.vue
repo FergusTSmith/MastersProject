@@ -1,7 +1,7 @@
 <template>
     <h2>TrackHunt</h2>
     <p class="HelpText">"Passive Mode" engages whenever you install TrackerHunt. This will show a collection of all of the trackers encountered since the application was installed.</p>
-
+    <PassiveModeChart ref ="PassiveModeChart" :chartData="chartData" :options="options"></PassiveModeChart>
     <p class="Stats">Blocked Requests: {{ passiveModeTotalTrackers}} </p>
     <p class="Stats">Total Requests: 123</p>
     <p class="PassiveText">Since you installed TackerHunt, you have been tracked: {{ passiveModeTotalTrackers }} times. This means that, whilst browsing, your browser submitted requests to {{ passiveModeTotalTrackers }} different tracking URLs</p>
@@ -18,6 +18,15 @@
 </template>
 
 <script>
+import PassiveModeChart from './PassiveModeChart.vue';
+
+const options = {
+    responsive: true,
+    maintainAspectRation: false,
+    animation: {
+        animateRotate: false
+    }
+}
 
 export default {
     props: {
@@ -46,6 +55,28 @@ export default {
         },
         exitToHomePage(){
             this.$emit('exitToHomePage');
+        }
+    },
+    components: {
+        PassiveModeChart
+    },
+    data(){
+        return {
+            options,
+            chartData: {
+                labels: ['NumberOfRequests', 'NumberOfBlockedRequests'],
+                datasets: [
+                    {
+                        backgroundColor: ['#2f4f4f'],
+                        data: [1]
+                    }
+                ]
+            }
+        }
+    },
+    computed: {
+        currentDataSet() {
+            return this.chartData.datasets[0].data
         }
     }
 }
