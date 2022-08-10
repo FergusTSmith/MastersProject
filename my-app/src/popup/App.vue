@@ -21,7 +21,7 @@ import MultiPlayerGame from '../components/MultiPlayerGame.vue';
 <template>
 <div id="app" :key="componentVersion">
   <div v-if="IntroPage" id="Intro-Page" ref="Intro-Page">
-      <IntroPage @userLogin="googleLogin($event)" :userInASoloGame="userInASoloGame" :userInAMultiGame="userInAMultiGame"></IntroPage>
+      <IntroPage @userLogin="googleLogin($event)"></IntroPage>
   </div>
 
   <div v-if="HomePage" id = "Home-Page">
@@ -65,7 +65,7 @@ import MultiPlayerGame from '../components/MultiPlayerGame.vue';
   </div>
 
   <div v-if="PassivePage">
-    <PassiveMode :passiveModeTotalTrackers="passiveModeTotalTrackers" :passiveModeUniqueHosts="passiveModeUniqueHosts" :passiveModeTotalCounties="passiveModeTotalCounties" @PassiveToHost="PassiveToHost" @PassiveToCountry="PassiveToCountry" @achievementPage="achievementPage" @exitToHomePage="exitToHomePage"></PassiveMode>
+    <PassiveMode :totalRequests="totalRequests" :passiveModeTotalTrackers="passiveModeTotalTrackers" :passiveModeUniqueHosts="passiveModeUniqueHosts" :passiveModeTotalCounties="passiveModeTotalCounties" @PassiveToHost="PassiveToHost" @PassiveToCountry="PassiveToCountry" @achievementPage="achievementPage" @exitToHomePage="exitToHomePage"></PassiveMode>
   </div>
 
   <div v-if="AchievementPage">
@@ -77,7 +77,7 @@ import MultiPlayerGame from '../components/MultiPlayerGame.vue';
   </div>
 
   <div v-if="CountryPage">
-    <CountryView :passiveModeCountries="passiveModeCountries" @exitToHomePage="exitToHomePage" @CountToPassive="CountToPassive"></CountryView>
+    <CountryView  :passiveCountryLabels="passiveCountryLabels" :passiveCountryCounts="passiveCountryCounts" :passiveModeCountries="passiveModeCountries" @exitToHomePage="exitToHomePage" @CountToPassive="CountToPassive"></CountryView>
   </div>
 
   <div v-if="SoloPage" id="Solo-Mode">
@@ -481,6 +481,9 @@ export default {
       passiveModeTotalCounties: 0,
       passiveModeUniqueHosts: 0,
       achievements: [],
+      totalRequests: 0,
+      passiveCountryLabels: [],
+      passiveCountryCounts: [],
 
 
       gamesPlayed: 0,
@@ -765,7 +768,7 @@ export default {
           this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, this.userScore, (this.MultiPlayer === true), this.startTime)
         }else if(this.GameMode === "Bingo"){
           for(var j = 0; j < this.countriesToFind.length; j++){
-              if(this.countriesToFind[i].found != true){
+              if(this.countriesToFind[j].found != true){
                 this.finishedGame = false;
                 console.log('unfinished')
               }
@@ -895,6 +898,7 @@ export default {
 
           vm.passiveModeTotalTrackers = totalHosts;
           vm.passiveModeUniqueHosts = result.passiveHosts.length;
+
         })
 
         chrome.storage.local.get(["passiveCountryList"], function(result){
@@ -902,16 +906,25 @@ export default {
           console.log(vm.passiveModeCountries);
 
           vm.passiveModeTotalCounties = result.passiveCountryList.length;
+
+          for(var i = 0; i < vm.passiveModeCountries.length; i++){
+            vm.passiveCountryCounts[i] = vm.passiveModeCountries[i].count;
+            vm.passiveCountryLabels[i] = vm.passiveModeCountries[i].name;
+          }
         })
 
         chrome.storage.local.get(["achievements"], function(result){
             vm.achievements = result.achievements;
             console.log(result);
         })
+        chrome.storage.local.get(["totalRequests"], function(result){
+            vm.totalRequests = result.totalRequests;
+            console.log(vm.totalRequests);
+            vm.HomePage = false;
+            vm.OptionsPage = false;
+            vm.PassivePage = true;
+          })
 
-        this.HomePage = false;
-        this.OptionsPage = false;
-        this.PassivePage = true;
 
         console.log(this.passiveModeCountries);
         console.log(this.passiveModeHosts)

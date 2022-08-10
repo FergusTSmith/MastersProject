@@ -1,9 +1,11 @@
 <template>
     <h2>TrackHunt</h2>
     <p class="HelpText">"Passive Mode" engages whenever you install TrackerHunt. This will show a collection of all of the trackers encountered since the application was installed.</p>
-    <PassiveModeChart ref ="PassiveModeChart" :chartData="chartData" :options="options"></PassiveModeChart>
+    <div class="Chart">
+    <PassiveModeChart ref ="PassiveModeChart" :chartData="chartData" :options="options" :height="20" :width="200"></PassiveModeChart>
+    </div>
     <p class="Stats">Blocked Requests: {{ passiveModeTotalTrackers}} </p>
-    <p class="Stats">Total Requests: 123</p>
+    <p class="Stats">Total Requests: {{ totalRequests }}</p>
     <p class="PassiveText">Since you installed TackerHunt, you have been tracked: {{ passiveModeTotalTrackers }} times. This means that, whilst browsing, your browser submitted requests to {{ passiveModeTotalTrackers }} different tracking URLs</p>
     <p class="PassiveText">This was done by a total of {{ passiveModeUniqueHosts }} different entities.</p>
     <p class="PassiveText">These entities hailed from {{ passiveModeTotalCounties }} countries.</p>
@@ -19,14 +21,7 @@
 
 <script>
 import PassiveModeChart from './PassiveModeChart.vue';
-
-const options = {
-    responsive: true,
-    maintainAspectRation: false,
-    animation: {
-        animateRotate: false
-    }
-}
+//const vm = this;
 
 export default {
     props: {
@@ -39,6 +34,10 @@ export default {
             required: true
         },
         passiveModeTotalCounties: {
+            type: Number,
+            required: true
+        },
+        totalRequests: {
             type: Number,
             required: true
         }
@@ -62,13 +61,25 @@ export default {
     },
     data(){
         return {
-            options,
+            totalTrackers: this.passiveModeTotalTrackers,
+            totalHosts: this.passiveModeUniqueHosts,
+            options: {
+                responsive: false,
+                maintainAspectRation: false,
+                animation: {
+                    animateRotate: false
+                },
+                hoverBorderWidth: 10,
+                cutoutPercentage: 40,
+
+            },
             chartData: {
-                labels: ['NumberOfRequests', 'NumberOfBlockedRequests'],
+                labels: ['Legitimate Requests', 'Blocked Requests'],
                 datasets: [
                     {
-                        backgroundColor: ['#2f4f4f'],
-                        data: [1]
+                        label: "NumberOfTrackers",
+                        backgroundColor: ['darkgreen', '#20C20E'],
+                        data: [(this.totalRequests-this.passiveModeTotalTrackers), this.passiveModeTotalTrackers]
                     }
                 ]
             }
@@ -78,6 +89,10 @@ export default {
         currentDataSet() {
             return this.chartData.datasets[0].data
         }
+    },
+    mounted(){
+        //var vm=this;
+        console.log(this.totalRequests + "    " + this.passiveModeUniqueHosts)
     }
 }
 </script>
@@ -97,5 +112,13 @@ button.passiveButton {
 }
 p.stats {
     float: left;
+}
+
+div.Chart {
+    width: 130px;
+    height: 130px;
+    align-self: center;
+    align-items: center;
+    margin-left: 23px;
 }
 </style>

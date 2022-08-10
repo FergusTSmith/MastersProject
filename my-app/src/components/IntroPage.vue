@@ -1,27 +1,13 @@
 <template>
       <h2>TrackHunt</h2>
       <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/>
-      <!----<p>🇺🇸 🇬🇧</p> --->
       <h5>Who is watching you?</h5>
       <button class="loginButton" @click="googleLogin" ref="LoginButton">Login</button>
-      <!------<Transition><button v-if="IntroPage" @click="NoAccount">No-Login Mode</button></Transition> --->
-      <button v-if="userInAMultiGame || userInASoloGame">Rejoin Game</button>
       <p class="HelpText">To use TrackHunt, sign in with Google and ensure you are signed in on your browser</p>
 </template>
 
 <script>
 export default {
-    props: {
-        userInAMultiGame: {
-            type: Boolean,
-            required: true
-        },
-        userInASoloGame: {
-            type: Boolean,
-            required: true
-        }
-    },
-    
     methods: {
         googleLogin(){
             var vm = this;
