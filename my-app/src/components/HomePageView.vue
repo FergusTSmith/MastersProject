@@ -28,8 +28,8 @@ export default {
             this.$emit('createLobby', newLobbyID)
         },
         passiveMode(){
-            var passiveModeHosts = [];
-            var passiveModeTotalTrackers = 0;
+            var pmH = [];
+            var totalTrackers = 0;
             var passiveModeUniqueHosts = 0;
             var passiveModeCountries = []
             var passiveModeTotalCounties = 0;
@@ -39,9 +39,10 @@ export default {
             var totalRequests = 0;
             var vm = this;
 
-        
+
             chrome.storage.local.get(["passiveHosts"], function(result){
-                passiveModeHosts = result.passiveHosts;
+                pmH = result.passiveHosts;
+                console.log(pmH)
 
                 var totalHosts = 0;
 
@@ -49,31 +50,58 @@ export default {
                     totalHosts += result.passiveHosts[i].count;
                 }
 
-                passiveModeTotalTrackers = totalHosts;
+                totalTrackers = totalHosts;
                 passiveModeUniqueHosts = result.passiveHosts.length;
-
-            })
-
-            chrome.storage.local.get(["passiveCountryList"], function(result){
+                
+                chrome.storage.local.get(["passiveCountryList"], function(result){
                 passiveModeCountries = result.passiveCountryList;
 
                 passiveModeTotalCounties = result.passiveCountryList.length;
 
-            for(var i = 0; i < passiveModeCountries.length; i++){
-                passiveCountryCounts[i] = passiveModeCountries[i].count;
-                passiveCountryLabels[i] = passiveModeCountries[i].name;
-            }
-            })
+                for(var i = 0; i < passiveModeCountries.length; i++){
+                     passiveCountryCounts[i] = passiveModeCountries[i].count;
+                    passiveCountryLabels[i] = passiveModeCountries[i].name;
+                }
 
-            chrome.storage.local.get(["achievements"], function(result){
-                achievements = result.achievements;
-                console.log(result);
-            })
-            chrome.storage.local.get(["totalRequests"], function(result){
-                totalRequests = result.totalRequests;
-                console.log(totalRequests);
-                vm.$emit('passiveMode', passiveModeHosts, passiveModeTotalTrackers, passiveModeUniqueHosts, passiveModeCountries, passiveModeTotalCounties, passiveCountryCounts, passiveCountryLabels, achievements, totalRequests )
-            })
+                    chrome.storage.local.get(["achievements"], function(result){
+                        achievements = result.achievements;
+                        console.log(result);
+
+                        chrome.storage.local.get(["totalRequests"], function(result){
+                            totalRequests = result.totalRequests;
+                            console.log(totalRequests);
+                            console.log(pmH);
+                            console.log(totalTrackers);
+                            console.log(passiveModeUniqueHosts);
+                            console.log(passiveModeCountries)
+
+                            const passiveDetails = {
+                                pmH: pmH,
+                                total: totalTrackers,
+                                unique: passiveModeUniqueHosts,
+                                countries: passiveModeCountries,
+                                totalCountries: passiveModeTotalCounties,
+                                countryCounts: passiveCountryCounts,
+                                countryLabels: passiveCountryLabels,
+                                achieve: achievements,
+                                totalReq: totalRequests
+                            }
+
+
+                            vm.$emit('passiveMode', {passiveDetails})
+                        })
+                    })
+                })
+                
+
+                })
+
+            
+
+
+            
+
+            
         },
         joinlobby(){
             this.$emit('joinlobby')

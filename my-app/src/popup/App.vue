@@ -26,7 +26,7 @@ import HomePageView from '@/components/HomePageView.vue'
   </div>
 
   <div v-if="HomePage" id = "Home-Page">
-      <HomePageView :UsersID="UsersID" @solomode="solomode" @createLobby="createLobby" @passiveMode="passiveMode(passiveModeHosts, passiveModeTotalTrackers, passiveModeUniqueHosts, passiveModeCountries, passiveModeTotalCounties, passiveCountryCounts, passiveCountryLabels, achievements, totalRequests)" @joinlobby="joinlobby" @options="options" @leaderboards="leaderboards"></HomePageView>
+      <HomePageView :UsersID="UsersID" @solomode="solomode" @createLobby="createLobby" @passiveMode="passiveMode($event)" @joinlobby="joinlobby" @options="options" @leaderboards="leaderboards"></HomePageView>
   </div>
 
   <div v-if="LeaderBoardPage" id = "Leader-Board">
@@ -876,18 +876,19 @@ export default {
         chrome.storage.local.set({backupCountryList: vm.VisitedCountries});
         console.log(vm.VisitedCountries);
      },
-     passiveMode(passiveModeHosts, passiveModeTotalTrackers, passiveModeUniqueHosts, passiveModeCountries, passiveModeTotalCounties, passiveCountryCounts, passiveCountryLabels, achievements, totalRequests){
+     passiveMode(passiveDetails){
+        this.passiveModeHosts = passiveDetails.passiveDetails.pmH;
+        this.passiveModeTotalTrackers = passiveDetails.passiveDetails.total;
+        this.passiveModeUniqueHosts = passiveDetails.passiveDetails.unique;
+        this.passiveModeCountries = passiveDetails.passiveDetails.countries;
+        this.passiveModeTotalCounties = passiveDetails.passiveDetails.totalCountries;
+        this.passiveCountryCounts = passiveDetails.passiveDetails.countryCounts;
+        this.passiveCountryLabels = passiveDetails.passiveDetails.countryLabels;
+        this.achievements = passiveDetails.passiveDetails.achieve;
+        this.totalRequests = passiveDetails.passiveDetails.totalReq;
+        console.log(this.passiveModeCountryCounts)
+        console.log(this.passiveCountrylabels)
 
-        this.passiveModeHosts = passiveModeHosts;
-        this.passiveModeTotalTrackers = passiveModeTotalTrackers;
-        this.passiveModeUniqueHosts = passiveModeUniqueHosts;
-        this.passiveModeCountries = passiveModeCountries;
-        this.passiveModeTotalCounties = passiveModeTotalCounties;
-        this.passiveCountryCounts = passiveCountryCounts;
-        this.passiveCountryLabels = passiveCountryLabels;
-        this.achievements = achievements;
-        this.totalRequests = totalRequests;
-        console.log(passiveModeHosts)
         
        
         this.HomePage = false;
