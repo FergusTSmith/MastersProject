@@ -23,22 +23,22 @@
     <!-----This should only be visible for the lobby leader: ---->
     <div class="RadioButtons">
     <p v-if="isLobbyCreator" class="HelpText">Choose length of round:</p>
-    <input id="2mins" v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="2mins" v-if="isLobbyCreator">2 min</label>
-    <input id="5mins" v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="5mins" v-if="isLobbyCreator">5 min</label>
-    <input id="10mins" v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="10mins" v-if="isLobbyCreator">10 min</label>
+    <input id="twoMins" v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="twoMins" v-if="isLobbyCreator">2 min</label>
+    <input id="fiveMins" v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="fiveMins" v-if="isLobbyCreator">5 min</label>
+    <input id="tenMins" v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="tenMins" v-if="isLobbyCreator">10 min</label>
     </div>
     <br/>
-    <button v-if="isLobbyCreator" @click="closeLobby" type="button">Close Lobby</button>
-    <button v-if="isLobbyCreator" type="button" @click="openInvite">Invite Player</button>
+    <button id="closeLobby" v-if="isLobbyCreator" @click="closeLobby" type="button">Close Lobby</button>
+    <button id="invitePlayer" v-if="isLobbyCreator" type="button" @click="openInvite">Invite Player</button>
     <div v-if="playerInvite">
     <transition name="fade"><input class="textBox" v-if="playerInvite" ref="usernameInvite" type="text" id="Invite"/></transition><label v-if="playerInvite" class="HelpText">Username</label>
     <br/>
-    <button v-if="playerInvite" @click="invitePlayer">Invite</button>
+    <button id="playerInvite" v-if="playerInvite" @click="invitePlayer">Invite</button>
     <br/>
     </div>
-    <button @click="multiGameInitiated" type="button">Begin Game</button>
+    <button id="beginGame" @click="multiGameInitiated" type="button">Begin Game</button>
     <!------<button @click="exitToHomePage" type="button">Cancel</button>---->
-    <button @click="leaveGame" type="button">Leave Game</button>
+    <button id="leaveGame" @click="leaveGame" type="button">Leave Game</button>
 </template>
 
 <script>

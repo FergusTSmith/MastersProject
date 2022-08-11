@@ -3,10 +3,10 @@
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
     <br/><br/>
     <label>Enter lobby ID:</label><br/>
-    <input ref="LobbyID" type="text">
+    <input id="LobbyID" ref="LobbyID" type="text">
     <p class="ErrorText">{{ lobbyError }}</p>
-    <button @click="enterLobby" type="button">Join</button>
-    <button @click="exitToHomePage" type="button">Back</button>
+    <button id="Join" @click="enterLobby" type="button">Join</button>
+    <button id="Back" @click="exitToHomePage" type="button">Back</button>
 </template>
 
 <script>

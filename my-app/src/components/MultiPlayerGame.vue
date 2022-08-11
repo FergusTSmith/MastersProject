@@ -1,6 +1,8 @@
 <template>
 <h2>TrackHunt</h2>
     <p class="HelpText">MultiPlayer - {{ GameMode }} <button @click="displayInformation" class="InformationBox">i</button></p>
+    <p class="HelpText" v-if="InformationBox && GameMode==='Classic'">{{ ClassicInfo }}</p>
+    <p class="HelpText" v-if="InformationBox && GameMode==='Bingo'">{{ BingoInfo }}</p>
     <div v-if="(!gameOver)">
     <br/>
     <!----<label>Time remaining: </label><p> {{ timer }}</p>-->
@@ -49,9 +51,9 @@
     <p class="CookieText">During this session, {{numberOfCookies.numberOfCookies}} tracking cookies have been set on your device.</p>
     <p class="ErrorText" v-if="playerLeaveMessage != 'false'"> {{ playerLeaveMessage }}</p>
     <div class="buttonBar">
-    <button v-if="isLobbyCreator && !(gameStarted)" @click="gameSetup" type="button">Start</button>
-    <button v-if="!(allPlayersReady)" @click="playerReady">Ready Up</button>
-    <button @click="leaveGame" type="button">Leave Game</button>
+    <button id="Start" v-if="isLobbyCreator && !(gameStarted)" @click="gameSetup" type="button">Start</button>
+    <button id="Ready" v-if="!(allPlayersReady)" @click="playerReady">Ready Up</button>
+    <button id="Leave" @click="leaveGame" type="button">Leave Game</button>
     </div>
     </div>
 
@@ -101,6 +103,13 @@ import _ from 'lodash';
 export default {
     components: {
         BaseTimer
+    },
+    data(){
+        return {
+            ClassicInfo: "In Classic mode, points are awarded through discovering tracking URLs located in different nations. The rarity of the nation discovered determines the amount of points received. The player with the most points when the timer elapses will win. \n Common Countries (x1 Multiplyer): United States, United Kingdom \n Uncommon Countries (x2 Multiplyer): EU Nations/North American Nations \n Rare Countries (x3 Multiplyer): Asian Nations \n Very Rare Countries (x4 Multiplyer): African Nations \n All other countries (x5 Multiplyer)",
+            BingoInfo: "In Bingo mode, users are challenged to discover tracking URLs from a specific list of countries. The first player to discover all listed countries is the winner of the game",
+            InformationBox: false,
+        }
     },
 
     props: {
@@ -183,10 +192,10 @@ export default {
     },
     methods: {
         displayInformation(){
-            if(this.GameMode === "Classic"){
-                alert("In Classic mode, points are awarded through discovering tracking URLs located in different nations. The rarity of the nation discovered determines the amount of points received. The player with the most points when the timer elapses will win. \n Common Countries (x1 Multiplyer): United States, United Kingdom \n Uncommon Countries (x2 Multiplyer): EU nations \n Rare Countries (x3 Multiplyer): Russia \n Very Rare Countries (x5 Multiplyer): All other countries");
+            if(this.InformationBox === true){
+                this.InformationBox = false;
             }else{
-                alert("In Bingo mode, users are challenged to discover tracking URLs from a specific list of countries. The first player to discover all listed countries is the winner of the game")
+                this.InformationBox = true;
             }
         },
         gameSetup(){

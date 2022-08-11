@@ -1,6 +1,8 @@
 <template>
 <h2>TrackHunt</h2>
-    <p class="HelpText">Solo Mode - {{ GameMode }}<button @click="displayInformation" class="InformationBox">i</button></p>
+    <p class="HelpText">Solo Mode - {{ GameMode }}<button @click="displayInformation" class="InformationBox" id="Info">i</button></p>
+    <p class="HelpText" v-if="InformationBox && GameMode==='Classic'">{{ ClassicInfo }}</p>
+    <p class="HelpText" v-if="InformationBox && GameMode==='Bingo'">{{ BingoInfo }}</p>
     <div v-if="(!gameOver)">
     <br/>
 
@@ -8,7 +10,7 @@
     <!-----<img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>--->
 
     <div class="timer">
-    <BaseTimer :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="30"></BaseTimer>
+    <BaseTimer id="BaseTimer" :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="30"></BaseTimer>
     </div>
     <div v-if="GameMode === 'Classic'" class="ClassicGameMode">
     <p class="HelpText">Current Score: </p><p class="UserScore">{{ this.userScore }}</p>
@@ -35,8 +37,8 @@
     </div>
 
     <div class="buttonBar">
-    <button v-if="!(gameStarted)" @click="gameSetup" type="button">Start</button>
-    <button @click="endGame" type="button">End Game</button>
+    <button id="Start" v-if="!(gameStarted)" @click="gameSetup" type="button">Start</button>
+    <button id="EndGameButton" @click="endGame()" type="button">End Game</button>
     </div>
     </div>
     
@@ -69,6 +71,13 @@ import _ from 'lodash';
 export default {
     components: {
         BaseTimer
+    },
+    data(){
+        return {
+            ClassicInfo: "In Classic mode, points are awarded through discovering tracking URLs located in different nations. The rarity of the nation discovered determines the amount of points received. The player with the most points when the timer elapses will win. \n Common Countries (x1 Multiplyer): United States, United Kingdom \n Uncommon Countries (x2 Multiplyer): EU Nations/North American Nations \n Rare Countries (x3 Multiplyer): Asian Nations \n Very Rare Countries (x4 Multiplyer): African Nations \n All other countries (x5 Multiplyer)",
+            BingoInfo: "In Bingo mode, users are challenged to discover tracking URLs from a specific list of countries. The first player to discover all listed countries is the winner of the game",
+            InformationBox: false,
+        }
     },
 
     props: {
@@ -124,10 +133,10 @@ export default {
     },
     methods: {
         displayInformation(){
-            if(this.GameMode === "Classic"){
-                alert("In Classic mode, points are awarded through discovering tracking URLs located in different nations. The rarity of the nation discovered determines the amount of points received. The player with the most points when the timer elapses will win. \n Common Countries (x1 Multiplyer): United States, United Kingdom \n Uncommon Countries (x2 Multiplyer): EU Nations/North American Nations \n Rare Countries (x3 Multiplyer): Asian Nations \n Very Rare Countries (x4 Multiplyer): African Nations \n All other countries (x5 Multiplyer)");
+            if(this.InformationBox === true){
+                this.InformationBox = false;
             }else{
-                alert("In Bingo mode, users are challenged to discover tracking URLs from a specific list of countries. The first player to discover all listed countries is the winner of the game")
+                this.InformationBox = true;
             }
         },
         gameSetup(){

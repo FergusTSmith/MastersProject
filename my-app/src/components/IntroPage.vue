@@ -8,6 +8,7 @@
 
 <script>
 export default {
+    name: "IntroPage",
     methods: {
         googleLogin(){
             var vm = this;

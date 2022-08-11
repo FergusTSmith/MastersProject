@@ -69,7 +69,7 @@ export default {
       </g>
       <path :stroke-dasharray="circleArray" :class="colourOfTimer" class="base-timer__path-remaining" d="M 50, 50 m -45, 0 a 45,45 0 1, 0 90, 0 a 45, 45 0 1, 0 -90, 0"></path>
     </svg>
-    <span class="base-timer__label">
+    <span class="base-timer__label" :value="formattedTimeToGo">
       {{ formattedTimeToGo }} 
     </span>
   </div>

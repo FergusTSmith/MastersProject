@@ -16,6 +16,7 @@ import JoinLobby from '@/components/JoinLobby.vue';
 import CountryView from '@/components/CountryView.vue';
 import SoloGamePage from '@/components/SoloGamePage.vue';
 import MultiPlayerGame from '../components/MultiPlayerGame.vue';
+import HomePageView from '@/components/HomePageView.vue'
 </script>
 
 <template>
@@ -25,16 +26,7 @@ import MultiPlayerGame from '../components/MultiPlayerGame.vue';
   </div>
 
   <div v-if="HomePage" id = "Home-Page">
-    <h2>TrackHunt</h2>
-    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
-    <p class="HelpText" v-if="userSignedIn">Welcome back, {{ UsersID }}!</p>
-    <button class="homepageButton" @click="solomode" type="button">Play Solo</button>
-    <button class="homepageButton" @click="createLobby" type="button">Create Lobby</button>
-     <button class="homepageButton" @click="passiveMode" type="button">Passive Mode</button>
-    <button class="homepageButton" @click="joinlobby" type="button">Join Lobby</button>
-    <button class="homepageButton" @click="options" type="button">Options</button>
-    <button class="homepageButton" @click="leaderboards" type="button">LeaderBoards</button>
-    <button class="homepageButton" v-if="userInAMultiGame || userInASoloGame" @click="RejoinGame">Rejoin Your Game</button>
+      <HomePageView :UsersID="UsersID" @solomode="solomode" @createLobby="createLobby" @passiveMode="passiveMode(passiveModeHosts, passiveModeTotalTrackers, passiveModeUniqueHosts, passiveModeCountries, passiveModeTotalCounties, passiveCountryCounts, passiveCountryLabels, achievements, totalRequests)" @joinlobby="joinlobby" @options="options" @leaderboards="leaderboards"></HomePageView>
   </div>
 
   <div v-if="LeaderBoardPage" id = "Leader-Board">
@@ -85,7 +77,7 @@ import MultiPlayerGame from '../components/MultiPlayerGame.vue';
   </div>
 
   <div v-if="SoloGame" id="Solo-Game" :key="componentVersion">
-    <SoloGamePage @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :categoryList="categoryList" :timer="timer" :GameMode="GameMode" :gameOver="gameOver" :timeLeft="timeLeft" :startTime="startTime"  :userScore="userScore" :VisitedCountries="VisitedCountries" :numberOfCookies="numberOfCookies" :gameStarted="gameStarted" :countriesToFind="countriesToFind" :finishedGame="finishedGame" :APIEnabled="APIEnabled"></SoloGamePage>
+    <SoloGamePage @gameSetup="gameSetup" @endGame="endGame()" @exitToHomePageReset="exitToHomePageReset" :categoryList="categoryList" :timer="timer" :GameMode="GameMode" :gameOver="gameOver" :timeLeft="timeLeft" :startTime="startTime"  :userScore="userScore" :VisitedCountries="VisitedCountries" :numberOfCookies="numberOfCookies" :gameStarted="gameStarted" :countriesToFind="countriesToFind" :finishedGame="finishedGame" :APIEnabled="APIEnabled"></SoloGamePage>
   </div>
 
   <div v-if="MultiPlayer" id="Multiplayer-Game" :key="componentVersion">
@@ -528,7 +520,7 @@ export default {
 
       // Dev Variables
 
-      APIEnabled: false,
+      APIEnabled: true,
 
       //Emoji Object
       }
@@ -553,7 +545,8 @@ export default {
       SoloLobby,
       JoinLobby,
       CountryView,
-      SoloGamePage
+      SoloGamePage,
+      HomePageView
     },
     
     
@@ -883,54 +876,25 @@ export default {
         chrome.storage.local.set({backupCountryList: vm.VisitedCountries});
         console.log(vm.VisitedCountries);
      },
-     passiveMode(){
-        var vm = this;
+     passiveMode(passiveModeHosts, passiveModeTotalTrackers, passiveModeUniqueHosts, passiveModeCountries, passiveModeTotalCounties, passiveCountryCounts, passiveCountryLabels, achievements, totalRequests){
+
+        this.passiveModeHosts = passiveModeHosts;
+        this.passiveModeTotalTrackers = passiveModeTotalTrackers;
+        this.passiveModeUniqueHosts = passiveModeUniqueHosts;
+        this.passiveModeCountries = passiveModeCountries;
+        this.passiveModeTotalCounties = passiveModeTotalCounties;
+        this.passiveCountryCounts = passiveCountryCounts;
+        this.passiveCountryLabels = passiveCountryLabels;
+        this.achievements = achievements;
+        this.totalRequests = totalRequests;
+        console.log(passiveModeHosts)
         
-        chrome.storage.local.get(["passiveHosts"], function(result){
-          vm.passiveModeHosts = result.passiveHosts;
-          console.log(vm.passiveModeHosts);
-
-          var totalHosts = 0;
-
-          for(var i = 0; i < result.passiveHosts.length; i++){
-            totalHosts += result.passiveHosts[i].count;
-          }
-
-          vm.passiveModeTotalTrackers = totalHosts;
-          vm.passiveModeUniqueHosts = result.passiveHosts.length;
-
-        })
-
-        chrome.storage.local.get(["passiveCountryList"], function(result){
-          vm.passiveModeCountries = result.passiveCountryList;
-          console.log(vm.passiveModeCountries);
-
-          vm.passiveModeTotalCounties = result.passiveCountryList.length;
-
-          for(var i = 0; i < vm.passiveModeCountries.length; i++){
-            vm.passiveCountryCounts[i] = vm.passiveModeCountries[i].count;
-            vm.passiveCountryLabels[i] = vm.passiveModeCountries[i].name;
-          }
-        })
-
-        chrome.storage.local.get(["achievements"], function(result){
-            vm.achievements = result.achievements;
-            console.log(result);
-        })
-        chrome.storage.local.get(["totalRequests"], function(result){
-            vm.totalRequests = result.totalRequests;
-            console.log(vm.totalRequests);
-            vm.HomePage = false;
-            vm.OptionsPage = false;
-            vm.PassivePage = true;
-          })
-
-
-        console.log(this.passiveModeCountries);
-        console.log(this.passiveModeHosts)
-
-     }, 
-
+       
+        this.HomePage = false;
+        this.OptionsPage = false;
+        this.PassivePage = true;
+       
+     },
      updateScoreClassic(){
         console.log('Updating score');
         
@@ -1135,8 +1099,7 @@ export default {
       this.HomePage = false;
     },
    
-    createLobby(){
-      var newLobbyID = this.createNewLobbyID();
+    createLobby(newLobbyID){
       this.$socket.emit('CreateNewLobby', newLobbyID, this.userProfile);
       this.noOfUsersInLobby = 0;
 
@@ -1186,16 +1149,6 @@ export default {
       this.countriesToVisit = [];
       this.noOfCountriesBingo = 0;
     },
-    createNewLobbyID(){
-     /* adapted from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript */
-     var id = ''
-    var allCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for(var i = 0; i < 7; i++){
-      id += allCharacters.charAt(Math.floor(Math.random() * allCharacters.length));
-    }
-    return id;
-    
-    }
 }}
 
 

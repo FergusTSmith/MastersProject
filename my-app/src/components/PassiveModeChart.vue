@@ -9,7 +9,7 @@
 
 
 <script>
-import { Doughnut, mixins } from 'vue-chartjs';
+import { Doughnut } from 'vue-chartjs';
 //import { Chart, generateChart } from 'chart.js';
 import { Chart as ChartJS, ArcElement, Tooltip} from 'chart.js'
 ChartJS.register(ArcElement, Tooltip)
