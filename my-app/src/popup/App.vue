@@ -731,7 +731,6 @@ export default {
         this.userInASoloGame = false;
 
         this.$socket.emit('playerLeft', this.UsersInLobby, this.playersLobby, this.UsersID)
-        console.log('we reached here');
         this.playersLobby = '';
         this.isLobbyCreator = false;
         this.exitToHomePageReset();

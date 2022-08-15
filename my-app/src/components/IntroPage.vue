@@ -3,6 +3,7 @@
       <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/>
       <h5>Who is watching you?</h5>
       <button class="loginButton" @click="googleLogin" ref="LoginButton">Login</button>
+      <button class="DevLogin" @click="DevLogin">Dev</button>
       <p class="HelpText">To use TrackHunt, sign in with Google and ensure you are signed in on your browser</p>
 </template>
 
@@ -29,6 +30,10 @@ export default {
                     })
                 }
             })
+        },
+        devlogin(){
+            vm.$socket.emit('doesUserExist', 108040570320593718088);
+            vm.$emit('userLogin', 108040570320593718088)
         },
         getHighScores(){
         this.$socket.emit('retrieveLeaderBoards');
