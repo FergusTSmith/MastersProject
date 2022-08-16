@@ -42,7 +42,7 @@ describe('HomePage Component Unit Tests: ', () => {
 
   it("clicking Start button", async() => {
     var wrapper = mount(SoloGame, {propsData: { categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: gameOver, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
-    var startGameButton = await wrapper.find('#Start');
+    var startGameButton = await wrapper.find('#StartSoloGame');
     await startGameButton.trigger('click');
     expect(wrapper.emitted().gameSetup).toBeTruthy;
 

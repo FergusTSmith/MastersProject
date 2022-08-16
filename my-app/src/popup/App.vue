@@ -1,21 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-//import BaseTimer from "../components/BaseTimer";
 import IntroPage from '@/components/IntroPage.vue';
-import LeaderBoard from '@/components/LeaderBoard.vue';
-import OptionsView from '@/components/OptionsView.vue';
-import UsernameChange from '@/components/UsernameChange.vue';
 import SetUsername from '@/components/SetUsername.vue';
-//import SetUsername from '@/components/SetUsername.vue';
-import LobbyView from '@/components/LobbyView.vue'
-import PassiveMode from '@/components/PassiveMode.vue'
-import AchievementsView from '@/components/AchievementsView.vue'
-import HostsView from '@/components/HostsView.vue'
-import SoloLobby from '@/components/SoloLobby.vue';
-import JoinLobby from '@/components/JoinLobby.vue';
-import CountryView from '@/components/CountryView.vue';
-import SoloGamePage from '@/components/SoloGamePage.vue';
-import MultiPlayerGame from '../components/MultiPlayerGame.vue';
 import HomePageView from '@/components/HomePageView.vue'
 </script>
 
@@ -25,74 +11,17 @@ import HomePageView from '@/components/HomePageView.vue'
       <IntroPage @userLogin="googleLogin($event)"></IntroPage>
   </div>
 
+  <div v-if="UsernamePage" id="SetUsername">
+    <SetUsername @setUsername="setUsername" @usernameToIntro="usernameToIntro"></SetUsername>
+  </div>
+
   <div v-if="HomePage" id = "Home-Page">
-      <HomePageView :UsersID="UsersID" @solomode="solomode" @createLobby="createLobby" @passiveMode="passiveMode($event)" @joinlobby="joinlobby" @options="options" @leaderboards="leaderboards"></HomePageView>
+      <HomePageView :UsersID="UsersID" :userProfile="userProfile"></HomePageView>
   </div>
-
-  <div v-if="LeaderBoardPage" id = "Leader-Board">
-    <LeaderBoard :gamesWon="gamesWon" :gamesPlayed="gamesPlayed" :personalSoloHS="personalSoloHS" :soloClassicLeaderboard="soloClassicLeaderboard" :multiClassicLeaderboard="multiClassicLeaderboard"></LeaderBoard>
-    <button @click="exitToHomePage" type="button">HomePage</button>
-  </div>
-
-  <div v-if="OptionsPage"  id="Options-Page">
-    <OptionsView @passiveMode="passiveMode" @changeUsernamePage="changeUsernamePage"></OptionsView>
-    <button @click="exitToHomePage" type="button">Home Page</button><br/>
-  </div>
-
-  <div v-if="UsernameChangePage" id="UsernameChangePage">
-    <UsernameChange :UsersID="UsersID" @changeUsernamePage="changeUsernamePage" @exitToHomePage="exitToHomePage"></UsernameChange>
-  </div>
-
-  <div v-if="JoinLobbyPage" id="Join-Lobby">
-    <JoinLobby @enterLobby="enterLobby($event)" @exitToHomePage="exitToHomePage"></JoinLobby>
-  </div>
-    
-  <div v-if="UsernamePage" id="UsernamePage">
-    <SetUsername @setUsername="setUsername($event)" @usernameToIntro="usernameToIntro"></SetUsername>
-  </div>
-
-
-  <div v-if="LobbyPage" id="Lobby">
-    <LobbyView :UsersID="UsersID" :playersLobby="playersLobby" :UsersInLobby="UsersInLobby" :isLobbyCreator="isLobbyCreator" @onGameModeChange="onGameModeChange($event)" @onTimeChange="onTimeChange($event)" @exitToHomePageReset="exitToHomePageReset" @multiGameInitiated="multiGameInitiated" @leaveGame="leaveGame"></LobbyView>
-  </div>
-
-  <div v-if="PassivePage">
-    <PassiveMode :totalRequests="totalRequests" :passiveModeTotalTrackers="passiveModeTotalTrackers" :passiveModeUniqueHosts="passiveModeUniqueHosts" :passiveModeTotalCounties="passiveModeTotalCounties" @PassiveToHost="PassiveToHost" @PassiveToCountry="PassiveToCountry" @achievementPage="achievementPage" @exitToHomePage="exitToHomePage"></PassiveMode>
-  </div>
-
-  <div v-if="AchievementPage">
-    <AchievementsView :achievements="achievements" @backToPassive="backToPassive" @exitToHomePage="exitToHomePage"></AchievementsView>
-  </div>
-
-  <div v-if="HostPage">
-    <HostsView :passiveModeHosts="passiveModeHosts" @exitToHomePage="exitToHomePage" @HostToPassive="HostToPassive"></HostsView>
-  </div>
-
-  <div v-if="CountryPage">
-    <CountryView  :passiveCountryLabels="passiveCountryLabels" :passiveCountryCounts="passiveCountryCounts" :passiveModeCountries="passiveModeCountries" @exitToHomePage="exitToHomePage" @CountToPassive="CountToPassive"></CountryView>
-  </div>
-
-  <div v-if="SoloPage" id="Solo-Mode">
-    <SoloLobby :personalSoloHS="personalSoloHS" @onGameModeChange="onGameModeChange($event)" @onTimeChange="onTimeChange($event)" @exitToHomePage="exitToHomePage" @soloGameInitiated="soloGameInitiated()"></SoloLobby>
-  </div>
-
-  <div v-if="SoloGame" id="Solo-Game" :key="componentVersion">
-    <SoloGamePage @gameSetup="gameSetup" @endGame="endGame()" @exitToHomePageReset="exitToHomePageReset" :categoryList="categoryList" :timer="timer" :GameMode="GameMode" :gameOver="gameOver" :timeLeft="timeLeft" :startTime="startTime"  :userScore="userScore" :VisitedCountries="VisitedCountries" :numberOfCookies="numberOfCookies" :gameStarted="gameStarted" :countriesToFind="countriesToFind" :finishedGame="finishedGame" :APIEnabled="APIEnabled"></SoloGamePage>
-  </div>
-
-  <div v-if="MultiPlayer" id="Multiplayer-Game" :key="componentVersion">
-    <MultiPlayerGame @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :noOfCountriesBingo="noOfCountriesBingo" :didYouWin="didYouWin" :noOfCountries="noOfCountries" :WinningUser="WinningUser" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :gameStarted="gameStarted" :allPlayersReady="allPlayersReady" :categoryList="categoryList" :timer="timer" :GameMode="GameMode" :gameOver="gameOver" :timeLeft="timeLeft" :startTime="startTime"  :userScore="userScore" :VisitedCountries="VisitedCountries" :numberOfCookies="numberOfCookies" :countriesToFind="countriesToFind" :finishedGame="finishedGame" :APIEnabled="APIEnabled"></MultiPlayerGame>
-  </div>
-
-
-
 </div>
 </template>
 
 <script>
-//var countryList = chrome.storage.local.get[["countryList"]];
-
-
 export default {
   // https://manage.auth0.com/dashboard/eu/dev-li-9809u/applications/s449g7DqINXUA9dZNRPdVTwPswnMX9qJ/quickstart
     sockets: {
@@ -101,9 +30,6 @@ export default {
       },
       disconnect() {
         console.log('Client has disconnected from the Socket.IO websocket.');
-      },
-      testMessage(){
-        console.log('test passed')
       },
       UserNotFound(){
           this.UsernamePage = true;
@@ -145,51 +71,11 @@ export default {
 
           this.getUserDetails(users[0].googleID);
           console.log(users);
-
           this.UsersID = users[0].username;
           this.UserGoogleID = users[0].googleID;
           this.userProfile = new User(this.UsersID);
           this.userProfile.googleID = this.UserGoogleID;
 
-      },
-      lobbySuccess(lobbyDetails) {
-        console.log("successfully connected to lobby")
-        var lobbyID = lobbyDetails[0];
-        var listOfUsers = lobbyDetails[1];
-        console.log(lobbyID);
-        this.playersLobby = lobbyID;
-        this.UsersInLobby = listOfUsers;
-        this.noOfUsersInLobby++;
-        this.JoinLobbyPage = false;
-        this.HomePage = false;
-        this.LobbyPage = true;
-        //this.$socket.join(lobbyID)
-        this.lobbyError = false;
-        this.allPlayersReady = false; 
-      },
-      lobbyFailure() {
-        console.log("there was an error when attempting to connect to the server")
-        this.lobbyError = 'Error: Lobby Not Found';
-      },
-      playerInvitedToLobby(MessageDetails){
-        var inviteUsername = MessageDetails[0];
-        var invitingUser = MessageDetails[1];
-        var lobbyID = MessageDetails[2];
-        console.log('Client received the invitation request.')
-        if(this.UsersID === inviteUsername){
-          var inviteAccepted = confirm("You have been invited to Lobby " + lobbyID + " by user " + invitingUser + ".\n Do you wish to accept?");
-          console.log(inviteAccepted);
-
-          if(inviteAccepted){
-              this.enterLobby(lobbyID);
-              this.isLobbyCreator = false;
-          }
-        }
-      },
-      startGame(lobbyID){
-        if(lobbyID === this.playersLobby){
-          this.initiateGame();
-        }
       },
       updateGameModeAndTime(messageDetails){
           var lobbyID = messageDetails[0];
@@ -215,45 +101,6 @@ export default {
             this.LobbyPage = false;
           }
       },
-
-      updateUsers(lobbyDetails){
-        console.log('we reached updating users')
-        var listOfUsers = lobbyDetails[0]
-        var lobbyID = lobbyDetails[1]
-        console.log(lobbyDetails)
-        console.log(this.playersLobby === lobbyID)
-        console.log(listOfUsers);
-        console.log(this.UsersInLobby);
-
-        if(this.playersLobby === lobbyID){
-          this.UsersInLobby = listOfUsers;
-          this.noOfUsersInLobby = this.UsersInLobby.length;
-          console.log('we updated the users');
-          console.log(this.UsersInLobby);
-        }
-        console.log(listOfUsers)
-      },
-      player_is_ready(lobbyDetails){
-        var allReady = true;
-        var user = lobbyDetails[0];
-        var lobbyID = lobbyDetails[1];
-
-        if(lobbyID === this.playersLobby){
-          for(var i = 0; i < this.noOfUsersInLobby; i++){
-            console.log(this.UsersInLobby[i]);
-            if(this.UsersInLobby[i].userID === user.userID){
-              this.UsersInLobby[i].ready = "Ready";
-            }
-            if(this.UsersInLobby[i].ready != "Ready"){
-              allReady = false;
-            }
-          }
-        }
-        if(allReady){
-          this.allPlayersReady = true;
-        }
-        console.log(allReady)
-      },
       removePlayerFromLobby(user, lobbyID){
         if(this.playersLobby === lobbyID){
           for(var i = 0; i < this.noOfUsersInLobby; i++){
@@ -265,34 +112,6 @@ export default {
             }
           }
         }
-      },
-      sendClassicLeaderBoards(MessageDetails){
-        this.multiClassicLeaderboard = MessageDetails;
-        console.log(MessageDetails)
-        console.log(this.multiClassicLeaderboard);
-
-        this.multiClassicLeaderboard = this.multiClassicLeaderboard.slice(0, 11)
-
-        for(var i = 0; i < this.multiClassicLeaderboard.length; i++){
-          this.multiClassicLeaderboard[i].createdAt = this.multiClassicLeaderboard[i].createdAt.toString().substring(0, 10)
-        }
-      },
-      sendSoloClassic(MessageDetails){
-        if(this.UsersID === MessageDetails[1]){
-          this.soloClassicLeaderboard = MessageDetails[0];
-          console.log('test fired')
-
-          for(var i = 0; i < this.soloClassicLeaderboard.length; i++){
-          this.soloClassicLeaderboard[i].createdAt = this.soloClassicLeaderboard[i].createdAt.toString().substring(0, 10)
-          }
-
-          
-
-          this.personalSoloHS = this.soloClassicLeaderboard.filter(item => item.username === this.UsersID);
-          this.personalSoloHS = this.personalSoloHS.slice(0, 11);
-          console.log(this.personalSoloHS)
-        }
-        console.log(MessageDetails)
       },
       sendUserDetails(MessageDetails){
         console.log(MessageDetails);
@@ -337,6 +156,7 @@ export default {
               vm.VisitedCountries = backupGame.VisitedCountries;
               vm.userScore = backupGame.score;
               vm.timer = backupGame.timer;
+              vm.gameStarted = backupGame.gameStarted;
 
             })
         }
@@ -467,31 +287,9 @@ export default {
 
       userLeaveMessage: "",
 
-      passiveModeHosts: [],
-      passiveModeCountries: [],
-      passiveModeTotalTrackers: 0,
-      passiveModeTotalCounties: 0,
-      passiveModeUniqueHosts: 0,
-      achievements: [],
-      totalRequests: 0,
-      passiveCountryLabels: [],
-      passiveCountryCounts: [],
-
 
       gamesPlayed: 0,
       gamesWon: 0,
-
-
-      easyCountries: ["United States", "United Kingdom"],
-      medEasyCountries: ["Canada", "Ireland", "Germany", "Netherlands", "Belgium"],
-      hardCountries: ["Russia"],
-
-      CountriesInAsia: ["Japan", "Indonesia", "India", "China", "Thailand", "South Korea", "Philippines", "Singapore", "Vietnam", "Malaysia", "Hong Kong", "Saudi Arabia", "Pakistan", "Myanmar", "Cambodia", "Taiwan", "Laos", "Iran", "Sri Lanka", "Israel", "Maldives", "Afghanistan", "Bangladesh", "Nepal", "Qatar", "Mongolia", "Brunei", "Lebanon", "North Korea", "Iraq", "Uzbekistan", "Syria", "Macao", "Christmas Islands", "United Arab Emirates", "Jordan", "Armenia", "Timor-Leste", "Kyrgzstan", "Yemen", "Paliestine", "Bhutan", "Kuwait", "Turkmenistan", "Bahrain", "Tajikistan", "Oman"],
-      AfricanCountries: ["Nigeria", "Ethiopia", "Eygpt", "Democratic Republic of the Congo", "Tanzania", "South Africa", "Kenya", "Sudan", "Algeria", "Uganda", "Morocco", "Angola", "Mozambique", "Ghana", "Cameroon", "Madagascar", "Ivory Coast", "Niger", "Burkina Faso", "Mali", "Malawi", "Zambia", "Senegal", "Chad", "Somalia", "Zimbabwe", "South Sudan", "Rwanda", "Guinea", "Burundi", "Benin", "Tunisia", "Sierra Leone", "Togo", "Libya", "Repbulic of the Congo", "Central African Republic", "Liberia", "Mauritania", "Eritrea", "Namibia", "Gambia", "Botswana", "Gabon", "Lesotho", "Guimea-Bissau", "Equatorial Guinea", "Mauritius", "Eswatini", "Djibouti", "Cape Verde"],
-      EuropeanCountries: ["Hungary", "Belarus", "Austria", "Serbia", "Switzerland", "Germany", "Holy See", "Andorra", "Bulgaria", "United Kingdom", "France", "Montenegro", "Luxembourg", "Italy", "Denmark", "Finland", "Slovakia", "Norway", "Ireland", "Spain", "Malta", "Ukraine", "Croatia", "Moldova", "Monaco", "Liechtenstein", "Poland", "Iceland", "San Marino", "Bosnia and Herzegovina", "Albania", "Lithuania", "North Macedonia", "Slovenia", "Romania", "Latvia", "Netherlands", "Russia", "Estonia", "Belgium", "Czechia", "Portugal", "Greece", "Sweden"],
-      NorthAmerica: ["United States", "USA", "United States of America", "Canada", "Mexico"],
-      Oceania: ["Australia", "New Zealand"],
-      onePointCountries: ["United Kingdom", "United States"],
 
 
       //countriesIveFoundBeforeAndShouldIncludeAbove: ["Canada", "United Kingdom", "United States", "Germany", "Netherlands", "Ireland", "Belgium"],
@@ -521,34 +319,13 @@ export default {
       // Dev Variables
 
       APIEnabled: true,
-
-      //Emoji Object
-      }
-    },
-    props: {
-      timeToGo: {
-        type: Number,
-        required: true
       }
     },
     components: {
-      //BaseTimer,
       IntroPage,
-      LeaderBoard,
-      OptionsView,
-      UsernameChange,
       SetUsername,
-      LobbyView,
-      PassiveMode,
-      AchievementsView,
-      HostsView,
-      SoloLobby,
-      JoinLobby,
-      CountryView,
-      SoloGamePage,
       HomePageView
     },
-    
     
     // Adapted from https://stackoverflow.com/questions/55773602/how-do-i-create-a-simple-10-seconds-countdown-in-vue-js
     watch: {
@@ -572,143 +349,10 @@ export default {
       }
     },
     methods: {
-      
-      
-      getHighScores(){
-        this.$socket.emit('retrieveLeaderBoards');
-        this.$socket.emit('retreiveSoloScores', this.UsersID);
-      },
       getUserDetails(userGoogleID){
         this.$socket.emit('retrieveDetails', userGoogleID)
         this.gameStarted = false;
-      },
-      initiateGame(){
-        var vm = this;
-        this.gameStarted = true;
-        this.startTime = this.timer;
-        if(this.timer <= 0){
-          this.timer = 120;
-          this.startTime = this.timer;
-        }
-        this.numberOfCookies = 0;
-
-        this.timer = this.timer * 1;
-        this.timer -= 1;
-        chrome.runtime.sendMessage({ message: 'reset'}, function(response) {
-          if(response === 'success'){
-            console.log('successfully started the game.')
-            vm.VisitedCountries = [];
-            vm.userScore = 0;
-            vm.numberOfCookies = 0;
-          }
-          return true;
-        })
- 
-        /*
-        
-        chrome.storage.local.get(["countryList"], function(result){
-            let score = 0;
-            if(!(result == undefined)){
-              for(var i = 0; i < result.countryList.length; i++){
-                score += result.countryList[i].count;
-              }
-            }
-            vm.userScore = score;
-            vm.userProfile.score = score;
-            vm.VisitedCountries = result.countryList;
-            vm.noOfCountries = result.countryList.length;
-        })
-
-        */
-        if(this.GameMode === "Bingo"){
-            this.countriesToFind = [];
-            this.countriesToFind.push({country: this.hardCountries[this.generateRandomIntHelper(this.hardCountries.length)], found: false})
-            this.countriesToFind.push({country: this.easyCountries[this.generateRandomIntHelper(this.easyCountries.length)], found: false})
-            this.countriesToFind.push({country: this.medEasyCountries[this.generateRandomIntHelper(this.medEasyCountries.length)], found: false})
-
-            console.log(this.countriesToFind);
-            this.$socket.emit('countriesToVisit', this.playersLobby, this.countriesToFind)
-
-        }
-
-        this.initiateListener();
-
-
-          /* chrome.windows.create({
-            url: 'https://www.google.com',
-          }) */
-      },initiateListener(){
-        var vm = this;
-        
-        chrome.storage.onChanged.addListener(function(result) {
-            if(!(vm.gameOver)){
-              vm.updateListOfCountries()
-              vm.updateAchievements()
-              vm.updateCategories()
-              //console.log(vm.GameMode)
-              if(vm.GameMode === "Classic"){
-                vm.updateScoreClassic()
-              }else if(vm.GameMode === "Bingo"){
-                vm.updateScoreBingo()
-              }
-              vm.backupGameDetails();
-              vm.VisitedCountries = result.countryList.newValue;
-              vm.gameStarted = true;
-            }
-        }) 
-      },backupGameDetails(){
-        var backupGame = {}
-        backupGame.GameMode = this.GameMode;
-        backupGame.timer = this.timer;
-        backupGame.score = this.userScore;
-        backupGame.VisitedCountries = this.VisitedCountries;
-
-        chrome.storage.local.set({backupGameDetails: backupGame})
-      },  
-      
-      
-      generateRandomIntHelper(max){
-          return Math.floor(Math.random() * max)
-
-          //Nabbed from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
-      },
-
-      onGameModeChange(gameMode){
-        this.GameMode = gameMode;
-      },
-
-      onTimeChange(timeSelected){ // https://www.codecheef.org/article/how-to-get-selected-radio-button-value-in-vuejs
-        this.timer = timeSelected;
-      },
-      HostToPassive(){
-        this.HostPage = false;
-        this.PassivePage = true;
-      },
-      CountToPassive(){
-        this.CountryPage = false;
-        this.PassivePage = true;
-      },
-      PassiveToHost(){
-        this.PassivePage = false;
-        this.HostPage = true;
-      },
-      PassiveToCountry(){
-        this.PassivePage = false;
-        this.CountryPage = true;
-      },
-      changeUsernamePage(){
-          this.OptionsPage = false;
-          this.UsernameChangePage = true;
-      },
-      achievementPage(){
-        this.AchievementPage = true;
-        this.PassivePage = false;
-      },
-      backToPassive(){
-        this.AchievementPage = false;
-        this.PassivePage = true;
-      },
-
+      }, 
       changeUsername(newUsername){
 
           this.UsersID = newUsername
@@ -843,157 +487,10 @@ export default {
           
         })
      },
-     updateAchievements(){
-       var vm=this;
-       chrome.storage.local.get(["achievements"], function(result){
-            vm.achievements = result.achievements;
-          })
-     },
-     updateCategories(){
-      var vm = this;
-      chrome.storage.local.get(["categoryList"], function(result){
-          vm.categoryList = result.categoryList;
-      })
-     },
 
-     updateListOfCountries(){
-        var vm = this;
-        
-        chrome.storage.local.get(["countryList"], function(result){
-          vm.VisitedCountries = result.countryList;
-          console.log(vm.VisitedCountries)
-
-          chrome.storage.local.get(["numberOfCookies"], function(result){
-            vm.numberOfCookies = result;
-            //console.log(vm.numberOfCookies);
-          })
-          chrome.storage.local.get(["achievements"], function(result){
-            vm.achievements = result.achievements;
-          })
-        })
-
-        chrome.storage.local.set({backupCountryList: vm.VisitedCountries});
-        console.log(vm.VisitedCountries);
-     },
-     passiveMode(passiveDetails){
-        this.passiveModeHosts = passiveDetails.passiveDetails.pmH;
-        this.passiveModeTotalTrackers = passiveDetails.passiveDetails.total;
-        this.passiveModeUniqueHosts = passiveDetails.passiveDetails.unique;
-        this.passiveModeCountries = passiveDetails.passiveDetails.countries;
-        this.passiveModeTotalCounties = passiveDetails.passiveDetails.totalCountries;
-        this.passiveCountryCounts = passiveDetails.passiveDetails.countryCounts;
-        this.passiveCountryLabels = passiveDetails.passiveDetails.countryLabels;
-        this.achievements = passiveDetails.passiveDetails.achieve;
-        this.totalRequests = passiveDetails.passiveDetails.totalReq;
-        console.log(this.passiveModeCountryCounts)
-        console.log(this.passiveCountrylabels)
-
-        
-       
-        this.HomePage = false;
-        this.OptionsPage = false;
-        this.PassivePage = true;
-       
-     },
-     updateScoreClassic(){
-        console.log('Updating score');
-        
-        var vm = this;
-
-        chrome.storage.local.get(["countryList"], function(result){
-            let count = ref(0);
-            let score = 0;
-            for(var i = 0; i < result.countryList.length; i++){
-                count.value += result.countryList[i].count;
-                if(vm.onePointCountries.includes(result.countryList[i].name)){
-                    score += result.countryList[i].count;
-                }else if(vm.EuropeanCountries.includes(result.countryList[i].name) || vm.NorthAmerica.includes(result.countryList[i].name)){
-                    score += (result.countryList[i].count)*2;
-                }else if(vm.CountriesInAsia.includes(result.countryList[i])){
-                    score += (result.countryList[i].count)*3
-                }else if(vm.AfricanCountries.includes(result.countryList[i])){
-                    score += (result.countryList[i].count)*4
-                }else{
-                    score += (result.countryList[i].count);
-                }
-            }
-            vm.noOfUsersInLobby = vm.UsersInLobby.length;
-            vm.userScore = score;
-            vm.userProfile.score = score;
-            vm.noOfCountries = result.countryList.length;
-
-            for(var j = 0; j < vm.noOfUsersInLobby; j++){
-              if(vm.userProfile.userID === vm.UsersInLobby[j].userID){
-                vm.UsersInLobby[j].score = score;
-              }
-            }
-          })
-        
-        if(this.MultiPlayer){
-            this.$socket.emit('scoreUpdate', this.userProfile, this.playersLobby, this.userScore);
-        }
-
-     },
-     updateScoreBingo(){
-        var vm = this;
-
-        chrome.storage.local.get(["countryList"], function(result){
-            //console.log(result.countryList)
-
-            for(var i = 0; i < result.countryList.length; i++){
-
-                for(var j = 0; j < vm.countriesToFind.length; j++){
-                  if(result.countryList[i].name === vm.countriesToFind[j].country){
-                    vm.countriesToFind[j].found = true;
-                    //console.log(vm.countriesToFind[j]);
-                  }
-                }
-            }
-            vm.noOfCountries = result.countryList.length;
-        })
-
-        var allFound = true;
-        setTimeout(() => {console.log('done waiting'), 2000})
-        console.log(this.countriesToFind)
-
-        for(var j = 0; j < this.countriesToFind.length; j++){
-            if(this.countriesToFind[j].found != true){
-              allFound = false;
-            }else if(!(this.userProfile.BingoCountries.includes(this.countriesToFind[j])) && this.countriesToFind[j].found === true){
-              this.userProfile.BingoCountries.push(this.countriesToFind[j])
-            }
-            console.log(this.countriesToFind[j].found)
-        }
-
-        console.log(allFound);
-        console.log(this.userProfile.BingoCountries)
-        console.log(this.userProfile.BingoCountries.length)
-        console.log(this.MultiPlayer)
-        this.noOfCountriesBingo = this.userProfile.BingoCountries.length;
-
-        if(this.MultiPlayer){
-          this.$socket.emit('bingoScoreUpdate', this.userProfile, this.playersLobby)
-        }
-
-        if(allFound){
-          this.endBingoGame();
-          this.didYouWin = true;
-          this.WinningUser = this.userProfile.userID
-        }
-     },
-     gameSetup(){ 
-        if(this.allPlayersReady){
-          this.$socket.emit('startTheGame', this.playersLobby)
-          this.userInAMultiGame = true;
-        }else if(this.MultiPlayer === false){
-          this.initiateGame();
-          this.userInASoloGame = true;
-        }
-     },
-     
+    
      googleLogin(googleID){
         var vm = this;
-        this.getHighScores();
         this.userSignedIn = true;
         vm.IntroPage = false;
         vm.UserGoogleID = googleID;
@@ -1024,30 +521,6 @@ export default {
           this.$socket.emit('nameTaken', UsersID)
         }
         },
-     soloGameInitiated(){
-        this.gameOver = false;
-        this.SoloPage = false;
-        this.SoloGame = true;
-        this.userInASoloGame = true;
-
-        console.log(this.GameMode)
-        console.log(this.timer);
-
-        this.$socket.emit("playerInSoloGame", this.UserGoogleID)
-     },
-     multiGameInitiated(){
-        this.countriesToFind = [];
-        this.gameOver = false;
-        this.LobbyPage = false;
-        this.MultiPlayer = true; 
-        this.userInAMultiGame = true;
-
-        if(this.isLobbyCreator){
-           this.$socket.emit('gameModeAndTime', this.playersLobby, this.GameMode, this.timer)
-          }
-        
-
-     },
      
      usernameToIntro(){
       this.UsernamePage = false;
@@ -1057,11 +530,6 @@ export default {
      NoAccount(){
       this.IntroPage = false;
       this.NoLoginPage = true;
-     },
-     
-     closeLobby(){
-        this.$socket.emit('closeLobby', this.playersLobby)
-        this.exitToHomePageReset();
      },
      
      enterLobby(lobbyID){
@@ -1079,36 +547,6 @@ export default {
     loginPageChange(){
       this.LoginPage = false;
       this.HomePage = true;
-    },
-    solomode(){
-      this.getHighScores();
-      this.HomePage = false;
-      this.SoloPage = true;
-    },
-    leaderboards(){
-      this.getHighScores();
-      this.LeaderBoardPage = true;
-      this.HomePage = false;
-    },
-    joinlobby(){
-      this.JoinLobbyPage = true;
-      this.HomePage = false;
-    },
-    options(){
-      this.OptionsPage = true;
-      this.HomePage = false;
-    },
-   
-    createLobby(newLobbyID){
-      this.$socket.emit('CreateNewLobby', newLobbyID, this.userProfile);
-      this.noOfUsersInLobby = 0;
-
-      this.playersLobby = newLobbyID;
-      this.UsersInLobby[this.noOfUsersInLobby++] = this.userProfile;
-      
-      this.LobbyPage = true;
-      this.HomePage = false;
-      this.isLobbyCreator = true;
     },
     exitToHomePage(){
       this.LobbyPage = false;

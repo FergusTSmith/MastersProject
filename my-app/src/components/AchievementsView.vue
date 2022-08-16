@@ -34,4 +34,8 @@ li.Achievements{
   font-size: smaller;
   list-style: none;
 }
+p.HelpText {
+  font-size: 9px;
+  color: lightgrey;
+}
 </style>

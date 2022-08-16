@@ -1,12 +1,13 @@
 
 <template>
+    <div v-if="LobbyPage">
     <h2>TrackHunt</h2>
     <p class="HelpText">Lobby ID: {{ playersLobby }}</p>
     <!----Animation of the wheel turning ----->
     <div class="RadioButtons">
     <p v-if="isLobbyCreator" class="HelpText">Choose GameMode:</p>
-    <input id="Classic" v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label for="Classic" v-if="isLobbyCreator">Classic</label>
-    <input id="Bingo" v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label for="Bingo" v-if="isLobbyCreator">Bingo</label>
+    <input id="Classic" v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label id="ClassicRadio" for="Classic" v-if="isLobbyCreator">Classic</label>
+    <input id="Bingo" v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label id="BingoRadio" for="Bingo" v-if="isLobbyCreator">Bingo</label>
     </div>
 
     <div class="Players">
@@ -24,8 +25,8 @@
     <div class="RadioButtons">
     <p v-if="isLobbyCreator" class="HelpText">Choose length of round:</p>
     <input id="twoMins" v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="twoMins" v-if="isLobbyCreator">2 min</label>
-    <input id="fiveMins" v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="fiveMins" v-if="isLobbyCreator">5 min</label>
-    <input id="tenMins" v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="tenMins" v-if="isLobbyCreator">10 min</label>
+    <input id="fiveMins" v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label id="fiveMinsRadio" for="fiveMins" v-if="isLobbyCreator">5 min</label>
+    <input id="tenMins" v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label id="tenMinsRadio" for="tenMins" v-if="isLobbyCreator">10 min</label>
     </div>
     <br/>
     <button id="closeLobby" v-if="isLobbyCreator" @click="closeLobby" type="button">Close Lobby</button>
@@ -39,9 +40,16 @@
     <button id="beginGame" @click="multiGameInitiated" type="button">Begin Game</button>
     <!------<button @click="exitToHomePage" type="button">Cancel</button>---->
     <button id="leaveGame" @click="leaveGame" type="button">Leave Game</button>
+    </div>
+
+    <div v-if="MultiPlayer" id="Multiplayer-Game" :key="componentVersion">
+        <MultiPlayerGame :userProfile="userProfile" @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :GameMode="GameMode"  :startTime="startTime"  ></MultiPlayerGame>
+    </div>
 </template>
 
 <script>
+import MultiPlayerGame from '@/components/MultiPlayerGame.vue'
+
 export default {
     props: {
         playersLobby: {
@@ -59,7 +67,14 @@ export default {
         UsersID: {
             type: String,
             required: true
+        },
+        userProfile: {
+            type: Object,
+            required: true
         }
+    },
+    components: {
+        MultiPlayerGame
     },
     methods: {
         onGameModeChange(){
@@ -73,9 +88,6 @@ export default {
         closeLobby(){
             this.$socket.emit('closeLobby', this.playersLobby)
             this.$emit('exitToHomePageReset');
-        },
-        multiGameInitiated(){
-            this.$emit('multiGameInitiated');
         },
         leaveGame(){
             this.$emit('leaveGame');
@@ -104,11 +116,27 @@ export default {
 
             this.$socket.emit('playerLeft', newLobbyUsers, this.playersLobby, userID)
         },
+        multiGameInitiated(){
+            this.LobbyPage = false;
+            this.MultiPlayer = true;
+
+            if(this.isLobbyCreator){
+                this.$socket.emit('gameModeAndTime', this.playersLobby, this.GameMode, this.timer)
+            }
+     },
     },
     data(){
         return {
             playerInvite: false,
             show: false,
+            MultiPlayer: false,
+            LobbyPage: true,
+
+            GameMode: 'Classic',
+            timer: 120,
+            gameOver: false,
+
+
         }
     }
 }

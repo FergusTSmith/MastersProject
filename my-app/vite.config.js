@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  testTimeout: 10000,
   plugins: [vue()],
   resolve: {
   		extensions: [

@@ -88,6 +88,11 @@ div.CountryChart {
     height: 100px;
     width: 100px;
     margin-left: 35px;
-
+}
+img.CountryFlag {
+    width: 15px;
+    height: 10px;
+    float: left;
+    margin-right: 10px;
 }
 </style>

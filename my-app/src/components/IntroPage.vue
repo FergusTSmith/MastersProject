@@ -31,9 +31,10 @@ export default {
                 }
             })
         },
-        devlogin(){
-            vm.$socket.emit('doesUserExist', 108040570320593718088);
-            vm.$emit('userLogin', 108040570320593718088)
+        DevLogin(){
+            this.$socket.emit('doesUserExist', "108040570320593718088");
+            this.$emit('userLogin', "108040570320593718088")
+            console.log("TEST")
         },
         getHighScores(){
         this.$socket.emit('retrieveLeaderBoards');
@@ -49,6 +50,9 @@ h5 {
     margin-bottom: 2px;
 }
 button.loginButton {
+    width: 80%;
+}
+button.DevLogin {
     width: 80%;
 }
 </style>
