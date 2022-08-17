@@ -1,7 +1,7 @@
 <template>
     <div v-if="HomePage">
-        <h2>TrackHunt</h2>
-        <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
+        <h2>TrackerHunt</h2>
+        <img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/><br/>
         <p class="HelpText">Welcome back, {{ UsersID }}!</p>
         <button id="Solo" class="homepageButton" @click="solomode" type="button">Play Solo</button>
         <button id="NewLobby" class="homepageButton" @click="createLobby" type="button">Create Lobby</button>
@@ -26,7 +26,7 @@
     </div>
 
     <div v-if="LobbyPage" id="Lobby">
-        <LobbyView :userProfile="userProfile" :UsersID="UsersID" :playersLobby="playersLobby" :UsersInLobby="UsersInLobby" :isLobbyCreator="isLobbyCreator" @exitToHomePageReset="exitToHomePageReset" @multiGameInitiated="multiGameInitiated" @leaveGame="leaveGame"></LobbyView>
+        <LobbyView :userProfile="userProfile" :UsersID="UsersID" :playersLobby="playersLobby" :UsersInLobby="UsersInLobby" :isLobbyCreator="isLobbyCreator" @exitToHomePageReset="exitToHomePageReset" @multiGameInitiated="multiGameInitiated" @leaveGame="leaveGame" @updateLobbyUsers="updateLobbyUsers($event)"></LobbyView>
     </div>
 
     <div v-if="PassivePage">
@@ -121,10 +121,10 @@ export default {
             console.log(this.UsersInLobby);
 
             if(this.playersLobby === lobbyID){
-            this.UsersInLobby = listOfUsers;
-            this.noOfUsersInLobby = this.UsersInLobby.length;
-            console.log('we updated the users');
-            console.log(this.UsersInLobby);
+                this.UsersInLobby = listOfUsers;
+                this.noOfUsersInLobby = this.UsersInLobby.length;
+                console.log('we updated the users');
+                console.log(this.UsersInLobby);
             }
             console.log(listOfUsers)
       },
@@ -230,6 +230,10 @@ export default {
         options(){
             this.OptionsPage = true;
             this.HomePage = false;
+        },
+        updateLobbyUsers(newUsers){
+            console.log(newUsers)
+            this.UsersInLobby = newUsers;
         },
         leaderboards(){
             this.getHighScores();

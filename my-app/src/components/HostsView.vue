@@ -1,5 +1,5 @@
 <template>
-    <h2>TrackHunt</h2>
+    <h2>TrackerHunt</h2>
   <p class="HelpText">Passive Mode - Complete list of Hosts</p>
   <li v-for="item in orderedHosts" :key="item" class="TrackedCountry">
       {{ item.URL }} - {{ item.count }}

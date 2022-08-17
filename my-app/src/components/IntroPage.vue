@@ -1,10 +1,10 @@
 <template>
-      <h2>TrackHunt</h2>
-      <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/>
+      <h2>TrackerHunt</h2>
+      <img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/>
       <h5>Who is watching you?</h5>
       <button class="loginButton" @click="googleLogin" ref="LoginButton">Login</button>
       <button class="DevLogin" @click="DevLogin">Dev</button>
-      <p class="HelpText">To use TrackHunt, sign in with Google and ensure you are signed in on your browser</p>
+      <p class="HelpText">To use TrackerHunt, sign in with Google and ensure you are signed in on your browser</p>
 </template>
 
 <script>

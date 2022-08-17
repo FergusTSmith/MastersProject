@@ -1,6 +1,6 @@
 <template>
     <div v-if="PassivePage">
-        <h2>TrackHunt</h2>
+        <h2>TrackerHunt</h2>
         <p class="HelpText">"Passive Mode" engages whenever you install TrackerHunt. This will show a collection of all of the trackers encountered since the application was installed.</p>
         <div class="Chart">
         <PassiveModeChart ref ="PassiveModeChart" :chartData="chartData" :options="options" :height="20" :width="200"></PassiveModeChart>

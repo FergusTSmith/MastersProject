@@ -1,6 +1,6 @@
 <template>
     <div v-if="SoloPage">
-        <h2>TrackHunt</h2>
+        <h2>TrackerHunt</h2>
         <p class="HelpText">Solo Mode</p>
         <label class="HelpText">Choose Game Mode:</label>
         <div class="RadioButtons">

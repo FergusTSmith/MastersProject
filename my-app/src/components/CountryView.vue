@@ -1,5 +1,5 @@
 <template>
-    <h2>TrackHunt</h2>
+    <h2>TrackerHunt</h2>
   <p class="HelpText">Passive Mode - Complete list of Countries</p>
   <div class="CountryChart">
   <PassiveModeChart ref ="PassiveModeChart" :chartData="chartData" :options="options" :height="20" :width="200"></PassiveModeChart>

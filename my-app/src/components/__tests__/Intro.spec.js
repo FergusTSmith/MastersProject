@@ -14,7 +14,7 @@ describe('IntroPage Component Unit Tests: ', () => {
 
   it("All DOM Components render correctly", async() => {
     var wrapper = mount(IntroPage);
-    expect(wrapper.text()).toContain("Who is watching you?" && "To use TrackHunt")
+    expect(wrapper.text()).toContain("Who is watching you?" && "To use TrackerHunt")
     expect(wrapper.find('h2').exists()).toBeTruthy()
     expect(wrapper.find('img').exists()).toBeTruthy()
     expect(wrapper.find('button').exists()).toBeTruthy()

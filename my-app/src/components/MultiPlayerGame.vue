@@ -1,5 +1,5 @@
 <template>
-<h2>TrackHunt</h2>
+<h2>TrackerHunt</h2>
     <p class="HelpText">MultiPlayer - {{ GameMode }} <button @click="displayInformation" class="InformationBox">i</button></p>
     <p class="HelpText" v-if="InformationBox && GameMode==='Classic'">{{ ClassicInfo }}</p>
     <p class="HelpText" v-if="InformationBox && GameMode==='Bingo'">{{ BingoInfo }}</p>
@@ -504,10 +504,8 @@ export default {
         },
         updateScoreBingo(){
             var vm = this;
-
             chrome.storage.local.get(["countryList"], function(result){
                 //console.log(result.countryList)
-
                 for(var i = 0; i < result.countryList.length; i++){
 
                     for(var j = 0; j < vm.countriesToFind.length; j++){
@@ -528,7 +526,7 @@ export default {
                 if(this.countriesToFind[j].found != true){
                 allFound = false;
                 }else if(!(this.ProfileOfUser.BingoCountries.includes(this.countriesToFind[j])) && this.countriesToFind[j].found === true){
-                this.ProfileOfUser.BingoCountries.push(this.countriesToFind[j])
+                    this.ProfileOfUser.BingoCountries.push(this.countriesToFind[j])
                 }
                 console.log(this.countriesToFind[j].found)
             }
@@ -539,9 +537,7 @@ export default {
             console.log(this.MultiPlayer)
             this.noOfCountriesBingo = this.ProfileOfUser.BingoCountries.length;
 
-            if(this.MultiPlayer){
             this.$socket.emit('bingoScoreUpdate', this.ProfileOfUser, this.playersLobby)
-            }
 
             if(allFound){
                 this.endBingoGame();

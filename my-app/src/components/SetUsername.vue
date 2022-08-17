@@ -1,6 +1,6 @@
 <template>
-    <h2>TrackHunt</h2>
-    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
+    <h2>TrackerHunt</h2>
+    <img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/><br/>
     <br/><br/>
     <label>Enter a username for your account:</label><br/>
     <input ref="nickname" type="text">

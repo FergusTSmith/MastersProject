@@ -1,5 +1,5 @@
 <template>
-<h2>TrackHunt</h2>
+<h2>TrackerHunt</h2>
     <p class="HelpText">Solo Mode - {{ GameMode }}<button @click="displayInformation" class="InformationBox" id="Info">i</button></p>
     <p class="HelpText" v-if="InformationBox && GameMode==='Classic'">{{ ClassicInfo }}</p>
     <p class="HelpText" v-if="InformationBox && GameMode==='Bingo'">{{ BingoInfo }}</p>
@@ -7,7 +7,7 @@
     <br/>
 
     <!-----Using a more sophisticated solution for the timer. Adapted from https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f-->
-    <!-----<img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>--->
+    <!-----<img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/><br/>--->
 
     <div class="timer">
     <BaseTimer id="BaseTimer" :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="30"></BaseTimer>

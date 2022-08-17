@@ -51,6 +51,9 @@
 import MultiPlayerGame from '@/components/MultiPlayerGame.vue'
 
 export default {
+    created(){
+
+    },
     sockets: {
         updateGameModeAndTime(messageDetails){
           var lobbyID = messageDetails[0];
@@ -153,6 +156,7 @@ export default {
                 }
             }
             this.$socket.emit('playerLeft', newLobbyUsers, this.playersLobby, userID)
+            this.$emit('updateLobbyUsers', newLobbyUsers)
         },
         multiGameInitiated(){
             this.LobbyPage = false;
@@ -174,6 +178,7 @@ export default {
             timer: 120,
             gameOver: false,
             startTime: 0,
+            
         }
     }
 }

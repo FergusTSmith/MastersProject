@@ -1,5 +1,5 @@
 <template>
-<h2>TrackHunt</h2><br/>
+<h2>TrackerHunt</h2><br/>
     <p class="HelpText">LeaderBoards - Classic Mode</p>
     <button id="solo" @click="displaySoloClass" class="Radio" type="button">Solo</button>
     <button id="multi" @click="displayMulClass" class="Radio" type="button">MultiPlayer</button>

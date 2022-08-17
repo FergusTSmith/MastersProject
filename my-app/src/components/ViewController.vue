@@ -6,20 +6,20 @@
    <div id="app">
     <div style="width:240px;" v-if="IntroPage" id="Intro-Page" stle="width: 450px" ref="Intro-Page">
     <div id="Heading">
-      <h2>TrackHunt</h2>
-      <img src="Static/Logo.png" alt="TrackHunt Logo"/>
+      <h2>TrackerHunt</h2>
+      <img src="Static/Logo.png" alt="TrackerHunt Logo"/>
       <h6>Who is watching you?</h6>
       <p>{{ count }}</p> 
     </div>
     <div id = "LoginSection">
       <button @click="introToLogin">Login</button>
-      <p id="SignUp">New to TrackHunt? Sign up <a>Here</a></p>
+      <p id="SignUp">New to TrackerHunt? Sign up <a>Here</a></p>
     </div>
   </div>
 
   <div v-if="LoginPage" id = "Login-Page">
-    <h2>TrackHunt</h2>
-    <img src="Static/Logo.png" alt="TrackHunt Logo"/><br/>  
+    <h2>TrackerHunt</h2>
+    <img src="Static/Logo.png" alt="TrackerHunt Logo"/><br/>  
     <label>Username:</label>
     <input type="text"><br/>
     <label>Password:</label>
@@ -30,8 +30,8 @@
   </div>
 
   <div v-if="PasswordPage" id = "Password-Reset">
-    <h2>TrackHunt</h2>
-    <img src="Static/Logo.png" alt="TrackHunt Logo"/><br/>  
+    <h2>TrackerHunt</h2>
+    <img src="Static/Logo.png" alt="TrackerHunt Logo"/><br/>  
     <h6>Password Reset Form</h6>
     <label>Email:</label>
     <input type="text"><br/>
@@ -43,8 +43,8 @@
   </div>
 
   <div v-if="RegistrationPage" id = "Registration">
-    <h2>TrackHunt</h2>
-    <img src="Static/Logo.png" alt="TrackHunt Logo"/><br/>
+    <h2>TrackerHunt</h2>
+    <img src="Static/Logo.png" alt="TrackerHunt Logo"/><br/>
     <h6>Sign Up Form</h6>
     <label>Username:</label>
     <input type="text"><br/>
@@ -57,8 +57,8 @@
   </div>
 
   <div v-if="HomePage" id = "Home-Page">
-    <h2>TrackHunt</h2>
-    <img src="Static/Logo.png" alt="TrackHunt Logo"/><br/>
+    <h2>TrackerHunt</h2>
+    <img src="Static/Logo.png" alt="TrackerHunt Logo"/><br/>
     <p class="HelpText">Welcome back!</p>
     <button @click="solomode" type="button">Play Solo</button><br/>
     <button @click="leaderboards" type="button">Leader Boards</button>
@@ -68,7 +68,7 @@
   </div>
 
   <div v-if="LeaderBoard"  id = "Leader-Board">
-    <h2>TrackHunt</h2><br/>
+    <h2>TrackerHunt</h2><br/>
     <p class="HelpText">Leader Boards</p>
     <button class="Radio" type="button">Personal</button>
     <button class="Radio" type="button">World</button><br/>
@@ -83,8 +83,8 @@
   </div>
 
   <div v-if="OptionsPage"  id="Options-Page">
-    <h2>TrackHunt</h2>
-    <img src="Static/Logo.png" alt="TrackHunt Logo"/><br/><button type="button">Light Mode</button><br/>
+    <h2>TrackerHunt</h2>
+    <img src="Static/Logo.png" alt="TrackerHunt Logo"/><br/><button type="button">Light Mode</button><br/>
     <button type="button">Dark Mode</button><br/>
     <button type="button">Language</button><br/>
     <br/><br/>
@@ -92,8 +92,8 @@
   </div>
 
   <div v-if="JoinLobbyPage" id="Join-Lobby">
-    <h2>TrackHunt</h2>
-    <img src="Static/Logo.png" alt="TrackHunt Logo"/><br/>
+    <h2>TrackerHunt</h2>
+    <img src="Static/Logo.png" alt="TrackerHunt Logo"/><br/>
     <br/><br/>
     <label>Enter lobby ID:</label><br/>
     <input type="text">
@@ -103,7 +103,7 @@
   </div>
 
   <div v-if="CreateLobbyPage" id="Create-Lobby">
-    <h2>TrackHunt</h2>
+    <h2>TrackerHunt</h2>
     <p class="HelpText">Lobby ID: 1234567</p>
     <!----Animation of the wheel turning ----->
 
@@ -123,7 +123,7 @@
   </div>
 
   <div v-if="SoloPage" id="Solo-Mode">
-    <h2>TrackHunt</h2>
+    <h2>TrackerHunt</h2>
     <p class="HelpText">Solo Mode</p>
     <br/>
     <p id="LeaderBoard">Previous Scores:</p>

@@ -1,6 +1,6 @@
 <template>
-    <h2>TrackHunt</h2>
-    <img class="main-logo" src="staticimages/Logo.png" alt="TrackHunt Logo"/><br/>
+    <h2>TrackerHunt</h2>
+    <img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/><br/>
     <button @click="changeUsernamePage" type="button">Change Username</button>
     <button @click="passiveMode" type="button">View Passive Mode Stats</button>
     <br/><br/>
