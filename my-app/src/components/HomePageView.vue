@@ -273,6 +273,7 @@ export default {
             this.LobbyPage = false;
             this.LeaderBoardPage = false;
             this.JoinLobbyPage = false;
+            this.SoloPage = false;
         },
         exitToHomePageReset(){
             this.exitToHomePage();

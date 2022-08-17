@@ -52,22 +52,27 @@ export default {
     components: {
         SoloGamePage,
     },
-    mounted(){
+    updated(){
+         var vm = this;
         if(this.userSoloContinue){
-            var vm = this;
             chrome.storage.local.get(['backupGameDetails'], function(result){
+                console.log(result);
                 var backupGame = result.backupGameDetails;
                 vm.gameMode = backupGame.GameMode;
                 vm.timer = backupGame.timer;
+                console.log("Timer test")
+                console.log(vm.timer);
             })
             this.SoloPage = false;
             this.SoloGame = true;
         }
+        console.log(this.timer);
+        console.log(this.gameMode);
     },
     data() {
         return {
             gameMode: 'Classic',
-            timer: 120,
+            timer: 156,
             gameOver: false,
 
             SoloPage: true,
@@ -97,9 +102,7 @@ export default {
         },
         exitToHomePageReset(){
             this.$emit('exitToHomePage');
-
-            this.gameMode = 'Classic';
-            this.timer = 120;
+            console.log('More teeest');
             this.gameover = false;
 
             this.SoloGame = false;

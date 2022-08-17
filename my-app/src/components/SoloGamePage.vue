@@ -85,6 +85,7 @@ export default {
               this.timerClose = true;
           }else if(value === 0){
                 this.endGame()
+                console.log("EndGame triggered for some reason")
             if(this.GameMode === 'Bingo'){
                 this.endBingoGame();
             }
@@ -109,7 +110,7 @@ export default {
             categoryList: [],
             gameStarted: false,
             achievements: [],
-            timer: 0,
+            timer: 124,
             noOfCountries: 0,
             WinningUser: undefined,
             didYouWin: false,
@@ -117,7 +118,7 @@ export default {
 
             easyCountries: ["United States", "United Kingdom"],
             medEasyCountries: ["Canada", "Ireland", "Germany", "Netherlands", "Belgium"],
-            hardCountries: ["Russia"],
+            hardCountries: ["China"],
 
             CountriesInAsia: ["Japan", "Indonesia", "India", "China", "Thailand", "South Korea", "Philippines", "Singapore", "Vietnam", "Malaysia", "Hong Kong", "Saudi Arabia", "Pakistan", "Myanmar", "Cambodia", "Taiwan", "Laos", "Iran", "Sri Lanka", "Israel", "Maldives", "Afghanistan", "Bangladesh", "Nepal", "Qatar", "Mongolia", "Brunei", "Lebanon", "North Korea", "Iraq", "Uzbekistan", "Syria", "Macao", "Christmas Islands", "United Arab Emirates", "Jordan", "Armenia", "Timor-Leste", "Kyrgzstan", "Yemen", "Paliestine", "Bhutan", "Kuwait", "Turkmenistan", "Bahrain", "Tajikistan", "Oman"],
             AfricanCountries: ["Nigeria", "Ethiopia", "Eygpt", "Democratic Republic of the Congo", "Tanzania", "South Africa", "Kenya", "Sudan", "Algeria", "Uganda", "Morocco", "Angola", "Mozambique", "Ghana", "Cameroon", "Madagascar", "Ivory Coast", "Niger", "Burkina Faso", "Mali", "Malawi", "Zambia", "Senegal", "Chad", "Somalia", "Zimbabwe", "South Sudan", "Rwanda", "Guinea", "Burundi", "Benin", "Tunisia", "Sierra Leone", "Togo", "Libya", "Repbulic of the Congo", "Central African Republic", "Liberia", "Mauritania", "Eritrea", "Namibia", "Gambia", "Botswana", "Gabon", "Lesotho", "Guimea-Bissau", "Equatorial Guinea", "Mauritius", "Eswatini", "Djibouti", "Cape Verde"],
@@ -138,7 +139,12 @@ export default {
                 vm.gameStarted = backupGame.gameStarted;
                 vm.userScore = backupGame.userScore;
                 vm.VisitedCountries = backupGame.VisitedCountries;
+                vm.timer = backupGame.timer;
+                vm.countriesToFind = backupGame.CountriesToFind;
+                console.log(vm.countriesToFind);
+                
             })
+            console.log("Should initiate");
             this.initiateListener();
             this.timer -= 1;
             this.timer += 1;
@@ -295,6 +301,9 @@ export default {
             backupGame.score = this.userScore;
             backupGame.VisitedCountries = this.VisitedCountries;
             backupGame.gameStarted = this.gameStarted;
+            if(this.GameMode === "Bingo"){
+                backupGame.CountriesToFind = this.countriesToFind;
+            }
             console.log(backupGame);
 
             chrome.storage.local.set({backupGameDetails: backupGame})
@@ -356,9 +365,12 @@ export default {
             var vm = this;
             chrome.storage.local.get(["countryList"], function(result){
                 for(var i = 0; i < result.countryList.length; i++){
-                    for(var j = 0; j < vm.countriesToFind.length; j++){
+                    //console.log("This should fire")
+                    //console.log(vm.countriesToFind);
+                    for(var j = 0; j < 3; j++){
                     if(result.countryList[i].name === vm.countriesToFind[j].country){
                         vm.countriesToFind[j].found = true;
+                        //console.log("This should, also, fire");
                     }
                     }
                 }
@@ -367,15 +379,16 @@ export default {
 
             var allFound = true;
             setTimeout(() => {console.log('done waiting'), 2000})
-            console.log(this.countriesToFind)
+            console.log(this.countriesToFind.length)
 
-            for(var j = 0; j < this.countriesToFind.length; j++){
-                if(this.countriesToFind[j].found != true){
-                allFound = false;
-                }else if(!(this.userProfile.BingoCountries.includes(this.countriesToFind[j])) && this.countriesToFind[j].found === true){
-                this.userProfile.BingoCountries.push(this.countriesToFind[j])
+            for(var k = 0; k < 3; k++){
+                if(this.countriesToFind[k].found != true){
+                    allFound = false;
+                    console.log("Not all found");
+                }else if(!(this.userProfile.BingoCountries.includes(this.countriesToFind[k])) && this.countriesToFind[k].found === true){
+                this.userProfile.BingoCountries.push(this.countriesToFind[k])
                 }
-                console.log(this.countriesToFind[j].found)
+                console.log(this.countriesToFind[k].found)
             }
 
             console.log(allFound);
@@ -388,10 +401,14 @@ export default {
             this.$socket.emit('bingoScoreUpdate', this.userProfile, this.playersLobby)
             }
 
-            if(allFound){
-            this.endBingoGame();
-            this.didYouWin = true;
-            this.WinningUser = this.userProfile.userID
+            if(allFound && (this.countriesToFind.length != 0)){
+                this.endBingoGame();
+                this.didYouWin = true;
+                this.WinningUser = this.userProfile.userID
+                console.log("It's this that's firing");
+                console.log(this.countriesToFind)
+                console.log(this.countriesToFind.length)
+                console.log(allFound);
             }
         },
 
