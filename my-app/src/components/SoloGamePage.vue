@@ -109,7 +109,7 @@ export default {
             categoryList: [],
             gameStarted: false,
             achievements: [],
-            timer: 120,
+            timer: 0,
             noOfCountries: 0,
             WinningUser: undefined,
             didYouWin: false,
@@ -130,6 +130,20 @@ export default {
     },
     mounted(){
         this.timer = this.startTime;
+        var vm = this;
+        if(this.userSoloContinue){
+            chrome.storage.local.get(['backupGameDetails'], function(result){
+                console.log(result);
+                var backupGame = result.backupGameDetails;
+                vm.gameStarted = backupGame.gameStarted;
+                vm.userScore = backupGame.userScore;
+                vm.VisitedCountries = backupGame.VisitedCountries;
+            })
+            this.initiateListener();
+            this.timer -= 1;
+            this.timer += 1;
+            vm.$emit('resetSoloStatus')
+        }
     },
     props: {
         GameMode: {
@@ -140,6 +154,14 @@ export default {
           type: Number,
           required: true
         },
+        userSoloContinue: {
+            type: Boolean,
+            required: true
+        },
+        userProfile: {
+            type: Object,
+            required: true
+        }
 
     },
     methods: {
@@ -158,29 +180,33 @@ export default {
             var timePassed = this.startTime - this.timer;
             this.gameOver = true;
 
-            console.log(timePassed)
+            console.log(this.userProfile);
+
+            console.log(timePassed);
             this.finishedGame = true;
+            console.log(this.GameMode);
 
             if(this.GameMode === "Classic"){
-                this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, this.userScore, (this.MultiPlayer === true), this.startTime)
+                this.$socket.emit('addScoreToDatabase', this.userProfile.userID, this.GameMode, this.userScore, (this.MultiPlayer === true), this.startTime)
             }else if(this.GameMode === "Bingo"){
                 for(var j = 0; j < this.countriesToFind.length; j++){
                     if(this.countriesToFind[j].found != true){
                         this.finishedGame = false;
                         console.log('unfinished')
-                    }
-            }
-            if(this.finishedGame){
-                this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, timePassed, (this.MultiPlayer === true), this.startTime)
-                console.log('sent bingo score to the server');
-            }
+                        }
+                    }   
+                if(this.finishedGame){
+                    this.$socket.emit('addScoreToDatabase', this.userProfile.userID, this.GameMode, timePassed, (this.MultiPlayer === true), this.startTime)
+                    console.log('sent bingo score to the server');
+                }
 
-            if(this.GameMode === 'Bingo'){
-                this.endBingoGame();
+                if(this.GameMode === 'Bingo'){
+                    this.endBingoGame();
+                }
             }
+            console.log(this.userProfile.googleID);
 
-            this.$socket.emit('soloGameFinished', this.UserGoogleID)
-            }
+            this.$socket.emit('soloGameFinished', this.userProfile.googleID)
         },
         endBingoGame(){
             this.didYouWin = true;
@@ -191,7 +217,7 @@ export default {
                 }
             }
             if(didUserWin){
-                this.WinningUser = this.UsersID
+                this.WinningUser = this.userProfile.userID
                 this.didYouWin = true;
                 this.noOfCountriesBingo = this.countriesToFind.length;
             }
@@ -199,10 +225,12 @@ export default {
             console.log(this.noOfCountriesBingo)
 
             this.gameOver = true;
-            this.reset();
+            //this.reset();
         },
         exitToHomePageReset(){
             this.$emit('exitToHomePageReset')
+            console.log("TEEEEET")
+            this.gameOver = false;
         },
         initiateGame(){
             var vm = this;
@@ -267,6 +295,7 @@ export default {
             backupGame.score = this.userScore;
             backupGame.VisitedCountries = this.VisitedCountries;
             backupGame.gameStarted = this.gameStarted;
+            console.log(backupGame);
 
             chrome.storage.local.set({backupGameDetails: backupGame})
          },

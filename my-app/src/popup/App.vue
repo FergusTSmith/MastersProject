@@ -16,7 +16,7 @@ import HomePageView from '@/components/HomePageView.vue'
   </div>
 
   <div v-if="HomePage" id = "Home-Page">
-      <HomePageView @logout="logout" :gamesPlayed="gamesPlayed" :gamesWon="gamesWon" :UsersID="UsersID" :userProfile="userProfile"></HomePageView>
+      <HomePageView @logout="logout" @resetSoloStatus="resetSoloStatus" :gamesPlayed="gamesPlayed" :gamesWon="gamesWon" :UsersID="UsersID" :userProfile="userProfile" :UserGoogleID="UserGoogleID" :userSoloContinue="userSoloContinue"></HomePageView>
   </div>
 </div>
 </template>
@@ -127,25 +127,14 @@ export default {
       },
       UserInSinglePlayer(MessageDetails){
         var vm = this;
+        console.log('test gurl');
         if(this.UserGoogleID === MessageDetails){
-            chrome.storage.local.get(['backupGameDetails'], function(result){
-              var backupGame = result.backupGameDetails;
-              vm.GameMode = backupGame.GameMode;
-              vm.VisitedCountries = backupGame.VisitedCountries;
-              vm.userScore = backupGame.score;
-              vm.timer = backupGame.timer;
-              vm.gameStarted = backupGame.gameStarted;
-
-            })
+            console.log('test boiii');
+            this.IntroPageView = false;
+            this.HomePage = true;
+            this.userSoloContinue = true;
         }
-
-        this.IntroPageView = false;
-        this.SoloGame = true;
-        this.HomePage = false;
-        vm.gameStarted = true;
-        vm.gameOver = false;
-
-        this.initiateListener();
+        //this.initiateListener();
       },
       resendBingo(MessageDetails){
         if(this.playersLobby === MessageDetails[0]){
@@ -225,6 +214,7 @@ export default {
       gamesWon: 0,
 
       userSignedIn: false,
+      userSoloContinue: false,
       }
     },
     components: {
@@ -304,6 +294,9 @@ export default {
     logout(){
       this.HomePage = false;
       this.IntroPageView = true;
+    },
+    resetSoloStatus(){
+      this.userSoloContinue = false;
     }
 }}
 

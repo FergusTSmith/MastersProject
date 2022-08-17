@@ -27,12 +27,13 @@
     </div>
 
     <div v-if="SoloGame" id="Solo-Mode">
-        <SoloGamePage :userProfile="userProfile" :GameMode="gameMode" :gameOver="false" :startTime="timer" @exitToHomePageReset="exitToHomePageReset"></SoloGamePage>
+        <SoloGamePage :userSoloContinue="userSoloContinue" :userProfile="userProfile" :GameMode="gameMode" :gameOver="false" :startTime="timer" @exitToHomePageReset="exitToHomePageReset" @resetSoloStatus="resetSoloStatus"></SoloGamePage>
     </div>
 </template>
 
 <script>
 import SoloGamePage from '@/components/SoloGamePage.vue'
+
 export default {
     props: {
         personalSoloHS: {
@@ -42,10 +43,26 @@ export default {
         userProfile: {
             type: Object,
             required: true
+        },
+        userSoloContinue: {
+            type: Boolean,
+            required: true
         }
     },
     components: {
         SoloGamePage,
+    },
+    mounted(){
+        if(this.userSoloContinue){
+            var vm = this;
+            chrome.storage.local.get(['backupGameDetails'], function(result){
+                var backupGame = result.backupGameDetails;
+                vm.gameMode = backupGame.GameMode;
+                vm.timer = backupGame.timer;
+            })
+            this.SoloPage = false;
+            this.SoloGame = true;
+        }
     },
     data() {
         return {
@@ -71,10 +88,12 @@ export default {
             this.SoloPage = false;
             this.SoloGame = true;
 
-            this.$socket.emit("playerInSoloGame", this.UserGoogleID)
+            this.$socket.emit("playerInSoloGame", this.userProfile.googleID)
         },
         exitToHomePage(){
             this.$emit('exitToHomePage')
+            this.SoloGame = false;
+            this.SoloPage = false;
         },
         exitToHomePageReset(){
             this.$emit('exitToHomePage');
@@ -85,6 +104,9 @@ export default {
 
             this.SoloGame = false;
             this.SoloPage = false;
+        },
+        resetSoloStatus(){
+            this.$emit('resetSoloStatus')
         }
     }
 }

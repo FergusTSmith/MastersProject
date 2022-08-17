@@ -468,6 +468,7 @@ db.sequelize.sync().then((req) => {
             for(var i = 0; i < playersInASoloGame.length; i++){
                 if(playersInASoloGame[i] === userGoogleID){
                     playersInASoloGame.splice(i, 1);
+                    console.log('removed player from solo games')
                 }
             }
         })

@@ -34,7 +34,7 @@
     </div>
 
     <div v-if="SoloPage" id="Solo-Mode">
-        <SoloLobby :userProfile="userProfile" :personalSoloHS="personalSoloHS" @onGameModeChange="onGameModeChange($event)" @onTimeChange="onTimeChange($event)" @exitToHomePage="exitToHomePage"></SoloLobby>
+        <SoloLobby :userSoloContinue="userSoloContinue" :userProfile="userProfile" :personalSoloHS="personalSoloHS" @onGameModeChange="onGameModeChange($event)" @onTimeChange="onTimeChange($event)" @exitToHomePage="exitToHomePage" @resetSoloStatus="resetSoloStatus"></SoloLobby>
     </div>
 
 
@@ -144,6 +144,14 @@ export default {
         },
         gamesWon: {
             type: Number,
+            required: true
+        },
+        UserGoogleID: {
+            type: String,
+            required: true
+        },
+        userSoloContinue: {
+            type: Boolean,
             required: true
         }
     },
@@ -274,10 +282,21 @@ export default {
             this.HomePage = false;
             this.OptionsPage = false;
             this.$emit('logout');
+        },
+        resetSoloStatus(){
+            this.$emit('resetSoloStatus')
         }
     },
-    mounted(){
-        this.getHighScores
+    beforeUpdate(){
+        console.log("Test Home")
+        if(this.userSoloContinue){
+            console.log("Test 2 passed");
+            this.HomePage = false;
+            this.SoloPage = true;
+        }
+    },
+    created(){
+        this.getHighScores();
     }
 }
 </script>
