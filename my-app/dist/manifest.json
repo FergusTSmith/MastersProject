@@ -27,6 +27,7 @@
   "background": {
     "scripts": [
       "js/background.js",
+      "js/achievements.js",
       "js/CombinedBlockList.js",
       "js/gameplay.js",
       "js/socket.io.js",

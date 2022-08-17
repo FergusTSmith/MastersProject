@@ -7,7 +7,7 @@ import HomePageView from '@/components/HomePageView.vue'
 
 <template>
 <div id="app" :key="componentVersion">
-  <div v-if="IntroPage" id="Intro-Page" ref="Intro-Page">
+  <div v-if="IntroPageView" id="Intro-Page" ref="Intro-Page">
       <IntroPage @userLogin="googleLogin($event)"></IntroPage>
   </div>
 
@@ -16,7 +16,7 @@ import HomePageView from '@/components/HomePageView.vue'
   </div>
 
   <div v-if="HomePage" id = "Home-Page">
-      <HomePageView :gamesPlayed="gamesPlayed" :gamesWon="gamesWon" :UsersID="UsersID" :userProfile="userProfile"></HomePageView>
+      <HomePageView @logout="logout" :gamesPlayed="gamesPlayed" :gamesWon="gamesWon" :UsersID="UsersID" :userProfile="userProfile"></HomePageView>
   </div>
 </div>
 </template>
@@ -33,7 +33,7 @@ export default {
       },
       UserNotFound(){
           this.UsernamePage = true;
-          this.IntroPage = false;
+          this.IntroPageView = false;
       },
       sendUserDetails(MessageDetails){
             this.gamesPlayed = MessageDetails[0].gamesPlayed;
@@ -63,7 +63,7 @@ export default {
           console.log(users);
           this.UsernamePage = false;
           this.HomePage = true;
-          this.IntroPage = false;
+          this.IntroPageView = false;
 
           this.getUserDetails(users[0].googleID);
           console.log(users);
@@ -139,7 +139,7 @@ export default {
             })
         }
 
-        this.IntroPage = false;
+        this.IntroPageView = false;
         this.SoloGame = true;
         this.HomePage = false;
         vm.gameStarted = true;
@@ -213,90 +213,18 @@ export default {
     },
   data(){
     return {
-      LoginPage: false,
-      IntroPage: true,
-      PasswordPage: false,
-      RegistrationPage: false,
+      IntroPageView: true,
       HomePage: false,
-      LeaderBoardPage: false,
-      OptionsPage: false,
-      JoinLobbyPage: false,
-      LobbyPage: false,
-      SoloPage: false,
       UsernamePage: false,
-      SoloGame: false,
-      UsernameChangePage: false,
-      PassivePage: false,
-      HostPage: false,
-      CountryPage: false,
-      AchievementPage: false,
-      MultiPlayer: false,
 
-      playersLobby: '',
       UsersID: '1234',
       UserGoogleID: '',
-      VisitedCountries: [],
-      noOfCountries: 0,
       userProfile: undefined,
-      WinningUser: undefined,
-      didYouWin: false,
-      isLobbyCreator: false,
-
-      UsersInLobby: [],
-      noOfUsersInLobby: 0,
-      userScore: 0,
-      allPlayersReady: false,
-      lobbyError: '',
-
-      componentVersion: 0,
-      componentKey: 0,
-
-      allUserIDs: [],
-      allUsers: [],
-
-      GameMode: 'Classic',
-      finishedGame: false,
-      gameStarted: false,
-      gameOver: false,
-
-      numberOfCookies: 0,
-
-      categoryList: [],
-
-      userLeaveMessage: "",
-
 
       gamesPlayed: 0,
       gamesWon: 0,
 
-
-      //countriesIveFoundBeforeAndShouldIncludeAbove: ["Canada", "United Kingdom", "United States", "Germany", "Netherlands", "Ireland", "Belgium"],
-      countriesToFind: [],
-      noOfCountriesBingo: 0,
-
-      soloClassicLeaderboard: [],
-      intSoloClassLB: [],
-      multiClassicLeaderboard: [],
-      intMultiClassLB: [],
-      personalSoloHS: [],
-
-      MultiClassicLB: false,
-      MultiBingoLB: false,
-      SoloClassicLB: false,
-      SoloBingoLB: false,
-
-      userInASoloGame: false,
-      userInAMultiGame: false,
-
-      timer: 120,
-      startTime: 120,
-      timerClose: false,
-
       userSignedIn: false,
-
-      // Dev Variables
-
-      APIEnabled: true,
       }
     },
     components: {
@@ -304,148 +232,36 @@ export default {
       SetUsername,
       HomePageView
     },
-    
-    // Adapted from https://stackoverflow.com/questions/55773602/how-do-i-create-a-simple-10-seconds-countdown-in-vue-js
-    watch: {
-      timer: {
-        handler(value) {
-          if(value > 0 && this.gameStarted){
-            setTimeout(() => {
-              this.timer--;
-              this.timePased++;
-            }, 1000);
-          }else if(value <= 10 && value > 1){
-              this.timerClose = true;
-          }else if(value === 0){
-            this.endGame()
-            if(this.GameMode === 'Bingo'){
-              this.endBingoGame();
-            }
-          }
-        },
-        immediate: true
-      }
-    },
     methods: {
       getUserDetails(userGoogleID){
         this.$socket.emit('retrieveDetails', userGoogleID)
         this.gameStarted = false;
       }, 
       changeUsername(newUsername){
-
           this.UsersID = newUsername
           this.userProfile.userID = this.UsersID;
           this.exitToHomePage();
           console.log(this.UserGoogleID)
-
           this.$socket.emit('newUsername', this.UserGoogleID, this.UsersID)
       },
-      endBingoGame(){
-
-        this.didYouWin = true;
-        if(this.MultiPlayer){
-          this.$socket.emit('endBingoGame', this.playersLobby, this.UsersID)
-          this.$socket.emit('closeLobby', this.playersLobby)
-        }
-        
-        var didUserWin = true;
-        for(var i = 0; i < this.countriesToFind.length; i++){
-          if(this.countriesToFind[i].found === false){
-            didUserWin = false;
-            
-          }
-        }
-
-        if(didUserWin){
-          this.WinningUser = this.UsersID
-          this.didYouWin = true;
-          this.noOfCountriesBingo = this.countriesToFind.length;
-        }
-
-        console.log(this.noOfCountriesBingo)
-
-        this.gameOver = true;
-        this.reset();
-      },
-      playerReady(){
-          this.userProfile.ready = "Ready";
-          for(var i = 0; i< this.noOfUsersInLobby; i++){
-            if(this.UsersInLobby[i].userID === this.userProfile.userID){
-              this.UsersInLobby[i].ready = "Ready";
-            }
-          }
-
-          this.$socket.emit('playerReady', this.userProfile, this.playersLobby);
-      },
-      
-      get_updated_countries(){
-        chrome.storage.local.get(["countryList"], function(result){
-          console.log(result.countryList);
-          console.log(this.VisitedCountries);
-          
-        })
-     },
-
-    
      googleLogin(googleID){
         var vm = this;
         this.userSignedIn = true;
-        vm.IntroPage = false;
+        vm.IntroPageView = false;
         vm.UserGoogleID = googleID;
          
      },
-     getGoogleID(){
-        var vm = this;
-          chrome.runtime.sendMessage({ message: 'googleID'}, function(response){
-            if((response === '') || (response === undefined)){
-              console.log("No google ID found");
-              return '';
-            }else{
-              var googleID = response;
-              console.log(googleID);
-              googleID = googleID.substring(0, 255);
-              vm.UserGoogleID = googleID;
-
-              console.log('test + ' + vm.UserGoogleID);
-              return googleID;
-            }
-         })
-     },
      setUsername(UsersID){
-
         if(UsersID === ''){
           alert("Please enter a name")
         }else{
           this.$socket.emit('nameTaken', UsersID)
         }
         },
-     
      usernameToIntro(){
       this.UsernamePage = false;
-      this.IntroPage = true;
+      this.IntroPageView = true;
      },
-     
-     NoAccount(){
-      this.IntroPage = false;
-      this.NoLoginPage = true;
-     },
-     
-     enterLobby(lobbyID){
-      this.playersLobby = lobbyID;
-      this.$socket.emit('JoinLobby', lobbyID, this.userProfile);
-    },
-    introToLogin(){
-      this.LoginPage = true
-      this.IntroPage = false                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ;
-    },
-    loginToIntro(){
-      this.LoginPage = false;
-      this.IntroPage = true;
-    },
-    loginPageChange(){
-      this.LoginPage = false;
-      this.HomePage = true;
-    },
     exitToHomePage(){
       this.LobbyPage = false;
       this.JoinLobbyPage = false;
@@ -485,6 +301,10 @@ export default {
       this.countriesToVisit = [];
       this.noOfCountriesBingo = 0;
     },
+    logout(){
+      this.HomePage = false;
+      this.IntroPageView = true;
+    }
 }}
 
 
@@ -499,9 +319,7 @@ class User {
     this.BingoCountries = [];
   }
 }
-
 </script>
-
 <style>
 /* Cormac's code but adjusted: */
 @font-face {

@@ -351,6 +351,7 @@ db.sequelize.sync().then((req) => {
                     console.log(users);
                     if(playersInASoloGame.includes(userGoogleID)){
                         socket.emit('UserInSinglePlayer', userGoogleID)
+                        console.log('found player in single game');
                     }
 
                     for(var i = 0; i < availableLobbies.length; i++){
@@ -360,7 +361,7 @@ db.sequelize.sync().then((req) => {
                             console.log(availableLobbies[i].lobbyUsers)
                             if(availableLobbies[i].lobbyUsers[j].googleID === userGoogleID){
                                 socket.emit('UserInMultiplayer', availableLobbies[i].LobbyID, availableLobbies[i].lobbyUsers);
-                                console.log("Found the player");
+                                console.log("Found the player - Multiplayer");
                                 socket.join(availableLobbies[i]);
                             }
                         }

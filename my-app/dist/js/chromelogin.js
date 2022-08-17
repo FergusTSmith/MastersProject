@@ -65,6 +65,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         chrome.storage.local.set({ countryList: detectedCountries });
         sendResponse('success');
+    }else if (request.message === 'logout'){
+        isUserSignedIn = false;
+        user_info = '';
+        user_id = '';
+        uniqueIDforUser = '';
+        sendResponse('success');
     }
 })
 

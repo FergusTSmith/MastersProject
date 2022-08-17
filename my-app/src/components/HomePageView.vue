@@ -17,7 +17,7 @@
     </div>
 
     <div v-if="OptionsPage"  id="Options-Page">
-        <OptionsView @passiveMode="passiveMode" @changeUsernamePage="changeUsernamePage"></OptionsView>
+        <OptionsView @passiveMode="passiveMode" @changeUsernamePage="changeUsernamePage" @logout="logout"></OptionsView>
         <button @click="exitToHomePage" type="button">Home Page</button><br/>
     </div>
 
@@ -269,6 +269,11 @@ export default {
         exitToHomePageReset(){
             this.exitToHomePage();
 
+        },
+        logout(){
+            this.HomePage = false;
+            this.OptionsPage = false;
+            this.$emit('logout');
         }
     },
     mounted(){

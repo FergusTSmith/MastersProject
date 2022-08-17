@@ -1,6 +1,6 @@
 <template>
     <div v-if="PassivePage">
-        <h2>TrackerHunt</h2>
+        <h2>TrackHunt</h2>
         <p class="HelpText">"Passive Mode" engages whenever you install TrackerHunt. This will show a collection of all of the trackers encountered since the application was installed.</p>
         <div class="Chart">
         <PassiveModeChart ref ="PassiveModeChart" :chartData="chartData" :options="options" :height="20" :width="200"></PassiveModeChart>
@@ -148,6 +148,7 @@ export default {
         var vm=this;
         chrome.storage.local.get(["achievements"], function(result){
             vm.achievements = result.achievements;
+            console.log(result);
         })
         console.log(vm.achievements);
         chrome.storage.local.get(["passiveCountryList"], function(result){
