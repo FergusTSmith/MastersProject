@@ -137,6 +137,14 @@ export default {
         userProfile: {
             type: Object,
             required: true
+        },
+        gamesPlayed: {
+            type: Number,
+            required: true,
+        },
+        gamesWon: {
+            type: Number,
+            required: true
         }
     },
     data(){
@@ -163,6 +171,7 @@ export default {
             HomePage: true,
             OptionsPage: false,
             PassivePage: false,
+
         }
     },
     
@@ -250,6 +259,7 @@ export default {
             this.LeaderBoard = false;
             this.OptionsPage = false;
             this.LobbyPage = false;
+            this.LeaderBoardPage = false;
         },
         exitToHomePageReset(){
             this.exitToHomePage();

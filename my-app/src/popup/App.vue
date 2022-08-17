@@ -16,7 +16,7 @@ import HomePageView from '@/components/HomePageView.vue'
   </div>
 
   <div v-if="HomePage" id = "Home-Page">
-      <HomePageView :UsersID="UsersID" :userProfile="userProfile"></HomePageView>
+      <HomePageView :gamesPlayed="gamesPlayed" :gamesWon="gamesWon" :UsersID="UsersID" :userProfile="userProfile"></HomePageView>
   </div>
 </div>
 </template>
@@ -34,6 +34,10 @@ export default {
       UserNotFound(){
           this.UsernamePage = true;
           this.IntroPage = false;
+      },
+      sendUserDetails(MessageDetails){
+            this.gamesPlayed = MessageDetails[0].gamesPlayed;
+            this.gamesWon = MessageDetails[0].wonGames
       },
       endBingoModeGame(lobbyAndUser){
           var lobby = lobbyAndUser[0];
@@ -112,13 +116,6 @@ export default {
             }
           }
         }
-      },
-      sendUserDetails(MessageDetails){
-        console.log(MessageDetails);
-        this.gamesPlayed = MessageDetails[0].gamesPlayed;
-        this.gamesWon = MessageDetails[0].wonGames
-        console.log(this.gamesPlayed);
-        console.log(this.gamesWon);
       },
       nameAvailable(MessageDetails){
         console.log(MessageDetails)
@@ -361,86 +358,6 @@ export default {
           console.log(this.UserGoogleID)
 
           this.$socket.emit('newUsername', this.UserGoogleID, this.UsersID)
-      },
-      leaveGame(){
-        console.log(this.UsersInLobby)
-        for(var i = 0; i < this.UsersInLobby.length; i++){
-          if(this.UsersInLobby[i].userID === this.UsersID){
-            this.UsersInLobby.splice(i, i+1)
-            console.log("Player deleted")
-            console.log(this.UsersInLobby)
-          }
-        }
-        this.userInAMultiGame = false;
-        this.userInASoloGame = false;
-
-        this.$socket.emit('playerLeft', this.UsersInLobby, this.playersLobby, this.UsersID)
-        this.playersLobby = '';
-        this.isLobbyCreator = false;
-        this.exitToHomePageReset();
-      },
-      endGame(){
-        var winningScore = 0;
-
-        if(this.MultiPlayer){
-          for(var i = 0; i < this.noOfUsersInLobby; i++){
-          if(this.UsersInLobby[i].score >= winningScore){
-            winningScore = this.UsersInLobby[i].score;
-            var winningUser = this.UsersInLobby[i].userID;
-            }
-          }
-        }else{
-          winningUser = this.UsersID
-        } 
-        this.WinningUser = winningUser;
-        var timePassed = this.startTime - this.timer;
-
-        console.log(timePassed)
-        this.finishedGame = true;
-        this.userInAMultiGame = false;
-        this.userInASoloGame = false;
-
-        if(this.GameMode === "Classic"){
-          this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, this.userScore, (this.MultiPlayer === true), this.startTime)
-        }else if(this.GameMode === "Bingo"){
-          for(var j = 0; j < this.countriesToFind.length; j++){
-              if(this.countriesToFind[j].found != true){
-                this.finishedGame = false;
-                console.log('unfinished')
-              }
-          }
-          if(this.finishedGame){
-            this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, timePassed, (this.MultiPlayer === true), this.startTime)
-            console.log('sent bingo score to the server');
-          }
-        }
-
-        console.log(this.WinningUser);
-        console.log(this.UsersID);
-        console.log(this.UserGoogleID);
-
-        if(this.WinningUser === this.UsersID && (this.MultiPlayer === true)){
-          this.didYouWin = true;
-          console.log("Winning game won test passed");
-
-          // This is here to make sure this is only fired once per game, by the winner
-          this.$socket.emit('gameWon', this.UserGoogleID)
-        }
-
-        //Close the Lobby
-        this.$socket.emit('closeLobby', this.playersLobby)
-        this.gameOver = true;
-
-        if(this.GameMode === 'Bingo'){
-          this.endBingoGame();
-        }
-
-        if(!(this.MultiPlayer)){
-          this.$socket.emit('soloGameFinished', this.UserGoogleID)
-        }
-
-        //this.reset();
-
       },
       endBingoGame(){
 

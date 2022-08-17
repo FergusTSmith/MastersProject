@@ -24,7 +24,7 @@
     <!-----This should only be visible for the lobby leader: ---->
     <div class="RadioButtons">
     <p v-if="isLobbyCreator" class="HelpText">Choose length of round:</p>
-    <input id="twoMins" v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="twoMins" v-if="isLobbyCreator">2 min</label>
+    <input id="twoMins" v-if="isLobbyCreator" class="Radio" type="radio" value="10" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="twoMins" v-if="isLobbyCreator">2 min</label>
     <input id="fiveMins" v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label id="fiveMinsRadio" for="fiveMins" v-if="isLobbyCreator">5 min</label>
     <input id="tenMins" v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label id="tenMinsRadio" for="tenMins" v-if="isLobbyCreator">10 min</label>
     </div>
@@ -43,7 +43,7 @@
     </div>
 
     <div v-if="MultiPlayer" id="Multiplayer-Game" :key="componentVersion">
-        <MultiPlayerGame :playersLobby="playersLobby" :userProfile="userProfile" @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :GameMode="GameMode"  :startTime="timer"  ></MultiPlayerGame>
+        <MultiPlayerGame :UsersID="UsersID" :playersLobby="playersLobby" :userProfile="userProfile" @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :GameMode="GameMode"  :startTime="timer"  ></MultiPlayerGame>
     </div>
 </template>
 
@@ -108,6 +108,10 @@ export default {
             this.LobbyPage = false;
             this.$emit('exitToHomePageReset');
         },
+        exitToHomePageReset(){
+            this.MultiPlayer = false;
+            this.$emit('exitToHomePageReset');
+        },  
         openInvite(){
             if(this.playerInvite === false){
                 this.playerInvite = true;

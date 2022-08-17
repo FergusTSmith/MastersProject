@@ -224,6 +224,10 @@ export default {
             type: String,
             required: true
         },
+        UsersID: {
+            type: String,
+            required: true
+        }
     },
     methods: {
         displayInformation(){
@@ -244,7 +248,78 @@ export default {
             }
         },
         endGame(){
-            this.$emit('endGame')
+            var winningScore = 0;
+
+            for(var i = 0; i < this.LobbyUsers.length; i++){
+            if(this.LobbyUsers[i].score >= winningScore){
+                winningScore = this.LobbyUsers[i].score;
+                var winningUser = this.LobbyUsers[i].userID;
+                }
+            }
+
+            if(winningScore === this.countriesToFind.length){
+                 this.WinningUser = winningUser;
+            }
+           
+            var timePassed = this.startTime - this.timer;
+
+            this.finishedGame = true;
+
+            if(this.GameMode === "Classic"){
+                this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, this.userScore, (this.MultiPlayer === true), this.startTime)
+            }else if(this.GameMode === "Bingo"){
+                for(var j = 0; j < this.countriesToFind.length; j++){
+                    if(this.countriesToFind[j].found != true){
+                        this.finishedGame = false;
+                        console.log('unfinished')
+                    }
+                }
+            if(this.finishedGame){
+                this.$socket.emit('addScoreToDatabase', this.UsersID, this.GameMode, timePassed, (this.MultiPlayer === true), this.startTime)
+                console.log('sent bingo score to the server');
+
+                if(this.WinningUser === this.UsersID){
+                    this.didYouWin = true;
+                    console.log("Winning game won test passed");
+
+                    // This is here to make sure this is only fired once per game, by the winner
+                    this.$socket.emit('gameWon', this.UserGoogleID)
+            }
+            }
+            }
+
+            console.log(this.WinningUser);
+            console.log(this.UsersID);
+            console.log(this.UserGoogleID);
+
+            //Close the Lobby
+            this.$socket.emit('closeLobby', this.playersLobby)
+            this.gameOver = true;
+
+            if(this.GameMode === 'Bingo'){
+                this.endBingoGame();
+            }
+        },
+        endBingoGame(){
+            this.$socket.emit('endBingoGame', this.playersLobby, this.UsersID)
+            this.$socket.emit('closeLobby', this.playersLobby)
+             
+            var didUserWin = true;
+            for(var i = 0; i < this.countriesToFind.length; i++){
+            if(this.countriesToFind[i].found === false){
+                didUserWin = false;
+            }
+            }
+
+            if(didUserWin){
+                this.WinningUser = this.UsersID
+                this.didYouWin = true;
+                this.noOfCountriesBingo = this.countriesToFind.length;
+            }
+
+            console.log(this.noOfCountriesBingo)
+
+            this.gameOver = true;
         },
         exitToHomePageReset(){
             this.$emit('exitToHomePageReset')
@@ -271,8 +346,8 @@ export default {
             }
             }
             this.$socket.emit('playerLeft', this.LobbyUsers, this.playersLobby, this.UsersID)
-            this.playersLobby = '';
-            this.isLobbyCreator = false;
+            //this.playersLobby = '';
+            //this.isLobbyCreator = false;
             this.exitToHomePageReset();
             },
         initiateGame(){

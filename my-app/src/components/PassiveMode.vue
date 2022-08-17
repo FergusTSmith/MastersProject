@@ -142,7 +142,7 @@ export default {
             return this.chartData.datasets[0].data
         }
     },
-    mounted(){
+    created(){
         //var vm=this;
         console.log(this.totalRequests + "    " + this.passiveModeUniqueHosts)
         var vm=this;
@@ -151,7 +151,7 @@ export default {
         })
         console.log(vm.achievements);
         chrome.storage.local.get(["passiveCountryList"], function(result){
-                vm.passiveModeTotalCounties = result.passiveCountryList.length;
+                //vm.passiveModeTotalCounties = result.passiveCountryList.length;
                 for(var i = 0; i < vm.passiveModeCountries.length; i++){
                     vm.passiveCountryCounts[i] = vm.passiveModeCountries[i].count;
                     vm.passiveCountryLabels[i] = vm.passiveModeCountries[i].name;
