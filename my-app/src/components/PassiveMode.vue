@@ -152,6 +152,7 @@ export default {
         console.log(vm.achievements);
         chrome.storage.local.get(["passiveCountryList"], function(result){
                 //vm.passiveModeTotalCounties = result.passiveCountryList.length;
+                console.log(result);
                 for(var i = 0; i < vm.passiveModeCountries.length; i++){
                     vm.passiveCountryCounts[i] = vm.passiveModeCountries[i].count;
                     vm.passiveCountryLabels[i] = vm.passiveModeCountries[i].name;

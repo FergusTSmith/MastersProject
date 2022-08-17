@@ -59,14 +59,6 @@ export default {
             this.didYouWin = false;
           }
       },
-      receiveCountriesToVisit(lobbyAndCountries){
-        var lobby = lobbyAndCountries[0];
-        console.log(lobbyAndCountries)
-        
-        if(this.playersLobby === lobby && !(this.isLobbyCreator)){
-          this.countriesToFind = lobbyAndCountries[1];
-        }
-      },
       UserFound(users){
           console.log(users);
           this.UsernamePage = false;
@@ -79,17 +71,6 @@ export default {
           this.UserGoogleID = users[0].googleID;
           this.userProfile = new User(this.UsersID);
           this.userProfile.googleID = this.UserGoogleID;
-
-      },
-      updateGameModeAndTime(messageDetails){
-          var lobbyID = messageDetails[0];
-
-          if(lobbyID === this.playersLobby){
-            this.GameMode = messageDetails[1];
-            this.timer = messageDetails[2];
-            this.startTime = messageDetails[2];
-          }
-          this.gameOver = false;
 
       },
       player_leave_message(messageDetails){

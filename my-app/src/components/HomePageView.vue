@@ -260,6 +260,7 @@ export default {
             this.OptionsPage = false;
             this.LobbyPage = false;
             this.LeaderBoardPage = false;
+            this.JoinLobbyPage = false;
         },
         exitToHomePageReset(){
             this.exitToHomePage();

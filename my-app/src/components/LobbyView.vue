@@ -51,6 +51,25 @@
 import MultiPlayerGame from '@/components/MultiPlayerGame.vue'
 
 export default {
+    sockets: {
+        updateGameModeAndTime(messageDetails){
+          var lobbyID = messageDetails[0];
+          if(lobbyID === this.playersLobby){
+            this.GameMode = messageDetails[1];
+            this.timer = messageDetails[2];
+            this.startTime = messageDetails[2];
+          }
+          this.gameOver = false;
+        },
+        receiveCountriesToVisit(lobbyAndCountries){
+            var lobby = lobbyAndCountries[0];
+            console.log(lobbyAndCountries)
+            
+            if(this.playersLobby === lobby && !(this.isLobbyCreator)){
+                this.countriesToFind = lobbyAndCountries[1];
+            }
+        },
+    },
     props: {
         playersLobby: {
             type: String,
@@ -133,7 +152,6 @@ export default {
                     newLobbyUsers.splice(i, 1);
                 }
             }
-
             this.$socket.emit('playerLeft', newLobbyUsers, this.playersLobby, userID)
         },
         multiGameInitiated(){
@@ -155,8 +173,7 @@ export default {
             GameMode: 'Classic',
             timer: 120,
             gameOver: false,
-
-
+            startTime: 0,
         }
     }
 }

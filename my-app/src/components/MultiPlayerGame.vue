@@ -152,10 +152,37 @@ export default {
             console.log(allReady)
         },
         startGame(lobbyID){
+            console.log("Attempting to start game")
             if(lobbyID === this.playersLobby){
-            this.initiateGame();
+                this.initiateGame();
+                console.log('success')
         }
-      },
+        },
+        updateUsers(lobbyDetails){
+            console.log('we reached updating users')
+            var listOfUsers = lobbyDetails[0]
+            var lobbyID = lobbyDetails[1]
+            console.log(lobbyDetails)
+            console.log(this.playersLobby === lobbyID)
+            console.log(listOfUsers);
+            console.log(this.UsersInLobby);
+
+            if(this.playersLobby === lobbyID){
+                this.LobbyUsers = listOfUsers;
+                //this.noOfUsersInLobby = this.UsersInLobby.length;
+                console.log('we updated the users');
+                console.log(this.LobbyUsers);
+            }
+            console.log(listOfUsers)
+        },
+        receiveCountriesToVisit(lobbyAndCountries){
+            var lobby = lobbyAndCountries[0];
+            console.log(lobbyAndCountries)
+            
+            if(this.playersLobby === lobby && !(this.isLobbyCreator)){
+                this.countriesToFind = lobbyAndCountries[1];
+            }
+        },
     },
     components: {
         BaseTimer
