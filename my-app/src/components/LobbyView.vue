@@ -43,7 +43,7 @@
     </div>
 
     <div v-if="MultiPlayer" id="Multiplayer-Game" :key="componentVersion">
-        <MultiPlayerGame :userProfile="userProfile" @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :GameMode="GameMode"  :startTime="startTime"  ></MultiPlayerGame>
+        <MultiPlayerGame :playersLobby="playersLobby" :userProfile="userProfile" @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :GameMode="GameMode"  :startTime="timer"  ></MultiPlayerGame>
     </div>
 </template>
 
@@ -79,18 +79,34 @@ export default {
     methods: {
         onGameModeChange(){
             var gameModeSelected = event.target.value;
-            this.$emit('onGameModeChange', gameModeSelected);
+            //this.$emit('onGameModeChange', gameModeSelected);
+            this.GameMode = gameModeSelected;
         },
         onTimeChange(){
             var timeSelected = event.target.value;
-            this.$emit('onTimeChange', timeSelected)
+            //this.$emit('onTimeChange', timeSelected)
+            this.timer = timeSelected;
         },
         closeLobby(){
             this.$socket.emit('closeLobby', this.playersLobby)
             this.$emit('exitToHomePageReset');
         },
         leaveGame(){
-            this.$emit('leaveGame');
+            var LobbyUsers = this.UsersInLobby;
+            for(var i = 0; i < LobbyUsers.length; i++){
+            if(LobbyUsers[i].userID === this.UsersID){
+                LobbyUsers.splice(i, i+1)
+                console.log("Player deleted")
+                console.log(this.LobbyUsers)
+            }
+            }
+
+            this.$socket.emit('playerLeft', this.LobbyUsers, this.playersLobby, this.UsersID)
+            //this.playersLobby = '';
+            //this.isLobbyCreator = false;
+            //this.exitToHomePageReset();
+            this.LobbyPage = false;
+            this.$emit('exitToHomePageReset');
         },
         openInvite(){
             if(this.playerInvite === false){

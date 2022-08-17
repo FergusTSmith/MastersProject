@@ -101,6 +101,26 @@ import BaseTimer from "../components/BaseTimer";
 import _ from 'lodash';
 
 export default {
+    watch: {
+      timer: {
+        handler(value) {
+          if(value > 0 && this.gameStarted){
+            setTimeout(() => {
+              this.timer--;
+              this.timePased++;
+            }, 1000);
+          }else if(value <= 10 && value > 1){
+              this.timerClose = true;
+          }else if(value === 0){
+                this.endGame()
+            if(this.GameMode === 'Bingo'){
+                this.endBingoGame();
+            }
+          }
+        },
+        immediate: true
+      }
+    },
     created(){
       this.$socket.open;
       this.$socket.connected;
@@ -199,7 +219,11 @@ export default {
         userProfile: {
             type: Object,
             required: true
-        }
+        },
+        playersLobby: {
+            type: String,
+            required: true
+        },
     },
     methods: {
         displayInformation(){
@@ -211,9 +235,12 @@ export default {
         },
         gameSetup(){
             if(this.allPlayersReady){
+                console.log("Emitting start game")
                 this.$socket.emit('startTheGame', this.playersLobby)
                 this.userInAMultiGame = true;
                 this.initiateGame();
+            }else{
+                console.log("Error, not all players ready")
             }
         },
         endGame(){
@@ -230,11 +257,24 @@ export default {
             }
           }
 
+             console.log("broadcasting player ready");
+             console.log(this.playersLobby)
           this.$socket.emit('playerReady', this.ProfileOfUser, this.playersLobby);
       },
         leaveGame(){
-            this.$emit('leaveGame')
-        },
+            console.log(this.LobbyUsers)
+            for(var i = 0; i < this.LobbyUsers.length; i++){
+            if(this.LobbyUsers[i].userID === this.UsersID){
+                this.LobbyUsers.splice(i, i+1)
+                console.log("Player deleted")
+                console.log(this.LobbyUsers)
+            }
+            }
+            this.$socket.emit('playerLeft', this.LobbyUsers, this.playersLobby, this.UsersID)
+            this.playersLobby = '';
+            this.isLobbyCreator = false;
+            this.exitToHomePageReset();
+            },
         initiateGame(){
             var vm = this;
             this.gameStarted = true;
@@ -268,6 +308,10 @@ export default {
             }
             this.initiateListener();
         },
+        generateRandomIntHelper(max){
+            return Math.floor(Math.random() * max)
+            //Nabbed from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+        },
         initiateListener(){
             var vm = this;
             
@@ -282,7 +326,6 @@ export default {
                     }else if(vm.GameMode === "Bingo"){
                         vm.updateScoreBingo()
                     }
-                    vm.backupGameDetails();
                     vm.VisitedCountries = result.countryList.newValue;
                     vm.gameStarted = true;
                 }

@@ -172,7 +172,7 @@ db.sequelize.sync().then((req) => {
             // Code to make sure that any random lobbies with no users are deleted:
             console.log(availableLobbies)
             for(var j = 0; j < availableLobbies.length; j++){
-                if(availableLobbies[j].lobbyUsers.length === 0){
+                if(availableLobbies[j].lobbyUsers === undefined){
                     availableLobbies.splice(j, 1);
                     console.log(availableLobbies);
                 }
