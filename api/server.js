@@ -373,6 +373,7 @@ db.sequelize.sync().then((req) => {
             for(var i = 0; i < availableLobbies.length; i++){
                 if(availableLobbies[i].LobbyID === lobbyID){
                     socket.nsp.to(availableLobbies[i]).emit('player_is_ready', user, lobbyID);
+                    console.log("player ready fired");
                     for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
                         console.log(availableLobbies[i].lobbyUsers)
                         if(availableLobbies[i].lobbyUsers[j].userID === user.userID){
@@ -424,6 +425,7 @@ db.sequelize.sync().then((req) => {
             for(var i = 0; i < availableLobbies.length; i++){
                 if(availableLobbies[i].LobbyID === lobbyID){
                     socket.nsp.to(availableLobbies[i]).emit('startGame', availableLobbies[i].LobbyID)
+                    console.log("Start game emitted")
                     for(var j = 0; j < availableLobbies[i].lobbyUsers.length; j++){
                         UserAccount.increment('gamesPlayed', { by: 1, where: { username: availableLobbies[i].lobbyUsers[j].userID }})
                     }

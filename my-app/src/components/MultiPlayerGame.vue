@@ -101,6 +101,10 @@ import BaseTimer from "../components/BaseTimer";
 import _ from 'lodash';
 
 export default {
+    created(){
+      this.$socket.open;
+      this.$socket.connected;
+    },
     mounted(){
         this.LobbyUsers = this.UsersInLobby;
         this.ProfileOfUser = this.userProfile
@@ -234,7 +238,7 @@ export default {
         initiateGame(){
             var vm = this;
             this.gameStarted = true;
-            this.startTime = this.timer;
+            this.timer = this.startTime;
             if(this.timer <= 0){
                 this.timer = 120;
             }

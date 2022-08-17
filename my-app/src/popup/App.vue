@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+//import { ref } from 'vue';
 import IntroPage from '@/components/IntroPage.vue';
 import SetUsername from '@/components/SetUsername.vue';
 import HomePageView from '@/components/HomePageView.vue'
@@ -24,6 +24,11 @@ import HomePageView from '@/components/HomePageView.vue'
 <script>
 export default {
   // https://manage.auth0.com/dashboard/eu/dev-li-9809u/applications/s449g7DqINXUA9dZNRPdVTwPswnMX9qJ/quickstart
+    created(){
+      this.$socket.open;
+      this.$socket.connected;
+    },
+    
     sockets: {
       connect() {
         console.log('Client has successfully connected to the Socket.IO websocket.');
