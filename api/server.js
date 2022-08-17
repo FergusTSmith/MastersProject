@@ -370,6 +370,7 @@ db.sequelize.sync().then((req) => {
         })
     
         socket.on('playerReady', (user, lobbyID) => {
+            console.log("TESTPR")
             for(var i = 0; i < availableLobbies.length; i++){
                 if(availableLobbies[i].LobbyID === lobbyID){
                     socket.nsp.to(availableLobbies[i]).emit('player_is_ready', user, lobbyID);
@@ -422,6 +423,7 @@ db.sequelize.sync().then((req) => {
         })
     
         socket.on('startTheGame', (lobbyID) => {
+            console.log("TestStart")
             for(var i = 0; i < availableLobbies.length; i++){
                 if(availableLobbies[i].LobbyID === lobbyID){
                     socket.nsp.to(availableLobbies[i]).emit('startGame', availableLobbies[i].LobbyID)
