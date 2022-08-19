@@ -26,7 +26,7 @@
     </div>
 
     <div v-if="LobbyPage" id="Lobby">
-        <LobbyView :userMultiContinue="userMultiContinue" :userProfile="userProfile" :UsersID="UsersID" :playersLobby="playersLobby" :UsersInLobby="UsersInLobby" :isLobbyCreator="isLobbyCreator" @exitToHomePageReset="exitToHomePageReset" @multiGameInitiated="multiGameInitiated" @leaveGame="leaveGame" @updateLobbyUsers="updateLobbyUsers($event)"></LobbyView>
+        <LobbyView :multiGameDetails="multiGameDetails" :userMultiContinue="userMultiContinue" :userProfile="userProfile" :UsersID="UsersID" :playersLobby="playersLobby" :UsersInLobby="UsersInLobby" :isLobbyCreator="isLobbyCreator" @exitToHomePageReset="exitToHomePageReset" @multiGameInitiated="multiGameInitiated" @leaveGame="leaveGame" @updateLobbyUsers="updateLobbyUsers($event)"></LobbyView>
     </div>
 
     <div v-if="PassivePage">
@@ -127,7 +127,7 @@ export default {
                 console.log(this.UsersInLobby);
             }
             console.log(listOfUsers)
-      },
+        },
     },
     props: {
         UsersID: {
@@ -157,6 +157,10 @@ export default {
         userMultiContinue: {
             type: Boolean,
             required: true
+        },
+        multiGameDetails: {
+            type: Object,
+            required: false,
         }
     },
     data(){
@@ -302,6 +306,9 @@ export default {
 
         if(this.userMultiContinue){
             console.log("Multi test passed");
+            this.UsersInLobby = this.multiGameDetails.LobbyUsers
+            this.playersLobby = this.multiGameDetails.playersLobby
+            this.noOfUsersInLobby = this.UsersInLobby.length
             this.HomePage = false;
             this.LobbyPage = true;
         }

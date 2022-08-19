@@ -139,6 +139,7 @@ export default {
         },
         exitToHomePageReset(){
             this.MultiPlayer = false;
+            this.LobbyPage = false;
             this.$emit('exitToHomePageReset');
         },  
         openInvite(){

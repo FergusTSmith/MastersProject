@@ -420,12 +420,15 @@ export default {
         leaveGame(){
             console.log(this.LobbyUsers)
             for(var i = 0; i < this.LobbyUsers.length; i++){
-            if(this.LobbyUsers[i].userID === this.UsersID){
-                this.LobbyUsers.splice(i, i+1)
-                console.log("Player deleted")
-                console.log(this.LobbyUsers)
+                if(this.LobbyUsers[i].userID === this.UsersID){
+                    this.LobbyUsers.splice(i, i+1)
+                    console.log("Player deleted")
+                    console.log(this.LobbyUsers)
+                }
+                console.log(this.LobbyUsers);
             }
-            }
+            console.log(this.LobbyUsers);
+            console.log("TESTWER")
             this.$socket.emit('playerLeft', this.LobbyUsers, this.playersLobby, this.UsersID)
             //this.playersLobby = '';
             //this.isLobbyCreator = false;

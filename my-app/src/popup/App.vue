@@ -16,7 +16,7 @@ import HomePageView from '@/components/HomePageView.vue'
   </div>
 
   <div v-if="HomePage" id = "Home-Page">
-      <HomePageView @logout="logout" @resetSoloStatus="resetSoloStatus" :gamesPlayed="gamesPlayed" :gamesWon="gamesWon" :UsersID="UsersID" :userProfile="userProfile" :UserGoogleID="UserGoogleID" :userSoloContinue="userSoloContinue" :userMultiContinue="userMultiContinue"></HomePageView>
+      <HomePageView @logout="logout" @resetSoloStatus="resetSoloStatus" :gamesPlayed="gamesPlayed" :gamesWon="gamesWon" :UsersID="UsersID" :userProfile="userProfile" :UserGoogleID="UserGoogleID" :userSoloContinue="userSoloContinue" :userMultiContinue="userMultiContinue" :multiGameDetails="multiGameDetails"></HomePageView>
   </div>
 </div>
 </template>
@@ -119,9 +119,8 @@ export default {
       UserInMultiplayer(MessageDetails){
         console.log(MessageDetails);
         this.userInAMultiGame = true;
-
-        var playersLobby = MessageDetails[0];
-        //var UsersInLobby = MessageDetails[1];
+        this.multiGameDetails.playersLobby = MessageDetails[0]
+        this.multiGameDetails.LobbyUsers = MessageDetails[1];
 
         this.$socket.emit('getGameDetails', playersLobby, this.UsersID)
         console.log("Testing multiplayer");
@@ -165,6 +164,7 @@ export default {
       userSignedIn: false,
       userSoloContinue: false,
       userMultiContinue: false,
+      multiGameDetails: {},
       }
     },
     components: {
