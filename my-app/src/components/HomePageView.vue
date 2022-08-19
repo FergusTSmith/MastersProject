@@ -26,7 +26,7 @@
     </div>
 
     <div v-if="LobbyPage" id="Lobby">
-        <LobbyView :userProfile="userProfile" :UsersID="UsersID" :playersLobby="playersLobby" :UsersInLobby="UsersInLobby" :isLobbyCreator="isLobbyCreator" @exitToHomePageReset="exitToHomePageReset" @multiGameInitiated="multiGameInitiated" @leaveGame="leaveGame" @updateLobbyUsers="updateLobbyUsers($event)"></LobbyView>
+        <LobbyView :userMultiContinue="userMultiContinue" :userProfile="userProfile" :UsersID="UsersID" :playersLobby="playersLobby" :UsersInLobby="UsersInLobby" :isLobbyCreator="isLobbyCreator" @exitToHomePageReset="exitToHomePageReset" @multiGameInitiated="multiGameInitiated" @leaveGame="leaveGame" @updateLobbyUsers="updateLobbyUsers($event)"></LobbyView>
     </div>
 
     <div v-if="PassivePage">
@@ -151,6 +151,10 @@ export default {
             required: true
         },
         userSoloContinue: {
+            type: Boolean,
+            required: true
+        },
+        userMultiContinue: {
             type: Boolean,
             required: true
         }

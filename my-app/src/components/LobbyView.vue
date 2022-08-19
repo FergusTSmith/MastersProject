@@ -96,6 +96,10 @@ export default {
         userProfile: {
             type: Object,
             required: true
+        },
+        userMultiContinue: {
+            type: Boolean,
+            required: true,
         }
     },
     components: {
@@ -185,7 +189,10 @@ export default {
         }
     },
     updated(){
-        
+        if(this.userMultiContinue){
+            this.LobbyPage = false;
+            this.MultiPlayer = true;
+        }
     }
 }
 </script> 
