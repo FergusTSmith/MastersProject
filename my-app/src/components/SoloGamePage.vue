@@ -69,6 +69,10 @@ import BaseTimer from "../components/BaseTimer";
 import _ from 'lodash';
 
 export default {
+    created(){
+        var ProfileOfUser = this.userProfile;
+    },
+    
     components: {
         BaseTimer
     },
@@ -385,8 +389,8 @@ export default {
                 if(this.countriesToFind[k].found != true){
                     allFound = false;
                     console.log("Not all found");
-                }else if(!(this.userProfile.BingoCountries.includes(this.countriesToFind[k])) && this.countriesToFind[k].found === true){
-                this.userProfile.BingoCountries.push(this.countriesToFind[k])
+                }else if(!(this.ProfileOfUser.BingoCountries.includes(this.countriesToFind[k])) && this.ProfileOfUser[k].found === true){
+                    this.ProfileOfUser.BingoCountries.push(this.countriesToFind[k])
                 }
                 console.log(this.countriesToFind[k].found)
             }
@@ -395,10 +399,10 @@ export default {
             console.log(this.userProfile.BingoCountries)
             console.log(this.userProfile.BingoCountries.length)
             console.log(this.MultiPlayer)
-            this.noOfCountriesBingo = this.userProfile.BingoCountries.length;
+            this.noOfCountriesBingo = this.ProfileOfUser.BingoCountries.length;
 
             if(this.MultiPlayer){
-            this.$socket.emit('bingoScoreUpdate', this.userProfile, this.playersLobby)
+                this.$socket.emit('bingoScoreUpdate', this.ProfileOfUser, this.playersLobby)
             }
 
             if(allFound && (this.countriesToFind.length != 0)){

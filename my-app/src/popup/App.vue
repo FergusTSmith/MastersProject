@@ -126,7 +126,6 @@ export default {
         this.$socket.emit('getGameDetails', this.playersLobby, this.UsersID)
       },
       UserInSinglePlayer(MessageDetails){
-        var vm = this;
         console.log('test gurl');
         if(this.UserGoogleID === MessageDetails){
             console.log('test boiii');
