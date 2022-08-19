@@ -99,7 +99,6 @@
 <script>
 import BaseTimer from "../components/BaseTimer";
 import _ from 'lodash';
-import { objectMethod } from "@babel/types";
 
 export default {
     watch: {
@@ -190,7 +189,7 @@ export default {
             console.log(MessageDetails);
             console.log(this.playersLobby)
             if(this.playersLobby === MessageDetails[0] && this.UsersID != MessageDetails[1]){
-                this.$socket.emit('sendingGameDetails', this.GameMode, this.timer, this.UsersInLobby, this.playersLobby, this.UsersID, this.allPlayersReady)
+                this.$socket.emit('sendingGameDetails', this.GameMode, this.timer, this.UsersInLobby, this.playersLobby, this.UsersID, this.allPlayersReady, this.countriesToFind)
                 console.log('should have sent the details by now!')
             }
             console.log(MessageDetails)
@@ -198,6 +197,8 @@ export default {
             if(this.UsersID != MessageDetails[4]){
             this.timer = MessageDetails[1];
             this.LobbyUsers = MessageDetails[2];
+            this.countriesToFind = MessageDetails[6];
+            this.allPlayersReady = MessageDetails[5]
 
             console.log(MessageDetails)
             var vm = this;
@@ -237,9 +238,15 @@ export default {
             this.HomePage = false;
             this.MultiPlayer = true;
 
-
             }
+        },
+        resendBingo(MessageDetails){
+        if(this.playersLobby === MessageDetails[0]){
+          if(this.UsersID != MessageDetails[1]){
+            this.$socket.emit('countriesToVisit', this.playersLobby, this.countriesToFind)
+          }
         }
+      },
     },
     components: {
         BaseTimer

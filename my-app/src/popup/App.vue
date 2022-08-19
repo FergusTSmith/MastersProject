@@ -136,13 +136,6 @@ export default {
         }
         //this.initiateListener();
       },
-      resendBingo(MessageDetails){
-        if(this.playersLobby === MessageDetails[0]){
-          if(this.UsersID != MessageDetails[1]){
-            this.$socket.emit('countriesToVisit', this.playersLobby, this.countriesToFind)
-          }
-        }
-      },
       
     },
   data(){
