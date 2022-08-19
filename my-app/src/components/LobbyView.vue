@@ -156,6 +156,7 @@ export default {
             //this.isLobbyCreator = false;
             //this.exitToHomePageReset();
             this.LobbyPage = false;
+            this.MultiPlayer = false;
             this.$emit('exitToHomePageReset');
         },
         exitToHomePageReset(){
@@ -215,11 +216,13 @@ export default {
             
         }
     },
-    updated(){
+    mounted(){
+        console.log("This should fire" + this.userMultiContinue)
         if(this.userMultiContinue){
             this.LobbyPage = false;
             this.MultiPlayer = true;
             this.$socket.emit('getGameDetails', this.multiGameDetails.playersLobby, this.UsersID)
+            console.log("This SHOULD BE FIRING")
         }
     }
 }

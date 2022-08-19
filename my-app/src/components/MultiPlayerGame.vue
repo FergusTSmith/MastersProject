@@ -194,69 +194,70 @@ export default {
             }
             console.log(MessageDetails)
         },RejoinGame(MessageDetails){
-            if(this.UsersID != MessageDetails[4]){
-            this.timer = MessageDetails[1];
-            this.LobbyUsers = MessageDetails[2];
-            this.countriesToFind = MessageDetails[6];
-            this.allPlayersReady = MessageDetails[5]
-            this.countriesToFind = MessageDetails[7];
-            console.log(this.countriesToFind)
+            console.log(MessageDetails);
+            if(this.UsersID != MessageDetails[3]){
+                this.timer = MessageDetails[1];
+                this.LobbyUsers = MessageDetails[2];
+                this.countriesToFind = MessageDetails[6];
+                this.allPlayersReady = MessageDetails[5]
+                this.countriesToFind = MessageDetails[7];
+                console.log(this.countriesToFind)
 
-            console.log(MessageDetails)
-            var vm = this;
+                console.log(MessageDetails)
+                var vm = this;
 
-            if(this.GameMode === "Classic"){
-                chrome.storage.local.get(["backupCountryList"], function(result){
-                vm.VisitedCountries = result.backupCountryList;
-                //console.log(vm.VisitedCountries);
-                })
-                for(var i = 0; i < vm.UsersInLobby; i++){
-                console.log(vm.UsersInLobby)
-                if(vm.UsersInLobby[i].userID === vm.UsersID){
-                    vm.userScore = vm.UsersInLobby[i].score
+                if(this.GameMode === "Classic"){
+                    chrome.storage.local.get(["backupCountryList"], function(result){
+                    vm.VisitedCountries = result.backupCountryList;
+                    //console.log(vm.VisitedCountries);
+                    })
+                    for(var i = 0; i < vm.UsersInLobby; i++){
+                    console.log(vm.UsersInLobby)
+                    if(vm.UsersInLobby[i].userID === vm.UsersID){
+                        vm.userScore = vm.UsersInLobby[i].score
+                    }
+                    }
                 }
+
+                if(this.GameMode === "Bingo"){
+                    //this.$socket.emit("BingoRejoin", this.playersLobby, this.UsersID)
+                    console.log("Attempting to reget bingo countries");
                 }
-            }
 
-            if(this.GameMode === "Bingo"){
-                //this.$socket.emit("BingoRejoin", this.playersLobby, this.UsersID)
-                console.log("Attempting to reget bingo countries");
-            }
+                this.VisitedCountries = vm.VisitedCountries;
+                console.log(this.VisitedCountries)
+                this.userScore = vm.userScore;
 
-            this.VisitedCountries = vm.VisitedCountries;
-            console.log(this.VisitedCountries)
-            this.userScore = vm.userScore;
+                this.allPlayersReady = true;
 
-            this.allPlayersReady = true;
-
-            for(var j = 0; j < this.UsersInLobby; j++){
-                if(this.UsersInlobby[j].ready != true){
-                this.allPlayersReady = false;
+                for(var j = 0; j < this.UsersInLobby; j++){
+                    if(this.UsersInlobby[j].ready != true){
+                    this.allPlayersReady = false;
+                    }
                 }
-            }
 
-            this.initiateListener();
+                this.initiateListener();
 
-            this.gameStarted = true;
-            this.HomePage = false;
-            this.MultiPlayer = true;
+                this.gameStarted = true;
+                this.HomePage = false;
+                this.MultiPlayer = true;
 
-            this.$emit("ClearMultiVariable")
+                this.$emit("ClearMultiVariable")
 
-            }
-        },
-        resendBingo(MessageDetails){
-            console.log("TESTING")
-            console.log(this.playersLobby)
-            console.log(this.UsersID)
-            console.log(MessageDetails)
-            if(this.playersLobby === MessageDetails[0]){
-                if(this.UsersID != MessageDetails[1]){
-                    this.$socket.emit('countriesToVisit', this.playersLobby, this.countriesToFind)
-                    console.log("FAILED")
                 }
-            }
-        },
+            },
+            resendBingo(MessageDetails){
+                console.log("TESTING")
+                console.log(this.playersLobby)
+                console.log(this.UsersID)
+                console.log(MessageDetails)
+                if(this.playersLobby === MessageDetails[0]){
+                    if(this.UsersID != MessageDetails[1]){
+                        this.$socket.emit('countriesToVisit', this.playersLobby, this.countriesToFind)
+                        console.log("FAILED")
+                    }
+                }
+            },
         endBingoModeGame(lobbyAndUser){
           var lobby = lobbyAndUser[0];
           var counter = 0;
@@ -539,7 +540,7 @@ export default {
             
             chrome.storage.local.get(["countryList"], function(result){
             vm.VisitedCountries = result.countryList;
-            console.log(vm.VisitedCountries)
+            //console.log(vm.VisitedCountries)
 
             chrome.storage.local.get(["numberOfCookies"], function(result){
                 vm.numberOfCookies = result;
@@ -551,7 +552,7 @@ export default {
             })
 
             chrome.storage.local.set({backupCountryList: vm.VisitedCountries});
-            console.log(vm.VisitedCountries);
+            //console.log(vm.VisitedCountries);
         },
         updateAchievements(){
             var vm=this;
