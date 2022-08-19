@@ -295,6 +295,12 @@ export default {
             this.HomePage = false;
             this.SoloPage = true;
         }
+
+        if(this.userMultiContinue){
+            console.log("Multi test passed");
+            this.HomePage = false;
+            this.LobbyPage = true;
+        }
     },
     created(){
         this.getHighScores();

@@ -16,7 +16,7 @@ import HomePageView from '@/components/HomePageView.vue'
   </div>
 
   <div v-if="HomePage" id = "Home-Page">
-      <HomePageView @logout="logout" @resetSoloStatus="resetSoloStatus" :gamesPlayed="gamesPlayed" :gamesWon="gamesWon" :UsersID="UsersID" :userProfile="userProfile" :UserGoogleID="UserGoogleID" :userSoloContinue="userSoloContinue"></HomePageView>
+      <HomePageView @logout="logout" @resetSoloStatus="resetSoloStatus" :gamesPlayed="gamesPlayed" :gamesWon="gamesWon" :UsersID="UsersID" :userProfile="userProfile" :UserGoogleID="UserGoogleID" :userSoloContinue="userSoloContinue" :userMultiContinue="userMultiContinue"></HomePageView>
   </div>
 </div>
 </template>
@@ -120,10 +120,15 @@ export default {
         console.log(MessageDetails);
         this.userInAMultiGame = true;
 
-        this.playersLobby = MessageDetails[0];
-        this.UsersInLobby = MessageDetails[1];
+        var playersLobby = MessageDetails[0];
+        //var UsersInLobby = MessageDetails[1];
 
-        this.$socket.emit('getGameDetails', this.playersLobby, this.UsersID)
+        this.$socket.emit('getGameDetails', playersLobby, this.UsersID)
+        console.log("Testing multiplayer");
+
+        this.IntroPageView = false;
+        this.HomePage = true;
+        this.userMultiContinue = true;
       },
       UserInSinglePlayer(MessageDetails){
         console.log('test gurl');
@@ -142,62 +147,7 @@ export default {
           }
         }
       },
-      sendGameDetails(MessageDetails){
-        console.log(MessageDetails);
-        console.log(this.playersLobby)
-        if(this.playersLobby === MessageDetails[0] && this.UsersID != MessageDetails[1]){
-          this.$socket.emit('sendingGameDetails', this.GameMode, this.timer, this.UsersInLobby, this.playersLobby, this.UsersID, this.allPlayersReady)
-          console.log('should have sent the details by now!')
-        }
-        console.log(MessageDetails)
-      },
-      RejoinGame(MessageDetails){
-        if(this.UsersID != MessageDetails[4]){
-          this.GameMode = MessageDetails[0];
-          this.timer = MessageDetails[1];
-          this.UsersInLobby = MessageDetails[2];
-
-          console.log(MessageDetails)
-          var vm = this;
-
-          if(this.GameMode === "Classic"){
-            chrome.storage.local.get(["backupCountryList"], function(result){
-              vm.VisitedCountries = result.backupCountryList;
-              //console.log(vm.VisitedCountries);
-            })
-            for(var i = 0; i < vm.UsersInLobby; i++){
-              console.log(vm.UsersInLobby)
-              if(vm.UsersInLobby[i].userID === vm.UsersID){
-                vm.userScore = vm.UsersInLobby[i].score
-              }
-            }
-          }
-
-          if(this.GameMode === "Bingo"){
-            this.$socket.emit("BingoRejoin", this.playersLobby, this.UsersID)
-          }
-
-          this.VisitedCountries = vm.VisitedCountries;
-          console.log(this.VisitedCountries)
-          this.userScore = vm.userScore;
-
-          this.allPlayersReady = true;
-
-          for(var j = 0; j < this.UsersInLobby; j++){
-            if(this.UsersInlobby[j].ready != true){
-              this.allPlayersReady = false;
-            }
-          }
-
-          this.initiateListener();
-
-          this.gameStarted = true;
-          this.HomePage = false;
-          this.MultiPlayer = true;
-
-
-        }
-      }
+      
     },
   data(){
     return {
@@ -214,6 +164,7 @@ export default {
 
       userSignedIn: false,
       userSoloContinue: false,
+      userMultiContinue: false,
       }
     },
     components: {

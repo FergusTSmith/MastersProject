@@ -69,10 +69,6 @@ import BaseTimer from "../components/BaseTimer";
 import _ from 'lodash';
 
 export default {
-    created(){
-        var ProfileOfUser = this.userProfile;
-    },
-    
     components: {
         BaseTimer
     },
@@ -199,7 +195,7 @@ export default {
             if(this.GameMode === "Classic"){
                 this.$socket.emit('addScoreToDatabase', this.userProfile.userID, this.GameMode, this.userScore, (this.MultiPlayer === true), this.startTime)
             }else if(this.GameMode === "Bingo"){
-                for(var j = 0; j < this.countriesToFind.length; j++){
+                for(var j = 0; j < 3; j++){
                     if(this.countriesToFind[j].found != true){
                         this.finishedGame = false;
                         console.log('unfinished')
@@ -229,10 +225,12 @@ export default {
             if(didUserWin){
                 this.WinningUser = this.userProfile.userID
                 this.didYouWin = true;
+                this.finishedGame = true;
                 this.noOfCountriesBingo = this.countriesToFind.length;
             }
 
             console.log(this.noOfCountriesBingo)
+            this.$socket.emit('soloGameFinished', this.userProfile.googleID)
 
             this.gameOver = true;
             //this.reset();
@@ -241,6 +239,17 @@ export default {
             this.$emit('exitToHomePageReset')
             console.log("TEEEEET")
             this.gameOver = false;
+            this.categoryList = [];
+            var vm = this;
+            chrome.runtime.sendMessage({ message: 'reset', function(response) {
+                if(response === 'success'){
+                    console.log('successfully reset the game.')
+                    vm.VisitedCountries = [];
+                    vm.userScore = 0;
+                    vm.numberOfCookies = 0;
+                    vm.categoryList = [];
+                }
+            }})
         },
         initiateGame(){
             var vm = this;
@@ -367,6 +376,7 @@ export default {
         },
         updateScoreBingo(){
             var vm = this;
+            var ProfileOfUser = this.userProfile;
             chrome.storage.local.get(["countryList"], function(result){
                 for(var i = 0; i < result.countryList.length; i++){
                     //console.log("This should fire")
@@ -389,8 +399,8 @@ export default {
                 if(this.countriesToFind[k].found != true){
                     allFound = false;
                     console.log("Not all found");
-                }else if(!(this.ProfileOfUser.BingoCountries.includes(this.countriesToFind[k])) && this.ProfileOfUser[k].found === true){
-                    this.ProfileOfUser.BingoCountries.push(this.countriesToFind[k])
+                }else if(!(ProfileOfUser.BingoCountries.includes(this.countriesToFind[k])) && this.countriesToFind[k].found === true){
+                    ProfileOfUser.BingoCountries.push(this.countriesToFind[k])
                 }
                 console.log(this.countriesToFind[k].found)
             }
@@ -399,10 +409,10 @@ export default {
             console.log(this.userProfile.BingoCountries)
             console.log(this.userProfile.BingoCountries.length)
             console.log(this.MultiPlayer)
-            this.noOfCountriesBingo = this.ProfileOfUser.BingoCountries.length;
+            this.noOfCountriesBingo = ProfileOfUser.BingoCountries.length;
 
             if(this.MultiPlayer){
-                this.$socket.emit('bingoScoreUpdate', this.ProfileOfUser, this.playersLobby)
+                this.$socket.emit('bingoScoreUpdate', ProfileOfUser, this.playersLobby)
             }
 
             if(allFound && (this.countriesToFind.length != 0)){

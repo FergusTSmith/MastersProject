@@ -183,6 +183,60 @@ export default {
                 this.countriesToFind = lobbyAndCountries[1];
             }
         },
+        sendGameDetails(MessageDetails){
+            console.log(MessageDetails);
+            console.log(this.playersLobby)
+            if(this.playersLobby === MessageDetails[0] && this.UsersID != MessageDetails[1]){
+                this.$socket.emit('sendingGameDetails', this.GameMode, this.timer, this.UsersInLobby, this.playersLobby, this.UsersID, this.allPlayersReady)
+                console.log('should have sent the details by now!')
+            }
+            console.log(MessageDetails)
+        },RejoinGame(MessageDetails){
+            if(this.UsersID != MessageDetails[4]){
+            this.timer = MessageDetails[1];
+            this.LobbyUsers = MessageDetails[2];
+
+            console.log(MessageDetails)
+            var vm = this;
+
+            if(this.GameMode === "Classic"){
+                chrome.storage.local.get(["backupCountryList"], function(result){
+                vm.VisitedCountries = result.backupCountryList;
+                //console.log(vm.VisitedCountries);
+                })
+                for(var i = 0; i < vm.UsersInLobby; i++){
+                console.log(vm.UsersInLobby)
+                if(vm.UsersInLobby[i].userID === vm.UsersID){
+                    vm.userScore = vm.UsersInLobby[i].score
+                }
+                }
+            }
+
+            if(this.GameMode === "Bingo"){
+                this.$socket.emit("BingoRejoin", this.playersLobby, this.UsersID)
+            }
+
+            this.VisitedCountries = vm.VisitedCountries;
+            console.log(this.VisitedCountries)
+            this.userScore = vm.userScore;
+
+            this.allPlayersReady = true;
+
+            for(var j = 0; j < this.UsersInLobby; j++){
+                if(this.UsersInlobby[j].ready != true){
+                this.allPlayersReady = false;
+                }
+            }
+
+            this.initiateListener();
+
+            this.gameStarted = true;
+            this.HomePage = false;
+            this.MultiPlayer = true;
+
+
+            }
+        }
     },
     components: {
         BaseTimer

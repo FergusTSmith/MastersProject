@@ -72,6 +72,9 @@ export default {
                 this.countriesToFind = lobbyAndCountries[1];
             }
         },
+        RejoinGame(MessageDetails){
+            this.GameMode = MessageDetails[0];
+        }
     },
     props: {
         playersLobby: {
@@ -180,6 +183,9 @@ export default {
             startTime: 0,
             
         }
+    },
+    updated(){
+        
     }
 }
 </script> 
