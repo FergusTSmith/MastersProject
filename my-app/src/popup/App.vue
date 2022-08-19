@@ -16,7 +16,7 @@ import HomePageView from '@/components/HomePageView.vue'
   </div>
 
   <div v-if="HomePage" id = "Home-Page">
-      <HomePageView @ClearMultiVariable="ClearMultiVariable" @logout="logout" @resetSoloStatus="resetSoloStatus" :gamesPlayed="gamesPlayed" :gamesWon="gamesWon" :UsersID="UsersID" :userProfile="userProfile" :UserGoogleID="UserGoogleID" :userSoloContinue="userSoloContinue" :userMultiContinue="userMultiContinue" :multiGameDetails="multiGameDetails"></HomePageView>
+      <HomePageView @changeUsername="changeUsername($event)" @ClearMultiVariable="ClearMultiVariable" @logout="logout" @resetSoloStatus="resetSoloStatus" :gamesPlayed="gamesPlayed" :gamesWon="gamesWon" :UsersID="UsersID" :userProfile="userProfile" :UserGoogleID="UserGoogleID" :userSoloContinue="userSoloContinue" :userMultiContinue="userMultiContinue" :multiGameDetails="multiGameDetails"></HomePageView>
   </div>
 </div>
 </template>
@@ -52,31 +52,6 @@ export default {
           this.userProfile = new User(this.UsersID);
           this.userProfile.googleID = this.UserGoogleID;
 
-      },
-      player_leave_message(messageDetails){
-          this.playerLeaveMessage = "User: " + messageDetails + " has disconnected from the lobby."
-          if(this.UsersInLobby.length === 1){
-            this.playerLeaveMessage += "You are the only player in this multiplayer game."
-          }
-          console.log(this.playerLeaveMessage)
-
-          if(messageDetails === this.UsersID){
-            this.SoloGame = false;
-            this.HomePage = true;
-            this.LobbyPage = false;
-          }
-      },
-      removePlayerFromLobby(user, lobbyID){
-        if(this.playersLobby === lobbyID){
-          for(var i = 0; i < this.noOfUsersInLobby; i++){
-            if(this.UsersInLobby[i] === user){
-              for(var j = i; j < this.noOfUsersInLobby-1; j++){
-                this.UsersInLobby[i] = this.UsersInlobby[i+1]
-              }
-              this.UsersInLobby[this.noOfUsersInLobby--] = undefined;
-            }
-          }
-        }
       },
       nameAvailable(MessageDetails){
         console.log(MessageDetails)
@@ -114,7 +89,6 @@ export default {
             this.HomePage = true;
             this.userSoloContinue = true;
         }
-        //this.initiateListener();
       },
       
     },
@@ -148,9 +122,9 @@ export default {
         this.gameStarted = false;
       }, 
       changeUsername(newUsername){
+          console.log(newUsername);
           this.UsersID = newUsername
           this.userProfile.userID = this.UsersID;
-          this.exitToHomePage();
           console.log(this.UserGoogleID)
           this.$socket.emit('newUsername', this.UserGoogleID, this.UsersID)
       },
@@ -159,7 +133,6 @@ export default {
         this.userSignedIn = true;
         vm.IntroPageView = false;
         vm.UserGoogleID = googleID;
-         
      },
      setUsername(UsersID){
         if(UsersID === ''){
@@ -223,7 +196,6 @@ export default {
     }
 }}
 
-
 // Class Helpers:
 
 class User {
@@ -237,7 +209,7 @@ class User {
 }
 </script>
 <style>
-/* Cormac's code but adjusted: */
+/* The below code is adapted from the styling from Cormac Muir's project */
 @font-face {
     font-family: 'digitalFont';
     src: url('./fonts/digital-7.ttf');

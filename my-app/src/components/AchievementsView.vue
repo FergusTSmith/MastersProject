@@ -1,5 +1,5 @@
 <template>
-    <p>Passive Mode Achievements are unlocked while passively browsing. A notification will be received when this is achieved.</p>
+    <p class="HelpText">Passive Mode Achievements are unlocked while passively browsing. A notification will be received when this is achieved.</p>
   <li class="Achievements" v-for="item in achievements" :key="item">
       <p class="AchivementTitle">{{ item.name }} | {{ item.achieved }}</p>
       <p class="HelpText">{{ item.text }}</p>

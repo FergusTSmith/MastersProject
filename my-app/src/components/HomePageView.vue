@@ -17,7 +17,7 @@
     </div>
 
     <div v-if="OptionsPage"  id="Options-Page">
-        <OptionsView @passiveMode="passiveMode" @changeUsernamePage="changeUsernamePage" @logout="logout"></OptionsView>
+        <OptionsView :UsersID="UsersID" @changeUsername="changeUsername($event)" @passiveMode="passiveMode" @changeUsernamePage="changeUsernamePage" @logout="logout"></OptionsView>
         <button @click="exitToHomePage" type="button">Home Page</button><br/>
     </div>
 
@@ -30,7 +30,7 @@
     </div>
 
     <div v-if="PassivePage">
-        <PassiveMode :passiveModeCountries="passiveModeCountries" :totalRequests="totalRequests" :passiveModeTotalTrackers="passiveModeTotalTrackers" :passiveModeUniqueHosts="passiveModeUniqueHosts" :passiveModeTotalCounties="passiveModeTotalCounties" @exitToHomePage="exitToHomePage"></PassiveMode>
+        <PassiveMode :key="key" :passiveModeCountries="passiveModeCountries" :totalRequests="totalRequests" :passiveModeTotalTrackers="passiveModeTotalTrackers" :passiveModeUniqueHosts="passiveModeUniqueHosts" :passiveModeTotalCounties="passiveModeTotalCounties" @exitToHomePage="exitToHomePage"></PassiveMode>
     </div>
 
     <div v-if="SoloPage" id="Solo-Mode">
@@ -188,6 +188,8 @@ export default {
             OptionsPage: false,
             PassivePage: false,
 
+            key: 0,
+
         }
     },
     
@@ -213,6 +215,7 @@ export default {
                 vm.passiveModeHosts = result.passiveHosts;
 
                 var totalHosts = 0;
+                this.key++
 
                 for(var i = 0; i < result.passiveHosts.length; i++){
                     totalHosts += result.passiveHosts[i].count;
@@ -220,19 +223,22 @@ export default {
 
                 vm.passiveModeTotalTrackers = totalHosts;
                 vm.passiveModeUniqueHosts = result.passiveHosts.length;
+                this.key++
+                chrome.storage.local.get(["totalRequests"], function(result){
+                    vm.totalRequests = result.totalRequests;
+                    this.key++
+                })
                 
                 chrome.storage.local.get(["passiveCountryList"], function(result){
                 vm.passiveModeCountries = result.passiveCountryList;
 
                 vm.passiveModeTotalCounties = result.passiveCountryList.length;
+                this.key++
 
                     chrome.storage.local.get(["achievements"], function(result){
                         vm.achievements = result.achievements;
                         console.log(result);
-
-                        chrome.storage.local.get(["totalRequests"], function(result){
-                            vm.totalRequests = result.totalRequests;
-                        })
+                        this.key++
                     })
                 })
              })      
@@ -285,7 +291,7 @@ export default {
         },
         exitToHomePageReset(){
             this.exitToHomePage();
-
+            console.log("Should be at the home screen")
         },
         logout(){
             this.HomePage = false;
@@ -297,6 +303,9 @@ export default {
         },
         ClearMultiVariable(){
             this.$emit('ClearMultiVariable')
+        },
+        changeUsername($event){
+            this.$emit('changeUsername', $event)
         }
     },
     beforeUpdate(){

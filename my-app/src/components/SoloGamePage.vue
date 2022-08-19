@@ -118,7 +118,7 @@ export default {
 
             easyCountries: ["United States", "United Kingdom"],
             medEasyCountries: ["Canada", "Ireland", "Germany", "Netherlands", "Belgium"],
-            hardCountries: ["China"],
+            hardCountries: ["China", "Russia", "Bulgaria", "Japan"],
 
             CountriesInAsia: ["Japan", "Indonesia", "India", "China", "Thailand", "South Korea", "Philippines", "Singapore", "Vietnam", "Malaysia", "Hong Kong", "Saudi Arabia", "Pakistan", "Myanmar", "Cambodia", "Taiwan", "Laos", "Iran", "Sri Lanka", "Israel", "Maldives", "Afghanistan", "Bangladesh", "Nepal", "Qatar", "Mongolia", "Brunei", "Lebanon", "North Korea", "Iraq", "Uzbekistan", "Syria", "Macao", "Christmas Islands", "United Arab Emirates", "Jordan", "Armenia", "Timor-Leste", "Kyrgzstan", "Yemen", "Paliestine", "Bhutan", "Kuwait", "Turkmenistan", "Bahrain", "Tajikistan", "Oman"],
             AfricanCountries: ["Nigeria", "Ethiopia", "Eygpt", "Democratic Republic of the Congo", "Tanzania", "South Africa", "Kenya", "Sudan", "Algeria", "Uganda", "Morocco", "Angola", "Mozambique", "Ghana", "Cameroon", "Madagascar", "Ivory Coast", "Niger", "Burkina Faso", "Mali", "Malawi", "Zambia", "Senegal", "Chad", "Somalia", "Zimbabwe", "South Sudan", "Rwanda", "Guinea", "Burundi", "Benin", "Tunisia", "Sierra Leone", "Togo", "Libya", "Repbulic of the Congo", "Central African Republic", "Liberia", "Mauritania", "Eritrea", "Namibia", "Gambia", "Botswana", "Gabon", "Lesotho", "Guimea-Bissau", "Equatorial Guinea", "Mauritius", "Eswatini", "Djibouti", "Cape Verde"],
@@ -213,6 +213,20 @@ export default {
             console.log(this.userProfile.googleID);
 
             this.$socket.emit('soloGameFinished', this.userProfile.googleID)
+            var vm = this;
+
+            chrome.runtime.sendMessage({ message: 'reset'}, function(response) {
+                if(response === 'success'){
+                    console.log('successfully started the game.')
+                    vm.VisitedCountries = [];
+                    vm.userScore = 0;
+                    vm.numberOfCookies = 0;
+                    vm.categoryList = [];
+                }
+            return true;
+            })
+
+            this.$socket.emit('endPreviousGames', this.userProfile.userID, this.userProfile.googleID);
         },
         endBingoGame(){
             this.didYouWin = true;
@@ -233,7 +247,6 @@ export default {
             this.$socket.emit('soloGameFinished', this.userProfile.googleID)
 
             this.gameOver = true;
-            //this.reset();
         },
         exitToHomePageReset(){
             this.$emit('exitToHomePageReset')
@@ -261,6 +274,7 @@ export default {
             this.timer = this.timer * 1;
             this.timer -= 1;
             this.timer += 1;
+
             chrome.runtime.sendMessage({ message: 'reset'}, function(response) {
                 if(response === 'success'){
                     console.log('successfully started the game.')

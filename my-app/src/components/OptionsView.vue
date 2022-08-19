@@ -1,22 +1,42 @@
 <template>
+    <div v-if="Options">
     <h2>TrackerHunt</h2>
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/><br/>
-    <button @click="changeUsernamePage" type="button">Change Username</button>
-    <button @click="passiveMode" type="button">View Passive Mode Stats</button>
-    <button @click="pauseBlocking" type="button">Pause Tracker Blocking</button>
-    <button @click="logout" type="button">Logout</button>
+    <button class="OptionsButton" @click="changeUsernamePage" type="button">Change Username</button>
+    <button class="OptionsButton" @click="passiveMode" type="button">View Passive Mode Stats</button>
+    <button class="OptionsButton" @click="pauseBlocking" type="button">Pause Tracker Blocking</button>
+    <button class="OptionsButton" @click="logout" type="button">Logout</button>
     <br/><br/>
+    </div>
 
     <div v-if="UsernamePage" id="UsernamePage">
-        <SetUsername @setUsername="setUsername($event)" @usernameToIntro="usernameToIntro"></SetUsername>
+        <UsernameChangeVue :UsersID="UsersID" @changeUsername="changeUsername($event)"></UsernameChangeVue>
     </div>
 </template>
 
 <script>
+import UsernameChangeVue from './UsernameChange.vue';
+
 export default {
+    data(){
+        return {
+            UsernamePage: false,
+            Options: true
+        }
+    },
+    components: {
+        UsernameChangeVue
+    },
+    props: {
+        UsersID: {
+            type: String,
+            required: true,
+        }
+    },
     methods: {
         changeUsernamePage(){
-            this.$emit('changeUsernamePage');
+            this.Options = false;
+            this.UsernamePage = true;
             console.log("emitted");
         },
         passiveMode(){
@@ -46,6 +66,16 @@ export default {
                 return true;
                 
             })
+        },
+        changeUsername($event){
+            this.$emit('changeUsername', $event)
         }
     }
 }</script>
+
+<style>
+button.OptionsButton {
+    width: 70%;
+
+}
+</style>

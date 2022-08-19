@@ -1,9 +1,9 @@
 <template>
     <div v-if="PassivePage">
-        <h2>TrackHunt</h2>
+        <h2>TrackerHunt</h2>
         <p class="HelpText">"Passive Mode" engages whenever you install TrackerHunt. This will show a collection of all of the trackers encountered since the application was installed.</p>
         <div class="Chart">
-        <PassiveModeChart ref ="PassiveModeChart" :chartData="chartData" :options="options" :height="20" :width="200"></PassiveModeChart>
+        <PassiveModeChart ref ="PassiveModeChart" :chartData="chartData" :options="options" :height="20" :width="200" :key="totalRequests"></PassiveModeChart>
         </div>
         <p class="Stats">Blocked Requests: {{ passiveModeTotalTrackers}} </p>
         <p class="Stats">Total Requests: {{ totalRequests }}</p>
@@ -134,6 +134,9 @@ export default {
             passiveCountryCounts: [],
             passiveCountryLabels: [],
             passiveModeHosts: [],
+            pastTrackingNumbers: [],
+
+            key: 0,
 
         }
     },
@@ -142,13 +145,14 @@ export default {
             return this.chartData.datasets[0].data
         }
     },
-    created(){
+    beforeUpdate(){
         //var vm=this;
         console.log(this.totalRequests + "    " + this.passiveModeUniqueHosts)
+        this.key++;
         var vm=this;
         chrome.storage.local.get(["achievements"], function(result){
             vm.achievements = result.achievements;
-            console.log(result);
+            //console.log(result);
         })
         console.log(vm.achievements);
         chrome.storage.local.get(["passiveCountryList"], function(result){
@@ -161,6 +165,11 @@ export default {
         })
         chrome.storage.local.get(["passiveHosts"], function(result){
           vm.passiveModeHosts = result.passiveHosts;
+        })
+        chrome.storage.local.get(["pastTrackingNumbers"], function(result){
+            vm.pastTrackingNumbers = result.pastTrackingNumbers;
+            console.log(vm.pastTrackingNumbers)
+            console.log("Look above")
         })
     }   
 }
@@ -181,6 +190,10 @@ button.passiveButton {
 }
 p.stats {
     float: left;
+}
+p.HelpText {
+    font-size: 9x;
+    color: lightgray;
 }
 
 div.Chart {

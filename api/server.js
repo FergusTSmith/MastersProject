@@ -436,6 +436,22 @@ db.sequelize.sync().then((req) => {
                 }
             }
         })
+        
+        socket.on('endPreviousGames', (userID, googleID) => {
+            console.log("Searching Solo Games");
+            for(var i = 0; i < playersInASoloGame.length; i++){
+                if(playersInASoloGame[i] === googleID){
+                    playersInASoloGame = playersInASoloGame.splice(i, 1);
+                }
+            }
+            for(var j = 0; j < availableLobbies.length; j++){
+                for(var k = 0; k < availableLobbies[j].lobbyUsers.length; k++){
+                    if(availableLobbies[j].lobbyUsers[k] === userID){
+                        availableLobbies[j].lobbyUsers = availableLobbies[j].lobbyUsers.splice(k, 1)
+                    }
+                }
+            }
+        })
 
         socket.on('getGameDetails', (lobbyID, userID) => {
             for(var i = 0; i < availableLobbies.length; i++){

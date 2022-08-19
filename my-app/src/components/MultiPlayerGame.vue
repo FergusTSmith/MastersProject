@@ -129,7 +129,10 @@ export default {
         this.LobbyUsers = this.UsersInLobby;
         this.ProfileOfUser = this.userProfile
 
-        this.$socket.emit('getGameDetails', this.multiGameDetails.playersLobby, this.UsersID)
+
+        if(this.userMultiContinue){
+            this.$socket.emit('getGameDetails', this.multiGameDetails.playersLobby, this.UsersID)
+        }
     },
     sockets: {
         player_is_ready(lobbyDetails){
@@ -158,7 +161,20 @@ export default {
             if(lobbyID === this.playersLobby){
                 this.initiateGame();
                 console.log('success')
-        }
+            }
+        },
+        player_leave_message(messageDetails){
+          this.playerLeaveMessage = "User: " + messageDetails + " has disconnected from the lobby."
+          if(this.UsersInLobby.length === 1){
+            this.playerLeaveMessage += "You are the only player in this multiplayer game."
+          }
+          console.log(this.playerLeaveMessage)
+
+          if(messageDetails === this.UsersID){
+            this.SoloGame = false;
+            this.HomePage = true;
+            this.LobbyPage = false;
+          }
         },
         updateUsers(lobbyDetails){
             console.log('we reached updating users')
@@ -200,7 +216,6 @@ export default {
                 this.LobbyUsers = MessageDetails[2];
                 this.countriesToFind = MessageDetails[6];
                 this.allPlayersReady = MessageDetails[5]
-                this.countriesToFind = MessageDetails[7];
                 console.log(this.countriesToFind)
 
                 console.log(MessageDetails)
@@ -310,7 +325,7 @@ export default {
 
             easyCountries: ["United States", "United Kingdom"],
             medEasyCountries: ["Canada", "Ireland", "Germany", "Netherlands", "Belgium"],
-            hardCountries: ["Russia"],
+            hardCountries: ["China"],
 
             CountriesInAsia: ["Japan", "Indonesia", "India", "China", "Thailand", "South Korea", "Philippines", "Singapore", "Vietnam", "Malaysia", "Hong Kong", "Saudi Arabia", "Pakistan", "Myanmar", "Cambodia", "Taiwan", "Laos", "Iran", "Sri Lanka", "Israel", "Maldives", "Afghanistan", "Bangladesh", "Nepal", "Qatar", "Mongolia", "Brunei", "Lebanon", "North Korea", "Iraq", "Uzbekistan", "Syria", "Macao", "Christmas Islands", "United Arab Emirates", "Jordan", "Armenia", "Timor-Leste", "Kyrgzstan", "Yemen", "Paliestine", "Bhutan", "Kuwait", "Turkmenistan", "Bahrain", "Tajikistan", "Oman"],
             AfricanCountries: ["Nigeria", "Ethiopia", "Eygpt", "Democratic Republic of the Congo", "Tanzania", "South Africa", "Kenya", "Sudan", "Algeria", "Uganda", "Morocco", "Angola", "Mozambique", "Ghana", "Cameroon", "Madagascar", "Ivory Coast", "Niger", "Burkina Faso", "Mali", "Malawi", "Zambia", "Senegal", "Chad", "Somalia", "Zimbabwe", "South Sudan", "Rwanda", "Guinea", "Burundi", "Benin", "Tunisia", "Sierra Leone", "Togo", "Libya", "Repbulic of the Congo", "Central African Republic", "Liberia", "Mauritania", "Eritrea", "Namibia", "Gambia", "Botswana", "Gabon", "Lesotho", "Guimea-Bissau", "Equatorial Guinea", "Mauritius", "Eswatini", "Djibouti", "Cape Verde"],
@@ -352,6 +367,10 @@ export default {
         },
         multiGameDetails: {
             type: Object,
+            required: false
+        },
+        userMultiContinue: {
+            type: Boolean,
             required: false
         }
     },
@@ -425,6 +444,8 @@ export default {
             if(this.GameMode === 'Bingo'){
                 this.endBingoGame();
             }
+
+            this.$socket.emit('endPreviousGames', this.userProfile.userID, this.userProfile.googleID);
         },
         endBingoGame(){
             this.$socket.emit('endBingoGame', this.playersLobby, this.UsersID)
@@ -448,6 +469,11 @@ export default {
             this.gameOver = true;
         },
         exitToHomePageReset(){
+            this.gameOver = false;
+            this.VisitedCountries = [];
+            this.gameSetup = false;
+            this.WinningUser = undefined;
+            this.didYouWin = false;
             this.$emit('exitToHomePageReset')
         },
         playerReady(){
@@ -475,14 +501,20 @@ export default {
             console.log(this.LobbyUsers);
             console.log("TESTWER")
             this.$socket.emit('playerLeft', this.LobbyUsers, this.playersLobby, this.UsersID)
-            //this.playersLobby = '';
-            //this.isLobbyCreator = false;
+            this.ProfileOfUser.ready = "Not Ready";
+            this.gameOver = false;
+            this.VisitedCountries = [];
+            this.gameSetup = false;
+            this.WinningUser = undefined;
+            this.didYouWin = false;
+
             this.exitToHomePageReset();
             },
         initiateGame(){
             var vm = this;
             this.gameStarted = true;
             this.timer = this.startTime;
+            
             if(this.timer <= 0){
                 this.timer = 120;
             }

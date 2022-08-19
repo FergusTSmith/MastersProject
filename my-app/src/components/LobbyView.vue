@@ -1,7 +1,7 @@
 
 <template>
     <div v-if="LobbyPage">
-    <h2>TrackHunt</h2>
+    <h2>TrackerHunt</h2>
     <p class="HelpText">Lobby ID: {{ playersLobby }}</p>
     <!----Animation of the wheel turning ----->
     <div class="RadioButtons">
@@ -43,7 +43,7 @@
     </div>
 
     <div v-if="MultiPlayer" id="Multiplayer-Game" :key="componentVersion">
-        <MultiPlayerGame :multiGameDetails="multiGameDetails" :UsersID="UsersID" :playersLobby="playersLobby" :userProfile="userProfile" @ClearMultiVariable="ClearMultiVariable" @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :GameMode="GameMode"  :startTime="timer"  ></MultiPlayerGame>
+        <MultiPlayerGame :userMultiContinue="userMultiContinue" :multiGameDetails="multiGameDetails" :UsersID="UsersID" :playersLobby="playersLobby" :userProfile="userProfile" @ClearMultiVariable="ClearMultiVariable" @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :GameMode="GameMode"  :startTime="timer"  ></MultiPlayerGame>
     </div>
 </template>
 
