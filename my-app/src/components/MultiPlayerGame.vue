@@ -99,6 +99,7 @@
 <script>
 import BaseTimer from "../components/BaseTimer";
 import _ from 'lodash';
+import { objectMethod } from "@babel/types";
 
 export default {
     watch: {
@@ -128,6 +129,8 @@ export default {
     mounted(){
         this.LobbyUsers = this.UsersInLobby;
         this.ProfileOfUser = this.userProfile
+
+        this.$socket.emit('getGameDetails', this.multiGameDetails.playersLobby, this.UsersID)
     },
     sockets: {
         player_is_ready(lobbyDetails){
@@ -308,6 +311,10 @@ export default {
         UsersID: {
             type: String,
             required: true
+        },
+        multiGameDetails: {
+            type: Object,
+            required: false
         }
     },
     methods: {

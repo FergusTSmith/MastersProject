@@ -122,9 +122,6 @@ export default {
         this.multiGameDetails.playersLobby = MessageDetails[0]
         this.multiGameDetails.LobbyUsers = MessageDetails[1];
 
-        this.$socket.emit('getGameDetails', this.multiGameDetails.playersLobby, this.UsersID)
-        console.log("Testing multiplayer");
-
         this.IntroPageView = false;
         this.HomePage = true;
         this.userMultiContinue = true;

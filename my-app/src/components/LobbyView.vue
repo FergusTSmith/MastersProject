@@ -43,7 +43,7 @@
     </div>
 
     <div v-if="MultiPlayer" id="Multiplayer-Game" :key="componentVersion">
-        <MultiPlayerGame :UsersID="UsersID" :playersLobby="playersLobby" :userProfile="userProfile" @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :GameMode="GameMode"  :startTime="timer"  ></MultiPlayerGame>
+        <MultiPlayerGame :multiGameDetails="multiGameDetails" :UsersID="UsersID" :playersLobby="playersLobby" :userProfile="userProfile" @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :GameMode="GameMode"  :startTime="timer"  ></MultiPlayerGame>
     </div>
 </template>
 
@@ -52,7 +52,7 @@ import MultiPlayerGame from '@/components/MultiPlayerGame.vue'
 
 export default {
     created(){
-
+        this.LobbyUsers = this.UsersInLobby
     },
     sockets: {
         updateGameModeAndTime(messageDetails){
@@ -74,6 +74,23 @@ export default {
         },
         RejoinGame(MessageDetails){
             this.GameMode = MessageDetails[0];
+        },
+        updateUsers(lobbyDetails){
+            console.log('we reached updating users')
+            var listOfUsers = lobbyDetails[0]
+            var lobbyID = lobbyDetails[1]
+            console.log(lobbyDetails)
+            console.log(this.playersLobby === lobbyID)
+            console.log(listOfUsers);
+            console.log(this.UsersInLobby);
+
+            if(this.playersLobby === lobbyID){
+                this.LobbyUsers = listOfUsers;
+                //this.noOfUsersInLobby = this.UsersInLobby.length;
+                console.log('we updated the users');
+                console.log(this.LobbyUsers);
+            }
+            console.log(listOfUsers)
         }
     },
     props: {
@@ -100,6 +117,10 @@ export default {
         userMultiContinue: {
             type: Boolean,
             required: true,
+        },
+        multiGameDetails: {
+            type: Object,
+            required: false
         }
     },
     components: {
@@ -181,6 +202,7 @@ export default {
             show: false,
             MultiPlayer: false,
             LobbyPage: true,
+            LobbyUsers: [],
 
             GameMode: 'Classic',
             timer: 120,
@@ -193,6 +215,7 @@ export default {
         if(this.userMultiContinue){
             this.LobbyPage = false;
             this.MultiPlayer = true;
+            this.$socket.emit('getGameDetails', this.multiGameDetails.playersLobby, this.UsersID)
         }
     }
 }
