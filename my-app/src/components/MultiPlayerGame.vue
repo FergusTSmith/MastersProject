@@ -199,6 +199,8 @@ export default {
             this.LobbyUsers = MessageDetails[2];
             this.countriesToFind = MessageDetails[6];
             this.allPlayersReady = MessageDetails[5]
+            this.countriesToFind = MessageDetails[7];
+            console.log(this.countriesToFind)
 
             console.log(MessageDetails)
             var vm = this;
@@ -217,7 +219,8 @@ export default {
             }
 
             if(this.GameMode === "Bingo"){
-                this.$socket.emit("BingoRejoin", this.playersLobby, this.UsersID)
+                //this.$socket.emit("BingoRejoin", this.playersLobby, this.UsersID)
+                console.log("Attempting to reget bingo countries");
             }
 
             this.VisitedCountries = vm.VisitedCountries;
@@ -238,14 +241,41 @@ export default {
             this.HomePage = false;
             this.MultiPlayer = true;
 
+            this.$emit("ClearMultiVariable")
+
             }
         },
         resendBingo(MessageDetails){
-        if(this.playersLobby === MessageDetails[0]){
-          if(this.UsersID != MessageDetails[1]){
-            this.$socket.emit('countriesToVisit', this.playersLobby, this.countriesToFind)
+            console.log("TESTING")
+            console.log(this.playersLobby)
+            console.log(this.UsersID)
+            console.log(MessageDetails)
+            if(this.playersLobby === MessageDetails[0]){
+                if(this.UsersID != MessageDetails[1]){
+                    this.$socket.emit('countriesToVisit', this.playersLobby, this.countriesToFind)
+                    console.log("FAILED")
+                }
+            }
+        },
+        endBingoModeGame(lobbyAndUser){
+          var lobby = lobbyAndUser[0];
+          var counter = 0;
+
+          for(var i = 0; i < this.countriesToFind.length; i++){
+            if(this.countriesToFind[i].found === true){
+              counter++
+            }
           }
-        }
+          this.noOfCountriesBingo = counter;
+
+          console.log(this.playersLobby === lobby);
+          console.log(lobbyAndUser);
+
+          if((this.playersLobby === lobby) && (this.UsersID != lobbyAndUser[1])){
+            this.WinningUser = lobbyAndUser[1];
+            this.gameOver = true;
+            this.didYouWin = false;
+          }
       },
     },
     components: {

@@ -26,7 +26,7 @@
     </div>
 
     <div v-if="LobbyPage" id="Lobby">
-        <LobbyView :multiGameDetails="multiGameDetails" :userMultiContinue="userMultiContinue" :userProfile="userProfile" :UsersID="UsersID" :playersLobby="playersLobby" :UsersInLobby="UsersInLobby" :isLobbyCreator="isLobbyCreator" @exitToHomePageReset="exitToHomePageReset" @multiGameInitiated="multiGameInitiated" @leaveGame="leaveGame" @updateLobbyUsers="updateLobbyUsers($event)"></LobbyView>
+        <LobbyView :multiGameDetails="multiGameDetails" :userMultiContinue="userMultiContinue" :userProfile="userProfile" :UsersID="UsersID" :playersLobby="playersLobby" :UsersInLobby="UsersInLobby" :isLobbyCreator="isLobbyCreator" @ClearMultiVariable="ClearMultiVariable" @exitToHomePageReset="exitToHomePageReset" @multiGameInitiated="multiGameInitiated" @leaveGame="leaveGame" @updateLobbyUsers="updateLobbyUsers($event)"></LobbyView>
     </div>
 
     <div v-if="PassivePage">
@@ -294,6 +294,9 @@ export default {
         },
         resetSoloStatus(){
             this.$emit('resetSoloStatus')
+        },
+        ClearMultiVariable(){
+            this.$emit('ClearMultiVariable')
         }
     },
     beforeUpdate(){

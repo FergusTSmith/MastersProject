@@ -221,6 +221,7 @@ db.sequelize.sync().then((req) => {
                 if(availableLobbies[i] != undefined){
                     if(availableLobbies[i].LobbyID === lobbyID){
                         socket.in(availableLobbies[i]).broadcast.emit('resendBingo', lobbyID, usersID);
+                        console.log("Resent Bingo Countries")
                     }
                 }
             }

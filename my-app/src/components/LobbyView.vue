@@ -43,7 +43,7 @@
     </div>
 
     <div v-if="MultiPlayer" id="Multiplayer-Game" :key="componentVersion">
-        <MultiPlayerGame :multiGameDetails="multiGameDetails" :UsersID="UsersID" :playersLobby="playersLobby" :userProfile="userProfile" @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :GameMode="GameMode"  :startTime="timer"  ></MultiPlayerGame>
+        <MultiPlayerGame :multiGameDetails="multiGameDetails" :UsersID="UsersID" :playersLobby="playersLobby" :userProfile="userProfile" @ClearMultiVariable="ClearMultiVariable" @playerReady="playerReady" @leaveGame="leaveGame" @gameSetup="gameSetup" @endGame="endGame" @exitToHomePageReset="exitToHomePageReset" :isLobbyCreator="isLobbyCreator" :UsersInLobby="UsersInLobby" :GameMode="GameMode"  :startTime="timer"  ></MultiPlayerGame>
     </div>
 </template>
 
@@ -194,7 +194,11 @@ export default {
             if(this.isLobbyCreator){
                 this.$socket.emit('gameModeAndTime', this.playersLobby, this.GameMode, this.timer)
             }
-     },
+        },
+        ClearMultiVariable(){
+            this.$emit('ClearMultiVariable');
+        
+        },
     },
     data(){
         return {

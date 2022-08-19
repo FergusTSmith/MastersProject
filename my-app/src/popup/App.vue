@@ -16,7 +16,7 @@ import HomePageView from '@/components/HomePageView.vue'
   </div>
 
   <div v-if="HomePage" id = "Home-Page">
-      <HomePageView @logout="logout" @resetSoloStatus="resetSoloStatus" :gamesPlayed="gamesPlayed" :gamesWon="gamesWon" :UsersID="UsersID" :userProfile="userProfile" :UserGoogleID="UserGoogleID" :userSoloContinue="userSoloContinue" :userMultiContinue="userMultiContinue" :multiGameDetails="multiGameDetails"></HomePageView>
+      <HomePageView @ClearMultiVariable="ClearMultiVariable" @logout="logout" @resetSoloStatus="resetSoloStatus" :gamesPlayed="gamesPlayed" :gamesWon="gamesWon" :UsersID="UsersID" :userProfile="userProfile" :UserGoogleID="UserGoogleID" :userSoloContinue="userSoloContinue" :userMultiContinue="userMultiContinue" :multiGameDetails="multiGameDetails"></HomePageView>
   </div>
 </div>
 </template>
@@ -38,26 +38,6 @@ export default {
       sendUserDetails(MessageDetails){
             this.gamesPlayed = MessageDetails[0].gamesPlayed;
             this.gamesWon = MessageDetails[0].wonGames
-      },
-      endBingoModeGame(lobbyAndUser){
-          var lobby = lobbyAndUser[0];
-          var counter = 0;
-
-          for(var i = 0; i < this.countriesToFind.length; i++){
-            if(this.countriesToFind[i].found === true){
-              counter++
-            }
-          }
-          this.noOfCountriesBingo = counter;
-
-          console.log(this.playersLobby === lobby);
-          console.log(lobbyAndUser);
-
-          if((this.playersLobby === lobby) && (this.UsersID != lobbyAndUser[1])){
-            this.WinningUser = lobbyAndUser[1];
-            this.gameOver = true;
-            this.didYouWin = false;
-          }
       },
       UserFound(users){
           console.log(users);
@@ -237,6 +217,9 @@ export default {
     },
     resetSoloStatus(){
       this.userSoloContinue = false;
+    },
+    ClearMultiVariable(){
+      this.userMultiContinue = false;
     }
 }}
 
