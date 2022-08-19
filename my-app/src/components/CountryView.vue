@@ -6,8 +6,9 @@
   </div>
   <br/>
   <li v-for="item in passiveModeCountries" :key="item" class="TrackedCountry">
-      <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/>{{ item.name }} - {{ item.count }}
+      <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/>{{ item.name }} | {{ item.count }} tracker(s)
   </li>
+  <br/>
   <button @click="exitToHomePage">HomePage</button>
   <button @click="CountToPassive">Back</button> 
 </template>
@@ -87,7 +88,7 @@ export default {
 div.CountryChart {
     height: 100px;
     width: 100px;
-    margin-left: 35px;
+    margin-left: 55px;
 }
 img.CountryFlag {
     width: 15px;

@@ -1,8 +1,7 @@
 <template>
     <h2>TrackerHunt</h2>
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/><br/>
-    <br/><br/>
-    <label>Enter lobby ID:</label><br/>
+    <label class="Guide">Enter Lobby ID:</label><br/>
     <input id="LobbyID" ref="LobbyID" type="text">
     <p class="ErrorText">{{ lobbyError }}</p>
     <button id="Join" @click="enterLobby" type="button">Join</button>
@@ -26,3 +25,10 @@ export default {
     }
 }
 </script>
+
+<style>
+label.Guide {
+    font-size: 12px;
+    color: lightgray;
+}
+</style>

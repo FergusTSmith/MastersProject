@@ -3,7 +3,6 @@
     <h2>TrackerHunt</h2>
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/><br/>
     <button class="OptionsButton" @click="changeUsernamePage" type="button">Change Username</button>
-    <button class="OptionsButton" @click="passiveMode" type="button">View Passive Mode Stats</button>
     <button class="OptionsButton" @click="pauseBlocking" type="button">Pause Tracker Blocking</button>
     <button class="OptionsButton" @click="logout" type="button">Logout</button>
     <br/><br/>
@@ -38,9 +37,6 @@ export default {
             this.Options = false;
             this.UsernamePage = true;
             console.log("emitted");
-        },
-        passiveMode(){
-            this.$emit('passiveMode');
         },
         logout(){
             var vm = this;

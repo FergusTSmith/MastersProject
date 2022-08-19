@@ -28,6 +28,7 @@
     <input id="fiveMins" v-if="isLobbyCreator" class="Radio" type="radio" value="300" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label id="fiveMinsRadio" for="fiveMins" v-if="isLobbyCreator">5 min</label>
     <input id="tenMins" v-if="isLobbyCreator" class="Radio" type="radio" value="600" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label id="tenMinsRadio" for="tenMins" v-if="isLobbyCreator">10 min</label>
     </div>
+    <p class="HelpText" v-if="(!isLobbyCreator)">Please wait for the lobby creator to choose the Game Mode and time</p>
     <br/>
     <button id="closeLobby" v-if="isLobbyCreator" @click="closeLobby" type="button">Close Lobby</button>
     <button id="invitePlayer" v-if="isLobbyCreator" type="button" @click="openInvite">Invite Player</button>

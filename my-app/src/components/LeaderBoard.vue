@@ -11,7 +11,7 @@
     </ol>
     <ol v-if="SoloClassicLB">
     <!------Putt the W/L ratio here-->
-    <p class="HelpText">W/L = {{ gamesWon }}/{{gamesPlayed}}</p>
+    <p class="WinLoss">W/L = {{ gamesWon }}/{{gamesPlayed}}</p>
     <li id="SoloBoard" v-for="item in intSoloClassLB" :key="item" class="LeaderBoard">
         {{ item.username }}  |  {{ item.Score }}  |  {{ item.createdAt }}
     </li>
@@ -26,6 +26,10 @@
 
 <script>
 export default {
+    created(){
+        this.intSoloClassLB = this.soloClassicLeaderboard;
+        console.log(this.intSoloClassLB)
+    },
     data(){
         return {
             intSoloClassLB: [],
@@ -78,3 +82,12 @@ export default {
     }
     
 }</script>
+
+<style>
+p.WinLoss {
+    margin-right: 30px;
+    color: lightgray;
+    font-size: 11px;
+
+}
+</style>

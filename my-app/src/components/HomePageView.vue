@@ -292,6 +292,7 @@ export default {
         exitToHomePageReset(){
             this.exitToHomePage();
             console.log("Should be at the home screen")
+            this.HomePage = true;
         },
         logout(){
             this.HomePage = false;

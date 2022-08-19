@@ -188,8 +188,10 @@ button.passiveButton {
     font-weight: bold;
     font-size: 11px;
 }
-p.stats {
-    float: left;
+p.Stats {
+    font-family: 'digitalFont';
+    color: #20C20E;
+    font-size: 20px;
 }
 p.HelpText {
     font-size: 9x;
@@ -201,6 +203,6 @@ div.Chart {
     height: 130px;
     align-self: center;
     align-items: center;
-    margin-left: 23px;
+    margin-left: 35px;
 }
 </style>

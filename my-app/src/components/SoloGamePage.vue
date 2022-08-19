@@ -11,6 +11,7 @@
 
     <div class="timer">
     <BaseTimer id="BaseTimer" :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="30"></BaseTimer>
+    <br/>
     </div>
     <div v-if="GameMode === 'Classic'" class="ClassicGameMode">
     <p class="HelpText">Current Score: </p><p class="UserScore">{{ this.userScore }}</p>
@@ -22,16 +23,16 @@
     
     </div>
     <div v-if="GameMode === 'Bingo'">
-    <label class="Guide">Countries To Locate:</label>
+    <label class="Guide">Countries To Locate:</label> 
     <ol>
-    <li v-for="item in countriesToFind" ref="CountriesToFind" :class="{found:item.found}" :key="item">
-        {{ item.country }}
+    <li class="CountriesToFind" v-for="item in countriesToFind" ref="CountriesToFind" :class="{found:item.found}" :key="item">
+        <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + shortenName(item.country) + '.jpeg'"/>{{ item.country }}
     </li>  
     </ol>
     <label class="Guide">Countries Located</label>
     <ol>
       <li v-for="item in VisitedCountries" ref="ListOfCountries" class="BingoList" :key="item">
-          {{ item.name }}
+          <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/>{{ item.name }}
       </li>
     </ol>
     </div>
@@ -215,16 +216,7 @@ export default {
             this.$socket.emit('soloGameFinished', this.userProfile.googleID)
             var vm = this;
 
-            chrome.runtime.sendMessage({ message: 'reset'}, function(response) {
-                if(response === 'success'){
-                    console.log('successfully started the game.')
-                    vm.VisitedCountries = [];
-                    vm.userScore = 0;
-                    vm.numberOfCookies = 0;
-                    vm.categoryList = [];
-                }
-            return true;
-            })
+            
 
             this.$socket.emit('endPreviousGames', this.userProfile.userID, this.userProfile.googleID);
         },
@@ -439,6 +431,9 @@ export default {
                 console.log(allFound);
             }
         },
+        shortenName(countryName){
+            return countryName.replace(/\s/g, '')
+        }
 
 
 
@@ -469,19 +464,20 @@ export default {
 
       orderedCountries(){
         return _.orderBy(this.VisitedCountries, 'count', 'desc');
-      }
+      },
     },
 }
 </script>
 
 <style>
 div.timer {
-    margin-right: 30px;
+    margin-right: 0px;
+    margin-left: 18px;
 }
 
 p.UserScore {
     font-family: 'digitalFont';
-    font-size: 25px;
+    font-size: 30px;
     color: #20C20E;
     margin-top: 0px;
     margin-bottom: 5px;
@@ -491,15 +487,30 @@ div.buttonBar {
     width: 100%;
     bottom: 0;
 }
-
 img.CountryFlag {
     width: 15px;
     height: 10px;
     float: left;
     margin-right: 10px;
+    margin-top: 5px;
 }
 label.Guide {
     font-size: 12px;
     color: lightgrey;
+}
+
+li.CountriesToFind {
+    list-style: none;
+    align-items: center;
+    margin-right: 30px;
+    font-size: 15px;
+    max-width: 80%;
+}
+li.BingoList {
+    margin-right: 30px;
+    font-size: 12px;
+    color: lightgray;
+    align-items: left;
+    font-style: italic;
 }
 </style>
