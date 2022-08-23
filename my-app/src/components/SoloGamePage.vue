@@ -5,10 +5,7 @@
     <p class="HelpText" v-if="InformationBox && GameMode==='Bingo'">{{ BingoInfo }}</p>
     <div v-if="(!gameOver)">
     <br/>
-
     <!-----Using a more sophisticated solution for the timer. Adapted from https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f-->
-    <!-----<img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/><br/>--->
-
     <div class="timer">
     <BaseTimer id="BaseTimer" :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="30"></BaseTimer>
     <br/>
@@ -214,7 +211,6 @@ export default {
             console.log(this.userProfile.googleID);
 
             this.$socket.emit('soloGameFinished', this.userProfile.googleID)
-            var vm = this;
 
             
 
