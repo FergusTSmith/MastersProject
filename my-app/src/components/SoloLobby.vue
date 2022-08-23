@@ -52,8 +52,8 @@ export default {
     components: {
         SoloGamePage,
     },
-    updated(){
-         var vm = this;
+    created(){
+        var vm = this;
         if(this.userSoloContinue){
             chrome.storage.local.get(['backupGameDetails'], function(result){
                 console.log(result);

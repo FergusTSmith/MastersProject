@@ -22,15 +22,21 @@ var noOfCountries = 10;
 var WinningUser = "Goose96";
 var isLobbyCreator = true;
 var UsersInLobby=[{userID: "Goose96", ready: "Not Ready"}, {userID: "TesterAccount", ready: "Ready"}]
+var userProfile = {userID: "Goose96", googleID: "12486591", ready: "Not Ready"}
 var allPlayersReady = false;
 var finishedGame = false;
 var APIEnabled = false;
+var playersLobby = '12345';
+var UsersID = "Goose96";
+var multiGameDetails = {};
+var userMultiContinue = false;
 
 
-describe('HomePage Component Unit Tests: ', () => {
+
+describe('Multiplayer Component Unit Tests: ', () => {
     
   test('is a Vue instance', () => {
-    var wrapper = mount(MultiGame, {propsData: {APIEnabled: APIEnabled, finishedGame: finishedGame, allPlayersReady: allPlayersReady, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator, WinningUser: WinningUser, noOfCountries: noOfCountries, didYouWin: didYouWin, noOfCountriesBingo: noOfCountriesBingo, categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: gameOver, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
+    var wrapper = mount(MultiGame, {propsData: {userMultiContinue: userMultiContinue, UsersID: UsersID, multiGameDetails: multiGameDetails, playersLobby: playersLobby, userProfile: userProfile, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator,  categoryList: categoryList, GameMode: gameMode, startTime: startTime}});
     expect(wrapper).toBeTruthy();
   })
 
@@ -71,7 +77,7 @@ describe('HomePage Component Unit Tests: ', () => {
     var leaveGame = await wrapper.find('#Leave');
     await leaveGame.trigger('click');
 
-    expect(wrapper.emitted().leaveGame).toBeTruthy();
+    expect(wrapper.emitted().testEmission).toBeTruthy();
   })
 
   it("Checking Game Over DOM elements are rendered correctly"), async() => {

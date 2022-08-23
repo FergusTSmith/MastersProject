@@ -3,7 +3,7 @@ import JoinLobby from '../JoinLobby.vue';
 //import { render, screen } from "@testing-library/vue"
 import { describe, expect, test, it } from 'vitest';
 
-describe('HomePage Component Unit Tests: ', () => {
+describe('Join Lobby Component Unit Tests: ', () => {
     
     test('is a Vue instance', () => {
       const wrapper = mount(JoinLobby);
@@ -12,7 +12,7 @@ describe('HomePage Component Unit Tests: ', () => {
   
     it("All DOM Components render correctly", async() => {
       var wrapper = mount(JoinLobby);
-        expect(wrapper.text()).toContain("Enter lobby ID")
+        expect(wrapper.text()).toContain("Enter Lobby ID")
         expect(wrapper.find('h2').exists()).toBeTruthy()
         expect(wrapper.find('img').exists()).toBeTruthy()
         expect(wrapper.find('button').exists()).toBeTruthy()

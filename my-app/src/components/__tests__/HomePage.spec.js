@@ -5,10 +5,19 @@ import HomePage from '../HomePageView.vue';
 //import { render, screen } from "@testing-library/vue"
 import { describe, expect, test, it } from 'vitest';
 
+var gamesPlayed = 100;
+var gamesWon = 10;
+var UsersID = "Goose96";
+var userProfile = {username: "Goose96", googleID: "1245145"};
+var UserGoogleID = "1245145"
+var userSoloContinue = false;
+var userMultiContinue = false;
+var multiGameDetails = {};
+
 describe('HomePage Component Unit Tests: ', () => {
     
   test('is a Vue instance', () => {
-    const wrapper = mount(HomePage);
+    const wrapper = mount(HomePage, {propsData: {gamesPlayed: gamesPlayed, gamesWon: gamesWon, UsersID: UsersID, userProfile: userProfile, UserGoogleID: UserGoogleID, userSoloContinue: userSoloContinue, userMultiContinue: userMultiContinue, multiGameDetails: multiGameDetails}});
     expect(wrapper).toBeTruthy();
   })
 

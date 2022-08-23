@@ -148,6 +148,7 @@ export default {
     beforeUpdate(){
         //var vm=this;
         console.log(this.totalRequests + "    " + this.passiveModeUniqueHosts)
+        this.chartData.datasets[0].data = [(this.totalRequests-this.passiveModeTotalTrackers), this.passiveModeTotalTrackers]
         this.key++;
         var vm=this;
         chrome.storage.local.get(["achievements"], function(result){

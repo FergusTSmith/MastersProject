@@ -18,7 +18,7 @@ var gameStarted = false;
 var countriesToFind = [{name: "United States", found: false}, {name: "Russia", found: false}, {name: "Germany", found: false},]
 
 
-describe('HomePage Component Unit Tests: ', () => {
+describe('Solo Game Component Unit Tests: ', () => {
     
   test('is a Vue instance', () => {
     const wrapper = mount(SoloGame);
@@ -56,17 +56,18 @@ describe('HomePage Component Unit Tests: ', () => {
     var endGameButton = await wrapper.find('#EndGameButton');
     await endGameButton.trigger('click');
 
-    expect(wrapper.emitted().endGame).toBeTruthy();
+    //expect(wrapper.emitted().endGame).toBeTruthy();
 
     console.log(wrapper.text());
+    await wrapper.find('.CategoryText');
 
-    //expect(wrapper.text()).toContain("Game Over");
-    //expect(wrapper.text()).toContain("Your Score was:");
+    expect(wrapper.text()).toContain("GAME OVER");
+    expect(wrapper.text()).toContain("Your score was:");
   })
 
   it("Checking Game Over DOM elements are rendered correctly"), async() => {
     var wrapper = mount(SoloGame, {propsData: { categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: true, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
-    expect(wrapper.text()).toContain("Game Over");
+    expect(wrapper.text()).toContain("GAME OVER");
     expect(wrapper.text()).toContain("Your score was");
   }
 

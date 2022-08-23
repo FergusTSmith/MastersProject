@@ -49,6 +49,7 @@ describe('LobbyPage Component Unit Tests: ', () => {
     var beginGame = await wrapper.find('#beginGame');
     await beginGame.trigger('click');
     expect(wrapper.emitted().multiGameInitiated).toBeTruthy();
+    expect(wrapper.text()).toContain("MultiPlayer - Classic")
 
     var leaveGame = await wrapper.find('#leaveGame')
     await leaveGame.trigger('click');

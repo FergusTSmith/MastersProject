@@ -85,10 +85,8 @@ describe("End to End Testing - TrackerHunt", () => {
         await newPage.waitForSelector(".TrackedCountry");
         const countryListNew = await newPage.$(".TrackedCountry");
         
-        //console.log(value2);
         let value2 = await newPage.evaluate(el => el.textContent, countryListNew);
         expect(value2).toEqual(expect.stringContaining("United States") || expect.stringContaining("Unknown"));
-        //expect(countryListNew).toEqual(countryList);
 
         // Test that end game works correctly: 
         await newPage.waitForSelector('#EndGameButton');
@@ -217,7 +215,7 @@ describe("End to End Testing - TrackerHunt", () => {
         const countryList = await page.$(".TrackedCountry");
         let value = await page.evaluate(el => el.textContent, countryList);
         console.log(value);
-        expect(value).toEqual(expect.stringContaining("United States") || expect.stringContaining("Unknown"));
+        expect(value).toEqual(expect.stringContaining("United") || expect.stringContaining("Unknown"));
 
     }, 1000000)
 

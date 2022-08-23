@@ -327,7 +327,7 @@ export default {
         }
     },
     created(){
-        this.getHighScores();
+        //this.getHighScores(); // Remove this when doing unit tests
     }
 }
 </script>
