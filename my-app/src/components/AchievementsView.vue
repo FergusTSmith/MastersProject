@@ -5,8 +5,8 @@
       <p class="HelpText" :class="{achieved:(item.achieved==='Unlocked')}">{{ item.text }}</p>
       <hr/>
   </li>
-  <button @click="backToPassive">Back</button>
-  <button @click="exitToHomePage">HomePage</button>
+  <button id="Back" @click="backToPassive">Back</button>
+  <button id="Home" @click="exitToHomePage">HomePage</button>
 </template>
 
 <script>

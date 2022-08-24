@@ -77,7 +77,8 @@ describe('Multiplayer Component Unit Tests: ', () => {
     var leaveGame = await wrapper.find('#Leave');
     await leaveGame.trigger('click');
 
-    expect(wrapper.emitted().testEmission).toBeTruthy();
+    //expect(wrapper.emitted().testEmission).toBeTruthy();
+    expect(wrapper.text()).toContain("Classic")
   })
 
   it("Checking Game Over DOM elements are rendered correctly"), async() => {

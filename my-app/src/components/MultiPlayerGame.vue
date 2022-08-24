@@ -507,7 +507,7 @@ export default {
             this.gameSetup = false;
             this.WinningUser = undefined;
             this.didYouWin = false;
-            this.$emit('testEmission);
+            //this.$emit('testEmission');
 
             this.exitToHomePageReset();
             },

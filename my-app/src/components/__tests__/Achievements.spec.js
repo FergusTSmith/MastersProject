@@ -21,5 +21,13 @@ describe('HomePage Component Unit Tests: ', () => {
       expect(wrapper.find('button').exists()).toBeTruthy()
       expect(wrapper.text()).toContain("From Paris to Berlin");
       expect(wrapper.text()).toContain("Not Unlocked")
+
+      var backButton = await wrapper.find('#Back');
+      backButton.trigger('click');
+      expect(wrapper.emitted().backToPassive).toBeTruthy();
+
+      var HomeButton = await wrapper.find('#Home');
+      HomeButton.trigger('click');
+      expect(wrapper.emitted().exitToHomePage).toBeTruthy();
     })
 })

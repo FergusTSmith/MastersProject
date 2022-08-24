@@ -48,12 +48,14 @@ describe('LobbyPage Component Unit Tests: ', () => {
 
     var beginGame = await wrapper.find('#beginGame');
     await beginGame.trigger('click');
-    expect(wrapper.emitted().multiGameInitiated).toBeTruthy();
+    //expect(wrapper.emitted().multiGameInitiated).toBeTruthy();
     expect(wrapper.text()).toContain("MultiPlayer - Classic")
 
-    var leaveGame = await wrapper.find('#leaveGame')
+    //wrapper = mount(LobbyView, {propsData: { UserID: UserID, playersLobby: playersLobby, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator }});    
+    var leaveGame = await wrapper.find('#Leave')
     await leaveGame.trigger('click');
-    expect(wrapper.emitted().leaveGame).toBeTruthy();
+    console.log(wrapper.text());
+    expect(wrapper.text()).toContain("Goose96");
 
   })
 
