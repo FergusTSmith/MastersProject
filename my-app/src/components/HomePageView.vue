@@ -30,7 +30,7 @@
     </div>
 
     <div v-if="PassivePage">
-        <PassiveMode :key="key" :passiveModeCountries="passiveModeCountries" :totalRequests="totalRequests" :passiveModeTotalTrackers="passiveModeTotalTrackers" :passiveModeUniqueHosts="passiveModeUniqueHosts" :passiveModeTotalCounties="passiveModeTotalCounties" @exitToHomePage="exitToHomePage"></PassiveMode>
+        <PassiveMode :key="key" :passiveCategoryList="passiveCategoryList" :passiveModeCountries="passiveModeCountries" :totalRequests="totalRequests" :passiveModeTotalTrackers="passiveModeTotalTrackers" :passiveModeUniqueHosts="passiveModeUniqueHosts" :passiveModeTotalCounties="passiveModeTotalCounties" @exitToHomePage="exitToHomePage"></PassiveMode>
     </div>
 
     <div v-if="SoloPage" id="Solo-Mode">
@@ -176,6 +176,7 @@ export default {
             passiveModeTotalTrackers: 0,
             passiveModeTotalCounties: 0,
             passiveModeUniqueHosts: 0,
+            passiveCategoryList: [],
             achievements: [],
             totalRequests: 0,
 
@@ -227,6 +228,10 @@ export default {
                 chrome.storage.local.get(["totalRequests"], function(result){
                     vm.totalRequests = result.totalRequests;
                     this.key++
+                })
+                chrome.storage.local.get(["passiveCategoryList"], function(result) {
+                    vm.passiveCategoryList = result.passiveCategoryList
+                    console.log(vm.PassiveCategoryList);
                 })
                 
                 chrome.storage.local.get(["passiveCountryList"], function(result){

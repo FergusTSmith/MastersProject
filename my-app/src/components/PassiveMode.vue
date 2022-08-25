@@ -10,6 +10,15 @@
         <p class="PassiveText">Since you installed TackerHunt, you have been tracked: {{ passiveModeTotalTrackers }} times. This means that, whilst browsing, your browser submitted requests to {{ passiveModeTotalTrackers }} different tracking URLs</p>
         <p class="PassiveText">This was done by a total of {{ passiveModeUniqueHosts }} different entities.</p>
         <p class="PassiveText">These entities hailed from {{ passiveModeTotalCounties }} countries.</p>
+        <p class="PassiveText">While browsing, you were tracked when visiting the following categories of pages: </p>
+        <div class="CategoryChart">
+            <PassiveModeChart ref ="PassiveModeChart" :chartData="categoryChartData" :options="options" :height="20" :width="200"></PassiveModeChart>
+        </div>
+        <ol class="CategoryList">
+            <li v-for="item in passiveCategoryList" ref="ListOfCategories" :key="item.name" class="CategoryList">
+                {{ item.name }} | {{ item.count }}
+            </li>
+        </ol>
         <p class="PassiveText">To see a complete list of hosts and counts: </p>
         <button class="passiveButton" @click="PassiveToHost">PassiveMode Hosts</button>
         <p class="PassiveText">To see a complete list of countries and counts: </p>
@@ -58,6 +67,10 @@ export default {
             required: true
         },
         passiveModeCountries: {
+            type: Array,
+            required: true
+        },
+        passiveCategoryList: {
             type: Array,
             required: true
         }
@@ -125,6 +138,16 @@ export default {
                     }
                 ]
             },
+            categoryChartData: {
+                labels: this.categoryLabels,
+                datasets: [
+                    {
+                        label: "Categories",
+                        backgroundColor: ['#9F2B68', '#800020', '#301934', '#CBC3E3', '#AA98A9',  '#673147'],
+                        data: this.categoryCounts,
+                    }
+                ]
+            },
             achievements: [],
             AchievementPage: false,
             HostPage: false,
@@ -136,6 +159,9 @@ export default {
             passiveModeHosts: [],
             pastTrackingNumbers: [],
 
+            categoryLabels: [],
+            categoryCounts: [],
+
             key: 0,
 
         }
@@ -146,18 +172,25 @@ export default {
         }
     },
     beforeUpdate(){
-        //var vm=this;
+        console.log(this.passiveCategoryList)
+        for(var i = 0; i < this.passiveCategoryList.length; i++){
+            this.categoryLabels[i] = this.passiveCategoryList[i].name;
+            this.categoryCounts[i] = this.passiveCategoryList[i].count;
+        }
+        console.log(this.categoryCounts);
+        console.log(this.categoryLabels);
+        this.categoryChartData.labels = this.categoryLabels;
+        this.categoryChartData.datasets[0].data = this.categoryCounts;
+
         console.log(this.totalRequests + "    " + this.passiveModeUniqueHosts)
         this.chartData.datasets[0].data = [(this.totalRequests-this.passiveModeTotalTrackers), this.passiveModeTotalTrackers]
         this.key++;
         var vm=this;
         chrome.storage.local.get(["achievements"], function(result){
             vm.achievements = result.achievements;
-            //console.log(result);
         })
         console.log(vm.achievements);
         chrome.storage.local.get(["passiveCountryList"], function(result){
-                //vm.passiveModeTotalCounties = result.passiveCountryList.length;
                 console.log(result);
                 for(var i = 0; i < vm.passiveModeCountries.length; i++){
                     vm.passiveCountryCounts[i] = vm.passiveModeCountries[i].count;
@@ -182,6 +215,9 @@ p.PassiveText{
   font-size: 12px;
   text-align: justify;
   display: flex;
+}
+ol.CategoryList {
+    margin-right: 35px;
 }
 
 button.passiveButton {

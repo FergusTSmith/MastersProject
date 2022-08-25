@@ -6,8 +6,8 @@
     <label>Enter a new username:</label><br/>
     <input ref="NewUsername" type="text">
     <br/>
-    <button @click="changeUsername" type="button">Save</button>
-    <button @click="exitToHomePage" type="button">Back</button>
+    <button id="Save" @click="changeUsername" type="button">Save</button>
+    <button id="Back" @click="exitToHomePage" type="button">Back</button>
 </template>
 
 <script>

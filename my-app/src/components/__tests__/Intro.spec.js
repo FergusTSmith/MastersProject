@@ -25,7 +25,7 @@ describe('IntroPage Component Unit Tests: ', () => {
     const image = wrapper.get('img');
   })
 
-  it("clicking button", async() => {
+  it("clicking button", async() =>  {
     var wrapper = mount(IntroPage);
     await wrapper.find('button').trigger('click');
     //expect(wrapper.text()).toContain("Welcome Back")

@@ -2,9 +2,9 @@
     <div v-if="Options">
     <h2>TrackerHunt</h2>
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/><br/>
-    <button class="OptionsButton" @click="changeUsernamePage" type="button">Change Username</button>
-    <button class="OptionsButton" @click="pauseBlocking" type="button">Pause Tracker Blocking</button>
-    <button class="OptionsButton" @click="logout" type="button">Logout</button>
+    <button id="ChangeUser" class="OptionsButton" @click="changeUsernamePage" type="button">Change Username</button>
+    <button id="Pause" class="OptionsButton" @click="pauseBlocking" type="button">Pause Tracker Blocking</button>
+    <button id="Logout" class="OptionsButton" @click="logout" type="button">Logout</button>
     <br/><br/>
     </div>
 

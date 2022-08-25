@@ -13,6 +13,7 @@ var UserGoogleID = "1245145"
 var userSoloContinue = false;
 var userMultiContinue = false;
 var multiGameDetails = {};
+var USersInLobby = [{userID: "Goose96", googleID: "1245145"}]
 
 describe('HomePage Component Unit Tests: ', () => {
     
@@ -29,6 +30,15 @@ describe('HomePage Component Unit Tests: ', () => {
     expect(wrapper.find('h2').exists()).toBeTruthy()
     expect(wrapper.find('img').exists()).toBeTruthy()
     expect(wrapper.find('button').exists()).toBeTruthy()
+
+    expect(wrapper.find('#Solo').exists()).toBeTruthy()
+    expect(wrapper.find('#NewLobby').exists()).toBeTruthy()
+    expect(wrapper.find('#Passive').exists()).toBeTruthy()
+    expect(wrapper.find('#Lobby').exists()).toBeTruthy()
+    expect(wrapper.find('#Options').exists()).toBeTruthy()
+    expect(wrapper.find('#Leaderboards').exists()).toBeTruthy()
+    expect(wrapper.find('div').exists()).toBeTruthy();
+
   })
 
   it("size of logo is correct", () => {
@@ -37,7 +47,7 @@ describe('HomePage Component Unit Tests: ', () => {
   })
 
   it("clicking solo", async() => {
-    var wrapper = mount(HomePage);
+    var wrapper = mount(HomePage, {propsData: { UsersID: UsersID}});
     await wrapper.find('#Solo').trigger('click');
     console.log(wrapper.text());
   })

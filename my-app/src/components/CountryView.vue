@@ -9,8 +9,8 @@
       <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/>{{ item.name }} | {{ item.count }} tracker(s)
   </li>
   <br/>
-  <button @click="exitToHomePage">HomePage</button>
-  <button @click="CountToPassive">Back</button> 
+  <button id="HomePage" @click="exitToHomePage">HomePage</button>
+  <button id="Back" @click="CountToPassive">Back</button> 
 </template>
 
 <script>

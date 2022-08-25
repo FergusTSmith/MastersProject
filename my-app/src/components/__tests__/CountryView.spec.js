@@ -20,5 +20,25 @@ describe('HomePage Component Unit Tests: ', () => {
       expect(wrapper.find('h2').exists()).toBeTruthy()
       expect(wrapper.find('img').exists()).toBeTruthy()
       expect(wrapper.find('button').exists()).toBeTruthy()
+      expect(wrapper.find('#HomePage').exists()).toBeTruthy()
+      expect(wrapper.find('#Back').exists()).toBeTruthy()
+      expect(wrapper.find('li').exists()).toBeTruthy()
+
     })
+
+    it("Home Button work as expected", async() => {
+      var wrapper = mount(CountryView, {propsData: { passiveCountryLabels: passiveCountryLabels, passiveCountryCounts: passiveCountryCounts, passiveModeCountries: passiveModeCountries }});
+      var homePageButton = await wrapper.find('#HomePage');
+      await homePageButton.trigger('click');
+      expect(wrapper.emitted().exitToHomePage).toBeTruthy;
+    })
+
+    it("Back button works as expected", async() => {
+      var wrapper = mount(CountryView, {propsData: { passiveCountryLabels: passiveCountryLabels, passiveCountryCounts: passiveCountryCounts, passiveModeCountries: passiveModeCountries }});
+      var BackButton = await wrapper.find('#Back');
+      await BackButton.trigger('click');
+      expect(wrapper.emitted().CountToPassive).toBeTruthy;
+    })
+
+
 })
