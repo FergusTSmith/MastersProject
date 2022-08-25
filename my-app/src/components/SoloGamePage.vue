@@ -4,14 +4,16 @@
     <p class="HelpText" v-if="InformationBox && GameMode==='Classic'">{{ ClassicInfo }}</p>
     <p class="HelpText" v-if="InformationBox && GameMode==='Bingo'">{{ BingoInfo }}</p>
     <div v-if="(!gameOver)">
-    <br/>
     <!-----Using a more sophisticated solution for the timer. Adapted from https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f-->
     <div class="timer">
     <BaseTimer id="BaseTimer" :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="30"></BaseTimer>
-    <br/>
     </div>
     <div v-if="GameMode === 'Classic'" class="ClassicGameMode">
-    <p class="HelpText">Current Score: </p><p class="UserScore">{{ this.userScore }}</p>
+    <p class="HelpText">Current Score: </p>
+    <div class="CountryChart" v-if="VisitedCountries.length != 0">
+        <p class="UserScore">{{ this.userScore }}</p>
+        <PassiveModeChart ref ="CategoryChart" :chartData="countryChartData" :options="countryOptions" :height="20" :width="200"></PassiveModeChart>
+    </div>
     <li v-for="item in orderedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
         <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/><p class="CountryText">{{ item.name }} | {{ item.count }} tracker(s) | {{ item.multiplyer*item.count }} point(s)</p><p class = "TinyText"> {{ item.site }} </p>
     </li>
@@ -43,7 +45,11 @@
     <div v-if="gameOver">
     <h2 class="GameOver">GAME OVER</h2>
     <div v-if="GameMode === 'Classic'">
-    <p>Your score was: </p><p class="UserScore">{{ this.userScore }}</p>
+    <p>Your score was: </p>
+    <div class="CountryChart" v-if="orderedCountries != []">
+        <p class="UserScore">{{ this.userScore }}</p>
+        <PassiveModeChart ref ="CategoryChart" :chartData="countryChartData" :options="countryOptions" :height="20" :width="200"></PassiveModeChart>
+    </div>
     <li v-for="item in orderedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
         <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/><p class="EndScreenText"> {{ item.count }} tracker(s) | {{ item.multiplyer*item.count }} point(s)</p>
     </li>
@@ -54,6 +60,10 @@
     </div>
     <p class="CategoryText">You were tracked by {{ VisitedCountries.length }} nation(s)</p>
     <p v-if="APIEnabled" class="CategoryText">During your game, you were tracked when visiting the following categories of pages: </p>
+    <div class="CategoryChart" v-if="categoryList.length != 0">
+        <PassiveModeChart ref ="CategoryChart" :chartData="chartData" :options="options" :height="20" :width="200"></PassiveModeChart>
+    </div>
+    <br/>
     <li v-for="item in categoryList" ref="ListOfCategories" :key="item.name" class="CategoryList">
         {{ item.name }} | {{ item.count }}
     </li>
@@ -64,11 +74,13 @@
 
 <script>
 import BaseTimer from "../components/BaseTimer";
+import PassiveModeChart from './PassiveModeChart.vue';
 import _ from 'lodash';
 
 export default {
     components: {
-        BaseTimer
+        BaseTimer,
+        PassiveModeChart
     },
     // Adapted from https://stackoverflow.com/questions/55773602/how-do-i-create-a-simple-10-seconds-countdown-in-vue-js
     watch: {
@@ -114,6 +126,12 @@ export default {
             didYouWin: false,
             noOfCountriesBingo: 0,
 
+            categoryLabels: [],
+            categoryCounts: [],
+
+            countryLabels: [],
+            countryCounts: [],
+
             easyCountries: ["United States", "United Kingdom"],
             medEasyCountries: ["Canada", "Ireland", "Germany", "Netherlands", "Belgium"],
             hardCountries: ["China", "Russia", "Bulgaria", "Japan"],
@@ -124,8 +142,67 @@ export default {
             NorthAmerica: ["United States", "USA", "United States of America", "Canada", "Mexico"],
             Oceania: ["Australia", "New Zealand"],
             onePointCountries: ["United Kingdom", "United States"],
+
+            options: {
+                responsive: false,
+                maintainAspectRation: false,
+                animation: {
+                    animateRotate: false
+                },
+                hoverBorderWidth: 10,
+                cutoutPercentage: 90,
+            },
+            chartData: {
+                labels: this.categoryLabels,
+                datasets: [
+                    {
+                        label: "Categories",
+                        backgroundColor: ['#9F2B68', '#800020', '#301934', '#CBC3E3', '#AA98A9',  '#673147'],
+                        data: this.categoryCounts
+                    }
+                ]
+            },
+            countryOptions: {
+                responsive: false,
+                maintainAspectRation: false,
+                animation: {
+                    animateRotate: false
+                },
+                hoverBorderWidth: 10,
+                cutoutPercentage: 40,
+            },
+            countryChartData: {
+                labels: this.countryLabels,
+                datasets: [
+                    {
+                        label: "Countries",
+                        backgroundColor: ['#228B22', '#808000', '#023020', '#4F7942', '#8A9A5B', '#B4C424', '#C9CC3F'],
+                        data: this.countryCounts
+                    }
+                ]
+            }
     
         }
+    },
+    beforeUpdate(){
+        for(var i = 0; i < this.categoryList.length; i++){
+            this.categoryLabels[i] = this.categoryList[i].name;
+            this.categoryCounts[i] = this.categoryList[i].count;
+        }
+        console.log(this.categoryList);
+        console.log(this.categoryLabels);
+        console.log(this.categoryCounts);
+
+        this.chartData.labels = this.categoryLabels;
+        this.chartData.datasets[0].data = this.categoryCounts;
+
+        for(var j = 0; j < this.VisitedCountries.length; j++){
+            this.countryLabels[j] = this.VisitedCountries[j].name;
+            this.countryCounts[j] = this.VisitedCountries[j].count;
+        }
+
+        this.countryChartData.labels = this.countryLabels;
+        this.countryChartData.datasets[0].data = this.countryCounts;
     },
     mounted(){
         this.timer = this.startTime;
@@ -470,13 +547,21 @@ div.timer {
     margin-right: 0px;
     margin-left: 18px;
 }
+div.CategoryChart {
+    height: 100px;
+    width: 100px;
+    margin-left: 55px;
+    position: relative;
+    top: 100;
+}
 
 p.UserScore {
     font-family: 'digitalFont';
     font-size: 30px;
     color: #20C20E;
-    margin-top: 0px;
-    margin-bottom: 5px;
+    position: absolute;
+    margin-left: 35px;
+    margin-top: 26px;
 }
 div.buttonBar {
     position: sticky;

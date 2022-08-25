@@ -5,11 +5,16 @@
     <p class="HelpText" v-if="InformationBox && GameMode==='Bingo'">{{ BingoInfo }}</p>
     <div v-if="(!gameOver)">
     <br/>
-    <!----<label>Time remaining: </label><p> {{ timer }}</p>-->
-    <BaseTimer :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="30"></BaseTimer>
+    <div class="timer">
+        <BaseTimer :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="30"></BaseTimer>
+    </div>
     <br/>
     <div v-if="GameMode === 'Classic'" class="ClassicGameMode">
-    <p class="HelpText">Current Score: </p><p class="UserScore">{{ this.userScore }}</p>
+    <p class="HelpText">Current Score: </p>
+    <div class="CountryChart" v-if="VisitedCountries.length != 0">
+        <p class="UserScore">{{ this.userScore }}</p>
+        <PassiveModeChart ref ="CategoryChart" :chartData="countryChartData" :options="countryOptions" :height="20" :width="200"></PassiveModeChart>
+    </div>
     <li v-for="item in orderedCountries" ref="ListOfScores" :key="item" class="TrackedCountry">
         <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/><p class="CountryText">{{ item.name }} | {{ item.count }} tracker(s) | {{ item.multiplyer*item.count }} point(s)</p><p class = "TinyText"> {{ item.site }} </p>
     </li>
@@ -68,7 +73,11 @@
     </div>
 
     <div v-if="GameMode === 'Classic'">
-    <p>Your score was: </p><p class="UserScore">{{ this.userScore }}</p>
+    <p>Your score was: </p>
+    <div class="CountryChart" v-if="VisitedCountries.length != 0">
+        <p class="UserScore">{{ this.userScore }}</p>
+        <PassiveModeChart ref ="CategoryChart" :chartData="countryChartData" :options="countryOptions" :height="20" :width="200"></PassiveModeChart>
+    </div>
     <div class="GameResults">
     <li v-for="item in orderedCountries" ref="ListOfScores" :key="item.name" class="TrackedCountry">
          <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/><p class="EndScreenText"> {{ item.count }} tracker(s) | {{ item.multiplyer*item.count }} point(s)</p>
@@ -86,6 +95,9 @@
     <p>You were tracked by {{ noOfCountries }} nation(s) in total</p>
     </div>
     <p v-if="APIEnabled" class="CategoryText">During your game, you were tracked when visiting the following categories of pages: </p>
+    <div class="CategoryChart" v-if="categoryList.length != 0">
+        <PassiveModeChart ref ="CategoryChart" :chartData="chartData" :options="options" :height="20" :width="200"></PassiveModeChart>
+    </div>
     <li v-for="item in categoryList" ref="ListOfCategories" :key="item.name" class="CategoryList">
         {{ item.name }} | {{ item.count }}
     </li>
@@ -98,6 +110,7 @@
 
 <script>
 import BaseTimer from "../components/BaseTimer";
+import PassiveModeChart from './PassiveModeChart.vue';
 import _ from 'lodash';
 
 export default {
@@ -121,9 +134,25 @@ export default {
         immediate: true
       }
     },
-    created(){
-      //this.$socket.open; Removing for testing
-      //this.$socket.connected; Removing as it's breaking testsnpm run tes
+    beforeUpdate(){
+        for(var i = 0; i < this.categoryList.length; i++){
+            this.categoryLabels[i] = this.categoryList[i].name;
+            this.categoryCounts[i] = this.categoryList[i].count;
+        }
+        console.log(this.categoryList);
+        console.log(this.categoryLabels);
+        console.log(this.categoryCounts);
+
+        this.chartData.labels = this.categoryLabels;
+        this.chartData.datasets[0].data = this.categoryCounts;
+
+        for(var j = 0; j < this.VisitedCountries.length; j++){
+            this.countryLabels[j] = this.VisitedCountries[j].name;
+            this.countryCounts[j] = this.VisitedCountries[j].count;
+        }
+
+        this.countryChartData.labels = this.countryLabels;
+        this.countryChartData.datasets[0].data = this.countryCounts;
     },
     mounted(){
         this.LobbyUsers = this.UsersInLobby;
@@ -295,7 +324,8 @@ export default {
       },
     },
     components: {
-        BaseTimer
+        BaseTimer,
+        PassiveModeChart
     },
     data(){
         return {
@@ -333,6 +363,50 @@ export default {
             NorthAmerica: ["United States", "USA", "United States of America", "Canada", "Mexico"],
             Oceania: ["Australia", "New Zealand"],
             onePointCountries: ["United Kingdom", "United States"],
+
+            options: {
+                responsive: false,
+                maintainAspectRation: false,
+                animation: {
+                    animateRotate: false
+                },
+                hoverBorderWidth: 10,
+                cutoutPercentage: 90,
+            },
+            chartData: {
+                labels: this.categoryLabels,
+                datasets: [
+                    {
+                        label: "Categories",
+                        backgroundColor: ['#9F2B68', '#800020', '#301934', '#CBC3E3', '#AA98A9',  '#673147'],
+                        data: this.categoryCounts
+                    }
+                ]
+            },
+            countryOptions: {
+                responsive: false,
+                maintainAspectRation: false,
+                animation: {
+                    animateRotate: false
+                },
+                hoverBorderWidth: 10,
+                cutoutPercentage: 40,
+            },
+            countryChartData: {
+                labels: this.countryLabels,
+                datasets: [
+                    {
+                        label: "Countries",
+                        backgroundColor: ['#228B22', '#808000', '#023020', '#4F7942', '#8A9A5B', '#B4C424', '#C9CC3F'],
+                        data: this.countryCounts
+                    }
+                ]
+            },
+            categoryLabels: [],
+            categoryCounts: [],
+
+            countryLabels: [],
+            countryCounts: [],
         }
     },
 
@@ -728,8 +802,8 @@ p.UserScore {
     font-family: 'digitalFont';
     font-size: 25px;
     color: #20C20E;
-    margin-top: 0px;
-    margin-bottom: 5px;
+    text-align: center;
+    left: 85px;
 }
 
 ol.BingoPlayers {
@@ -785,5 +859,8 @@ img.CountryFlag {
 label.Guide {
     font-size: 12px;
     color: lightgrey;
+}
+div.timer {
+    margin-left: 20px;
 }
 </style>
