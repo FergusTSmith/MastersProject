@@ -1,9 +1,14 @@
+<!----------
+- The PassiveMode.vue file is the component responsible for rendering the passive mode statistics and charts for the user. 
+- Parents: HomePageView.vue
+- Children: PassiveModeChart.vue, AchievementsView.vue, HostsView.vue, CountryView.vue
+------------->
 <template>
     <div v-if="PassivePage">
         <h2>TrackerHunt</h2>
         <p class="HelpText">"Passive Mode" engages whenever you install TrackerHunt. This will show a collection of all of the trackers encountered since the application was installed.</p>
         <div class="Chart">
-        <PassiveModeChart ref ="PassiveModeChart" :chartData="chartData" :options="options" :height="20" :width="200" :key="totalRequests"></PassiveModeChart>
+            <PassiveModeChart ref ="PassiveModeChart" :chartData="chartData" :options="options" :height="20" :width="200" :key="totalRequests"></PassiveModeChart>
         </div>
         <p class="Stats">Blocked Requests: {{ passiveModeTotalTrackers}} </p>
         <p class="Stats">Total Requests: {{ totalRequests }}</p>
@@ -47,7 +52,6 @@ import PassiveModeChart from './PassiveModeChart.vue';
 import AchievementsView from '@/components/AchievementsView.vue';
 import HostsView from '@/components/HostsView.vue';
 import CountryView from '@/components/CountryView.vue';
-
 export default {
     props: {
         passiveModeTotalTrackers: {
@@ -76,6 +80,7 @@ export default {
         }
     },
     methods: {
+        // The following methods are view controllers, and are in charge of rendering the child components.
         PassiveToHost(){
             this.PassivePage = false;
             this.HostPage = true;
@@ -88,6 +93,7 @@ export default {
             this.PassivePage = false;
             this.AchievementPage = true;
         },
+        // This is to reset the page back to the Home Page.
         exitToHomePage(){
             this.$emit('exitToHomePage');
             this.CountryPage = false;
@@ -118,6 +124,7 @@ export default {
         return {
             totalTrackers: this.passiveModeTotalTrackers,
             totalHosts: this.passiveModeUniqueHosts,
+            // Variables are for the chart data in order to render the two charts.
             options: {
                 responsive: false,
                 maintainAspectRation: false,
@@ -148,6 +155,7 @@ export default {
                     }
                 ]
             },
+            // Initialisation of variables required for displaying the passive statistics to the user. 
             achievements: [],
             AchievementPage: false,
             HostPage: false,
@@ -163,7 +171,6 @@ export default {
             categoryCounts: [],
 
             key: 0,
-
         }
     },
     computed: {
@@ -171,44 +178,35 @@ export default {
             return this.chartData.datasets[0].data
         }
     },
+    // Logic is fired before the updating of the render. Ensures that the chart data is available within data() before rendering, meaning the charts are rendered on the first visit. Also retrieves and initialises all the required variables. 
     beforeUpdate(){
-        console.log(this.passiveCategoryList)
         for(var i = 0; i < this.passiveCategoryList.length; i++){
             this.categoryLabels[i] = this.passiveCategoryList[i].name;
             this.categoryCounts[i] = this.passiveCategoryList[i].count;
         }
-        console.log(this.categoryCounts);
-        console.log(this.categoryLabels);
         this.categoryChartData.labels = this.categoryLabels;
         this.categoryChartData.datasets[0].data = this.categoryCounts;
-
-        console.log(this.totalRequests + "    " + this.passiveModeUniqueHosts)
         this.chartData.datasets[0].data = [(this.totalRequests-this.passiveModeTotalTrackers), this.passiveModeTotalTrackers]
         this.key++;
         var vm=this;
         chrome.storage.local.get(["achievements"], function(result){
             vm.achievements = result.achievements;
         })
-        console.log(vm.achievements);
         chrome.storage.local.get(["passiveCountryList"], function(result){
-                console.log(result);
-                for(var i = 0; i < vm.passiveModeCountries.length; i++){
-                    vm.passiveCountryCounts[i] = vm.passiveModeCountries[i].count;
-                    vm.passiveCountryLabels[i] = vm.passiveModeCountries[i].name;
-                }
+            for(var i = 0; i < vm.passiveModeCountries.length; i++){
+                vm.passiveCountryCounts[i] = vm.passiveModeCountries[i].count;
+                vm.passiveCountryLabels[i] = vm.passiveModeCountries[i].name;
+            }
         })
         chrome.storage.local.get(["passiveHosts"], function(result){
-          vm.passiveModeHosts = result.passiveHosts;
+            vm.passiveModeHosts = result.passiveHosts;
         })
         chrome.storage.local.get(["pastTrackingNumbers"], function(result){
             vm.pastTrackingNumbers = result.pastTrackingNumbers;
-            console.log(vm.pastTrackingNumbers)
-            console.log("Look above")
         })
     }   
 }
 </script>
-
 <style>
 p.PassiveText{
   color: white;
@@ -219,7 +217,6 @@ p.PassiveText{
 ol.CategoryList {
     margin-right: 35px;
 }
-
 button.passiveButton {
     width: 80%;
     font-weight: bold;
@@ -234,7 +231,6 @@ p.HelpText {
     font-size: 9x;
     color: lightgray;
 }
-
 div.Chart {
     width: 130px;
     height: 130px;

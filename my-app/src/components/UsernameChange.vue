@@ -1,3 +1,8 @@
+<!----------
+- The UsernameChange.vue file is the component responsible for rendering the page for users to change their usernames
+- Parents: OptionsView.vue
+- Children: None
+------------->
 <template>
     <h2>TrackerHunt</h2>
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/><br/>
@@ -11,9 +16,9 @@
 </template>
 
 <script>
-
 export default {
     methods: {
+        // Methods primarily delegate to OptionsView.vue
         changeUsername(){
             if(this.$refs.NewUsername.value != null){
                 this.$emit('changeUsername', this.$refs.NewUsername.value);

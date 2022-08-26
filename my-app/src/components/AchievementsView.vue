@@ -1,3 +1,9 @@
+<!----------
+- The AchievementsView.vue file exclusively concerns the displaying of a user's achievements on the achievement page. 
+- Parent: PassiveMode.vue
+- Children: None
+------------->
+
 <template>
     <p class="HelpText">Passive Mode Achievements are unlocked while passively browsing. A notification will be received when this is achieved.</p>
   <li class="Achievements" v-for="item in achievements" :key="item">

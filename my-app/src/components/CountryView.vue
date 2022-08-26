@@ -1,3 +1,8 @@
+<!----------
+- The CountryView.vue file is the component responsible for rendering the page for the passive mode Countries. 
+- Parents: PassiveMode.vue
+- Children: PassiveModeChart.vue
+------------->
 <template>
     <h2>TrackerHunt</h2>
   <p class="HelpText">Passive Mode - Complete list of Countries</p>
@@ -5,7 +10,7 @@
   <PassiveModeChart ref ="PassiveModeChart" :chartData="chartData" :options="options" :height="20" :width="200"></PassiveModeChart>
   </div>
   <br/>
-  <li v-for="item in passiveModeCountries" :key="item" class="TrackedCountry">
+  <li v-for="item in orderedCountries" :key="item" class="TrackedCountry">
       <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.shortname + '.jpeg'"/>{{ item.name }} | {{ item.count }} tracker(s)
   </li>
   <br/>
@@ -16,13 +21,12 @@
 <script>
 import _ from 'lodash';
 import PassiveModeChart from './PassiveModeChart.vue';
-
-
 export default {
     beforeMount() {
         console.log(this.labelsArray);
         console.log(this.dataArray)
     },
+    // The Labels and Counts props are for the chart data. This is just a way of structuring the information into labels and values so that it can be rendered by the chart.
     props: {
         passiveModeCountries: {
             type: Array,
@@ -38,6 +42,7 @@ export default {
         }
     },
     methods: {
+        // In this instance, both of the methods are just view controller methods. Therefore, they delegate the work of changing this view to the PassiveMode page.
         exitToHomePage(){
             this.$emit('exitToHomePage')
         },
@@ -45,7 +50,8 @@ export default {
             this.$emit('CountToPassive')
         }
     },
-    computer: {
+    computed: {
+        // Allows us to order the list of countries by count.
         orderedCountries(){
             return _.orderBy(this.passiveModeCountries, 'count', 'desc');
         }
@@ -58,6 +64,7 @@ export default {
             labelsArray: [],
             dataArray: [],
             vm: this,
+            // Options and Data for the Chart:
             options: {
                 responsive: false,
                 maintainAspectRation: false,

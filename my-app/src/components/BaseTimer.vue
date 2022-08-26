@@ -1,5 +1,10 @@
-<!--- This timer was created using a guide, and therefore, is largely similar to the below guide:-->
-<!----https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f--->
+<!----------
+- The BaseTimer.vue file is the component responsible for rendering the dynamic timer used during gameplay. 
+- Parents: SoloGame, MultiPlayerGame
+- Children: None
+- The code in this file is largely adapted and taken from a tutorial online for implementing a timer of this type. The tutorial can be found at:
+- M Rybczonek, "How to Create an Animated Countdown Timer With Vue", Medium.com, Available at: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f, Accessed 02/08/2022
+------------->
 
 <script>
 export default {
@@ -51,7 +56,7 @@ export default {
       }
     }
 }</script>
-
+<!------Below code taken adapted from - M Rybczonek, "How to Create an Animated Countdown Timer With Vue", Medium.com, Available at: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f, Accessed 02/08/2022-->
 <template>
   <div class="base-timer">
     <svg

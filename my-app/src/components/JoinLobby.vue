@@ -1,3 +1,8 @@
+<!----------
+- The JoinLobby.vue file is the component responsible for rendering the page for joining a lobby. 
+- Parents: HomePage.vue
+- Children: None
+------------->
 <template>
     <h2>TrackerHunt</h2>
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/><br/>
@@ -11,6 +16,7 @@
 <script>
 export default {
     methods: {
+        // Only methods for this delegate their work to the HomePage.vue component, where the logic for entering a lobby is contained. 
         enterLobby(){
             if(this.$refs.LobbyID === null){
                 return;

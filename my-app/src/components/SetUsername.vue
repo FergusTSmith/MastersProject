@@ -1,3 +1,8 @@
+<!----------
+- The SetUsername.vue file is the component responsible for rendering the page for users to set their username upon initial login. 
+- Parents: App.vue
+- Children: None
+------------->
 <template>
     <h2>TrackerHunt</h2>
     <img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/><br/>
@@ -12,6 +17,7 @@
 <script>
 export default {
     methods: {
+        // Only two methods, and these delegate the majority of the logic to the App.vue component
         setUsername(){
             if(this.$refs.nickname.value === null){
                 return;

@@ -1,6 +1,10 @@
-// Adapted from tutorial: https://www.youtube.com/watch?v=H-anyDrYHyg&ab_channel=AnObjectIsA
+/* The following file, chromelogin.js, handles the logic for a user logging in
+* This exists as an extension script and is handled largely using the OAuth2.0 API, as well as the Chrome Developer APIs
+* The creation of this file was largely adapted from a tutorial:
+* An Object Is A, 2020, "How to Use Google Login with Chrome Extensions(MV2) | OAuth2/OpenID Connect", Uploaded August 7th 2020, Available At: https://www.youtube.com/watch?v=H-anyDrYHyg
+*/
 
-
+// These are the details required by the OAuth2.0 framework. 
 let isUserSignedIn = false;
 const CLIENT_ID = encodeURIComponent('24693648368-rkd67f5feebtm0hh9vft6g5q9a4cpbk2.apps.googleusercontent.com');
 const RESPONSE_TYPE = encodeURIComponent('id_token');
@@ -12,7 +16,9 @@ var user_info = '';
 var user_id = '';
 var uniqueIDforUser = '';
 
+// This is an event listener that listens to messages sent from the front end. 
 
+// This responds to messages providing logic for logging in, retrieving google IDs, and logging out. 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if(request.message === 'login'){
         if(isSignedIn()){
@@ -74,9 +80,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 })
 
+// A helper function for the above algorithms to return whether or not the user is currently signed in. This is adapted from:
+/* An Object Is A, 2020, "How to Use Google Login with Chrome Extensions(MV2) | OAuth2/OpenID Connect", Uploaded August 7th 2020, Available At: https://www.youtube.com/watch?v=H-anyDrYHyg
+*/
+
 function isSignedIn(){
     return isUserSignedIn;
 }
+
+// This is a helper method that creates the URL for the user to login to Google. This is adapted from:
+/* An Object Is A, 2020, "How to Use Google Login with Chrome Extensions(MV2) | OAuth2/OpenID Connect", Uploaded August 7th 2020, Available At: https://www.youtube.com/watch?v=H-anyDrYHyg
+*/
 
 function create_uri_oauth2(){
     let nonce = encodeURIComponent(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));

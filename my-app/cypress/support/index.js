@@ -1,3 +1,0 @@
-beforeEach(() => {
-    cy.clearExtensionStorage('local');
-  });

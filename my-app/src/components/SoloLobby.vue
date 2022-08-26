@@ -1,3 +1,8 @@
+<!----------
+- The SoloLobby.vue file is the component responsible for rendering the page for users to set their username upon initial login. 
+- Parents: HomePageView.vue
+- Children: SoloGamePage.vue
+------------->
 <template>
     <div v-if="SoloPage">
         <h2>TrackerHunt</h2>
@@ -14,7 +19,7 @@
         </li>
         </ol>
         <br/>
-        <!--- Radio Buttons adapted from https://markheath.net/post/customize-radio-button-css https://codepen.io/phusum/pen/VQrQqy-->
+        <!---- Radio Buttons adapted from tutorial: M Heath, "Customize Radio Button with CSS", markheath.net, Available at: https://markheath.net/post/customize-radio-button-css, Accessed 02/08/2022-->
         <label class="HelpText">Choose Round Length:</label>
         <div class="RadioButtons">
             <input id="twoMin" class="Radio" type="radio" value="120" name="time" ref="Timebutton" @change="onTimeChange($event)"/><label for="twoMin">2 min</label>
@@ -33,7 +38,6 @@
 
 <script>
 import SoloGamePage from '@/components/SoloGamePage.vue'
-
 export default {
     props: {
         personalSoloHS: {
@@ -52,22 +56,18 @@ export default {
     components: {
         SoloGamePage,
     },
+    // Whenever this component is initially rendered, we check if the user is rejoining a game, and if so, get the relevant backupgame details. 
     created(){
         var vm = this;
         if(this.userSoloContinue){
             chrome.storage.local.get(['backupGameDetails'], function(result){
-                console.log(result);
                 var backupGame = result.backupGameDetails;
                 vm.gameMode = backupGame.GameMode;
                 vm.timer = backupGame.timer;
-                console.log("Timer test")
-                console.log(vm.timer);
             })
             this.SoloPage = false;
             this.SoloGame = true;
         }
-        console.log(this.timer);
-        console.log(this.gameMode);
     },
     data() {
         return {
@@ -80,6 +80,7 @@ export default {
         }
     },
     methods: {
+        // The below methods change the game mode and timer depending on the radio buttons selected.
         onGameModeChange(){
             var gameModeSelected = event.target.value;
             this.gameMode = gameModeSelected;
@@ -88,13 +89,14 @@ export default {
             var timeSelected = event.target.value;
             this.timer = timeSelected;
         },
+        // Renders the Solo Game page and informs the server the user is now in a solo game.
         soloGameInitiated(){
             this.gameOver = false;
             this.SoloPage = false;
             this.SoloGame = true;
-
             this.$socket.emit("playerInSoloGame", this.userProfile.googleID)
         },
+        // Below logic is for returnin gto the home page, or doing this and resetting
         exitToHomePage(){
             this.$emit('exitToHomePage')
             this.SoloGame = false;
@@ -102,12 +104,11 @@ export default {
         },
         exitToHomePageReset(){
             this.$emit('exitToHomePage');
-            console.log('More teeest');
             this.gameover = false;
-
             this.SoloGame = false;
             this.SoloPage = false;
         },
+        // This method is to reset the variable that indicates the player is rejoining a game. 
         resetSoloStatus(){
             this.$emit('resetSoloStatus')
         }

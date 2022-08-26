@@ -1,11 +1,16 @@
+<!----------
+- The OptionsView.vue file is the component responsible for rendering the options page. 
+- Parents: HomePageView.vue
+- Children: UsernameChange.vue
+------------->
 <template>
     <div v-if="Options">
-    <h2>TrackerHunt</h2>
-    <img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/><br/>
-    <button id="ChangeUser" class="OptionsButton" @click="changeUsernamePage" type="button">Change Username</button>
-    <button id="Pause" class="OptionsButton" @click="pauseBlocking" type="button">Pause Tracker Blocking</button>
-    <button id="Logout" class="OptionsButton" @click="logout" type="button">Logout</button>
-    <br/><br/>
+        <h2>TrackerHunt</h2>
+        <img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/><br/>
+        <button id="ChangeUser" class="OptionsButton" @click="changeUsernamePage" type="button">Change Username</button>
+        <button id="Pause" class="OptionsButton" @click="pauseBlocking" type="button">Pause Tracker Blocking</button>
+        <button id="Logout" class="OptionsButton" @click="logout" type="button">Logout</button>
+        <br/><br/>
     </div>
 
     <div v-if="UsernamePage" id="UsernamePage">
@@ -15,7 +20,6 @@
 
 <script>
 import UsernameChangeVue from './UsernameChange.vue';
-
 export default {
     data(){
         return {
@@ -33,11 +37,12 @@ export default {
         }
     },
     methods: {
+        // View controller to render the UsernameChange.vue component.
         changeUsernamePage(){
             this.Options = false;
             this.UsernamePage = true;
-            console.log("emitted");
         },
+        // Logic for logging out, delegates the majority of this to the extension scripts and HomePage.vue
         logout(){
             var vm = this;
             chrome.runtime.sendMessage({ message: 'logout'}, function(response) {
@@ -47,6 +52,7 @@ export default {
                 }
             })
         },
+        // This logic communicates to the extension scripts in order to turn request blocking on and off. 
         pauseBlocking(){
             console.log("Test")
             chrome.runtime.sendMessage({ message: 'pauseBlocking'}, function(response){
@@ -63,6 +69,7 @@ export default {
                 
             })
         },
+        // Changes username by delegating to the HomepageView.vue component. 
         changeUsername($event){
             this.$emit('changeUsername', $event)
         }

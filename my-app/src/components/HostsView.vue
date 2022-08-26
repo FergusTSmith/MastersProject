@@ -1,3 +1,8 @@
+<!----------
+- The HostsView.vue file is the component responsible for rendering the page for the passive mode Hosts. 
+- Parents: PassiveMode.vue
+- Children: None
+------------->
 <template>
     <h2>TrackerHunt</h2>
   <p class="HelpText">Passive Mode - Complete list of Hosts</p>
@@ -10,7 +15,6 @@
 
 <script>
 import _ from 'lodash';
-
 export default {
     props: {
         passiveModeHosts: {
@@ -19,6 +23,7 @@ export default {
         }
     },
     methods: {
+        // Only real methods for this component are view controllers. 
         exitToHomePage(){
             this.$emit('exitToHomePage');
         },
