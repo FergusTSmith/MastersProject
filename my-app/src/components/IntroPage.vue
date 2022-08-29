@@ -40,7 +40,6 @@ export default {
         DevLogin(){
             this.$socket.emit('doesUserExist', "108040570320593718088");
             this.$emit('userLogin', "108040570320593718088")
-            console.log("TEST")
         },
         // Ensures that we retrieve the leaderboards early, so that there is minimal lag when rendering this. 
         getHighScores(){

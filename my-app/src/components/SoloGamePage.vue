@@ -510,8 +510,7 @@ p.UserScore {
     font-size: 30px;
     color: #20C20E;
     position: absolute;
-    margin-left: 35px;
-    margin-top: 26px;
+    text-align: center;
 }
 div.buttonBar {
     position: sticky;
