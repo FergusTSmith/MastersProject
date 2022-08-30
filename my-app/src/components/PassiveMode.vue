@@ -197,6 +197,7 @@ export default {
                 vm.passiveCountryCounts[i] = vm.passiveModeCountries[i].count;
                 vm.passiveCountryLabels[i] = vm.passiveModeCountries[i].name;
             }
+            console.log(result);
         })
         chrome.storage.local.get(["passiveHosts"], function(result){
             vm.passiveModeHosts = result.passiveHosts;

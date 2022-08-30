@@ -134,8 +134,10 @@ export default {
 
             // Bingo Mode Variables
             easyCountries: ["United States", "United Kingdom"],
-            medEasyCountries: ["Canada", "Ireland", "Germany", "Netherlands", "Belgium"],
-            hardCountries: ["China", "Russia", "Bulgaria", "Japan"],
+            //medEasyCountries: ["Canada", "Ireland", "Germany", "Netherlands", "Belgium"],
+            medEasyCountries: ["Canada"],
+            //hardCountries: ["China", "Russia", "Bulgaria", "Japan"],
+            hardCountries: ["China"],
 
             // Geolocation of countries, used for Classic mode point calculation.
             CountriesInAsia: ["Japan", "Indonesia", "India", "China", "Thailand", "South Korea", "Philippines", "Singapore", "Vietnam", "Malaysia", "Hong Kong", "Saudi Arabia", "Pakistan", "Myanmar", "Cambodia", "Taiwan", "Laos", "Iran", "Sri Lanka", "Israel", "Maldives", "Afghanistan", "Bangladesh", "Nepal", "Qatar", "Mongolia", "Brunei", "Lebanon", "North Korea", "Iraq", "Uzbekistan", "Syria", "Macao", "Christmas Islands", "United Arab Emirates", "Jordan", "Armenia", "Timor-Leste", "Kyrgzstan", "Yemen", "Paliestine", "Bhutan", "Kuwait", "Turkmenistan", "Bahrain", "Tajikistan", "Oman"],
@@ -410,10 +412,8 @@ export default {
         updateScoreClassic(){
             var vm = this;
             chrome.storage.local.get(["countryList"], function(result){
-                let count = 0;
                 let score = 0;
                 for(var i = 0; i < result.countryList.length; i++){
-                    count += result.countryList[i].count;
                     if(vm.onePointCountries.includes(result.countryList[i].name)){
                         score += result.countryList[i].count;
                     }else if(vm.EuropeanCountries.includes(result.countryList[i].name) || vm.NorthAmerica.includes(result.countryList[i].name)){
@@ -511,6 +511,7 @@ p.UserScore {
     color: #20C20E;
     position: absolute;
     text-align: center;
+    margin-left: 30px;
 }
 div.buttonBar {
     position: sticky;

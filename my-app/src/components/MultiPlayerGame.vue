@@ -157,6 +157,7 @@ export default {
         if(this.userMultiContinue){
             this.$socket.emit('getGameDetails', this.multiGameDetails.playersLobby, this.UsersID)
         }
+        this.timer = this.startTime;
     },
     sockets: {
         // Event fires whenever a user indicates to the server that they are ready. 
@@ -299,7 +300,7 @@ export default {
             categoryList: [],
             gameStarted: false,
             achievements: [],
-            timer: 120,
+            timer: 110,
             noOfCountries: 0,
             WinningUser: undefined,
             didYouWin: false,
@@ -607,10 +608,8 @@ export default {
         updateScoreClassic(){
             var vm = this;
             chrome.storage.local.get(["countryList"], function(result){
-                let count = 0
                 let score = 0;
                 for(var i = 0; i < result.countryList.length; i++){
-                    count += result.countryList[i].count;
                     if(vm.onePointCountries.includes(result.countryList[i].name)){
                         score += result.countryList[i].count;
                     }else if(vm.EuropeanCountries.includes(result.countryList[i].name) || vm.NorthAmerica.includes(result.countryList[i].name)){
