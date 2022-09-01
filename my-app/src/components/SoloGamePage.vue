@@ -133,11 +133,9 @@ export default {
             countryCounts: [],
 
             // Bingo Mode Variables
-            easyCountries: ["United States", "United Kingdom"],
-            //medEasyCountries: ["Canada", "Ireland", "Germany", "Netherlands", "Belgium"],
-            medEasyCountries: ["Canada"],
-            //hardCountries: ["China", "Russia", "Bulgaria", "Japan"],
-            hardCountries: ["China"],
+            easyCountries: ["United States", "United Kingdom", "Canada"],
+            medEasyCountries: [ "Ireland", "Germany", "Netherlands", "Belgium", "Spain", "Belarus", "France", "Czechia", "Poland", "Austria"],
+            hardCountries: ["China", "Russia", "Bulgaria", "Japan", "Mexico", "South Korea", "Singapore"],
 
             // Geolocation of countries, used for Classic mode point calculation.
             CountriesInAsia: ["Japan", "Indonesia", "India", "China", "Thailand", "South Korea", "Philippines", "Singapore", "Vietnam", "Malaysia", "Hong Kong", "Saudi Arabia", "Pakistan", "Myanmar", "Cambodia", "Taiwan", "Laos", "Iran", "Sri Lanka", "Israel", "Maldives", "Afghanistan", "Bangladesh", "Nepal", "Qatar", "Mongolia", "Brunei", "Lebanon", "North Korea", "Iraq", "Uzbekistan", "Syria", "Macao", "Christmas Islands", "United Arab Emirates", "Jordan", "Armenia", "Timor-Leste", "Kyrgzstan", "Yemen", "Paliestine", "Bhutan", "Kuwait", "Turkmenistan", "Bahrain", "Tajikistan", "Oman"],
