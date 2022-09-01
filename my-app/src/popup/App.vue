@@ -1,10 +1,19 @@
+<!----------
+- The App.vue file is the component that is first mounted upon opening the program. This is the root component of the application.
+- Parents: None
+- Children: IntroPage.vue, SetUsername.vue, HomepPageView.vue
+- The main responsibility of this class is to serve as the foundation for the other classes, instantiating different required variables and mounting the core components. 
+- 
+------------->
+
 <script setup>
-//import { ref } from 'vue';
+  // Import statements for the relevant child-components of App.vue
 import IntroPage from '@/components/IntroPage.vue';
 import SetUsername from '@/components/SetUsername.vue';
 import HomePageView from '@/components/HomePageView.vue'
 </script>
 
+<!---- Template code simply renders the three child components -->
 <template>
 <div id="app" :key="componentVersion">
   <div v-if="IntroPageView" id="Intro-Page" ref="Intro-Page">
@@ -16,14 +25,14 @@ import HomePageView from '@/components/HomePageView.vue'
   </div>
 
   <div v-if="HomePage" id = "Home-Page">
-      <HomePageView @changeUsername="changeUsername($event)" @ClearMultiVariable="ClearMultiVariable" @logout="logout" @resetSoloStatus="resetSoloStatus" :gamesPlayed="gamesPlayed" :gamesWon="gamesWon" :UsersID="UsersID" :userProfile="userProfile" :UserGoogleID="UserGoogleID" :userSoloContinue="userSoloContinue" :userMultiContinue="userMultiContinue" :multiGameDetails="multiGameDetails"></HomePageView>
+      <HomePageView @Homepage="Homepage" @changeUsername="changeUsername($event)" @ClearMultiVariable="ClearMultiVariable" @logout="logout" @resetSoloStatus="resetSoloStatus" :gamesPlayed="gamesPlayed" :gamesWon="gamesWon" :UsersID="UsersID" :userProfile="userProfile" :UserGoogleID="UserGoogleID" :userSoloContinue="userSoloContinue" :userMultiContinue="userMultiContinue" :multiGameDetails="multiGameDetails"></HomePageView>
   </div>
 </div>
 </template>
 
 <script>
 export default {
-  // https://manage.auth0.com/dashboard/eu/dev-li-9809u/applications/s449g7DqINXUA9dZNRPdVTwPswnMX9qJ/quickstart
+  // Sockets set up to react to events emitted from the server. 
     sockets: {
       connect() {
         console.log('Client has successfully connected to the Socket.IO websocket.');
@@ -31,37 +40,39 @@ export default {
       disconnect() {
         console.log('Client has disconnected from the Socket.IO websocket.');
       },
+      // Fired whenever the user logs in for the first time  
       UserNotFound(){
           this.UsernamePage = true;
           this.IntroPageView = false;
       },
+      // Fires when the server sends an event with the user's gamesPlayed and gamesWon statistics.
       sendUserDetails(MessageDetails){
             this.gamesPlayed = MessageDetails[0].gamesPlayed;
             this.gamesWon = MessageDetails[0].wonGames
       },
+      // Fires whenever a user logging in has been encountered previously
       UserFound(users){
           console.log(users);
           this.UsernamePage = false;
           this.HomePage = true;
           this.IntroPageView = false;
-
           this.getUserDetails(users[0].googleID);
           console.log(users);
           this.UsersID = users[0].username;
           this.UserGoogleID = users[0].googleID;
           this.userProfile = new User(this.UsersID);
           this.userProfile.googleID = this.UserGoogleID;
-
       },
+      Homepage(){
+        this.HomePage = true;
+      },
+      // Logic for setting a new username
       nameAvailable(MessageDetails){
         console.log(MessageDetails)
         this.UsersID = MessageDetails;
-
         this.$socket.emit('newUser', this.UsersID, this.UserGoogleID);
-
         this.userProfile = new User(this.UsersID);
         this.userProfile.userID = this.UsersID;
-
         this.UsernamePage = false;
         this.HomePage = true;
         this.getUserDetails(this.UserGoogleID);
@@ -71,6 +82,7 @@ export default {
         console.log("Error: Name " + MessageDetails + " is already in use");
         alert("Error: Name " + MessageDetails + " is already in use");
       },
+      // Events fired whenever a user is rejoining a game. 
       UserInMultiplayer(MessageDetails){
         console.log(MessageDetails);
         this.userInAMultiGame = true;
@@ -117,10 +129,12 @@ export default {
       HomePageView
     },
     methods: {
+      // Fires an event to get the users gamesWon and gamesPlayed statistics
       getUserDetails(userGoogleID){
         this.$socket.emit('retrieveDetails', userGoogleID)
         this.gameStarted = false;
       }, 
+      // Logic allows us to change usernames
       changeUsername(newUsername){
           console.log(newUsername);
           this.UsersID = newUsername
@@ -128,6 +142,7 @@ export default {
           console.log(this.UserGoogleID)
           this.$socket.emit('newUsername', this.UserGoogleID, this.UsersID)
       },
+      // Logic allows us to login
      googleLogin(googleID){
         var vm = this;
         this.userSignedIn = true;
@@ -141,6 +156,7 @@ export default {
           this.$socket.emit('nameTaken', UsersID)
         }
         },
+        // View controllers
      usernameToIntro(){
       this.UsernamePage = false;
       this.IntroPageView = true;
@@ -184,15 +200,18 @@ export default {
       this.countriesToVisit = [];
       this.noOfCountriesBingo = 0;
     },
+    // Logout functionality
     logout(){
       this.HomePage = false;
       this.IntroPageView = true;
     },
+    // Resets the flags that are used to rejoin games
     resetSoloStatus(){
       this.userSoloContinue = false;
     },
     ClearMultiVariable(){
       this.userMultiContinue = false;
+      console.log("Cleaned");
     }
 }}
 
@@ -209,27 +228,16 @@ class User {
 }
 </script>
 <style>
-/* The below code is adapted from the styling from Cormac Muir's project */
+/* The below font styling is adapted from the styling from Cormac Muir's project */
+/* C. Muir, ‘A Distributed Game Using Ad Trackers In Web Browsers’, Dissertation, University Of Glasgow, Glasgow, 2022. */
 @font-face {
     font-family: 'digitalFont';
     src: url('./fonts/digital-7.ttf');
 }
 
-/* https://vuejs.org/guide/built-ins/transition.html#css-based-transitions */
-
-.v-enter-active,
-.v-leave-active{
-  transition: opacity 5s ease;
-}
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-
-}
-
 li{
   color: white;
-  /*display: flex;*/
+
 }
 li.TrackedCountry{
   color: white;
@@ -318,8 +326,7 @@ div.EndScreenText {
   min-height: 300px;
 }
 
-/* Style below adapted from this tutorial: https://markheath.net/post/customize-radio-button-css https://codepen.io/phusum/pen/VQrQqy */
-
+/* Style below adapted from this tutorial: M Heath, "Customize Radio Button with CSS", markheath.net, Available at: https://markheath.net/post/customize-radio-button-css, Accessed 02/08/2022 */
 div.RadioButtons{
   width: 200px;
   height: 30px;
@@ -327,7 +334,6 @@ div.RadioButtons{
 
 div.RadioButtons input[type="radio"] {
   opacity: 0.011;
-  /*z-index: 100;*/
   position: fixed;
   width: 0;
 }
@@ -380,8 +386,6 @@ body {
   min-height: 300px;
   min-width: 200px;
   background-color: #181818;
-  /*color: var(--color-text);
-  background: var(--color-background); */
   transition: color 5s, background-color 0.5s;
   line-height: 1.6;
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,

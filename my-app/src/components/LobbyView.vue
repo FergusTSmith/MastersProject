@@ -7,9 +7,11 @@
 <template>
     <div v-if="LobbyPage">
     <h2>TrackerHunt</h2>
-    <p class="HelpText">Lobby ID: {{ playersLobby }}</p>
+    <p class="HelpText">Lobby ID: {{ playersLobby }} </p>
+    <p class="HelpText" v-if="InformationBox && isLobbyCreator">{{ ClassicInfo }}</p>
+    <p class="HelpText" v-if="InformationBox && isLobbyCreator">{{ BingoInfo }}</p>
     <div class="RadioButtons">
-        <p v-if="isLobbyCreator" class="HelpText">Choose GameMode:</p>
+        <p v-if="isLobbyCreator" class="HelpText">Choose GameMode: <button @click="displayInformation" class="InformationBox" id="Info">i</button></p>
         <input id="Classic" v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label id="ClassicRadio" for="Classic" v-if="isLobbyCreator">Classic</label>
         <input id="Bingo" v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label id="BingoRadio" for="Bingo" v-if="isLobbyCreator">Bingo</label>
     </div>
@@ -198,7 +200,11 @@ export default {
         // Method for clearing the variable responsible for redirecting the user to the gamepage upon rejoining. Ensures the user does not end up stuck in a loop. 
         ClearMultiVariable(){
             this.$emit('ClearMultiVariable');
+            console.log("Lobby");
         },
+        displayInformation(){
+            this.InformationBox = !(this.InformationBox);
+        }
     },
     data(){
         return {
@@ -212,7 +218,10 @@ export default {
             timer: 120,
             gameOver: false,
             startTime: 0,
-            
+
+            InformationBox: false,
+            ClassicInfo: "In Classic mode, points are awarded through discovering tracking URLs located in different nations. The rarity of the nation discovered determines the amount of points received. The player with the most points when the timer elapses will win. \n Common Countries (x1 Multiplyer): United States, United Kingdom \n Uncommon Countries (x2 Multiplyer): EU Nations/North American Nations \n Rare Countries (x3 Multiplyer): Asian Nations \n Very Rare Countries (x4 Multiplyer): African Nations \n All other countries (x5 Multiplyer)",
+            BingoInfo: "In Bingo mode, users are challenged to discover tracking URLs from a specific list of countries. The first player to discover all listed countries is the winner of the game",
         }
     },
     // Logic that checks if the variable that indicates if a player is still in a multiplayer game is active. If so, skip the lobby page and continue to the Game page, and get the game details. 
@@ -221,6 +230,7 @@ export default {
             this.LobbyPage = false;
             this.MultiPlayer = true;
             this.$socket.emit('getGameDetails', this.multiGameDetails.playersLobby, this.UsersID)
+            console.log("Test 2");
         }
     }
 }

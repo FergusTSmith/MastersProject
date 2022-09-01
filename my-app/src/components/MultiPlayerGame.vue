@@ -148,6 +148,10 @@ export default {
         }
         this.countryChartData.labels = this.countryLabels;
         this.countryChartData.datasets[0].data = this.countryCounts;
+
+        if(!(this.gameStarted)){
+            this.timer = this.startTime;
+        }
     },
     // Whenever this component is initially rendered, we assign the UserInLobby and userProfile props to new variables so that they can be mutated. 
     mounted(){
@@ -158,6 +162,7 @@ export default {
             this.$socket.emit('getGameDetails', this.multiGameDetails.playersLobby, this.UsersID)
         }
         this.timer = this.startTime;
+        this.$emit("ClearMultiVariable")
     },
     sockets: {
         // Event fires whenever a user indicates to the server that they are ready. 

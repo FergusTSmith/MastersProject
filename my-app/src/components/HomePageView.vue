@@ -312,12 +312,14 @@ export default {
             this.LeaderBoardPage = false;
             this.JoinLobbyPage = false;
             this.SoloPage = false;
+            this.$emit('Homepage')
         },
         // Generic method for returning to the Home Page that also resets the relevant user data. 
         exitToHomePageReset(){
             this.exitToHomePage();
             console.log("Should be at the home screen")
             this.HomePage = true;
+            this.$emit('Homepage')
         },
         // Allows the user to logout.
         logout(){
@@ -331,6 +333,7 @@ export default {
         },
         ClearMultiVariable(){
             this.$emit('ClearMultiVariable')
+            console.log("Home");
         },
         // Method for changing username, delegated to App.vue as this controls the UsersID attribute. 
         changeUsername($event){
@@ -350,6 +353,7 @@ export default {
             this.noOfUsersInLobby = this.UsersInLobby.length
             this.HomePage = false;
             this.LobbyPage = true;
+            console.log("Multi Test")
         }
     },
 }
