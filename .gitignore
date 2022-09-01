@@ -26,3 +26,6 @@ pnpm-debug.log*
 *.pub
 *.zip
 /artifacts
+
+# Coverage
+/my-app/coverage/tmp/
