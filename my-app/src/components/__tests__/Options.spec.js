@@ -1,8 +1,10 @@
-/* Following This tutorial: https://www.digitalocean.com/community/tutorials/vuejs-vue-testing */
+/* The unit tests for this application were inspired by the following tutorial: [1] P. Mohan, ‘How to Test Your Vue Components Using the Jest Testing Framework | DigitalOcean’, Mar. 21, 2020. https://www.digitalocean.com/community/tutorials/vuejs-vue-testing (accessed Sep. 02, 2022). */
 
+/* This file provides the Unit Tests for the Options.vue component.
+ Please note that the tests are limited in coverage due to Vite's inability to imitate server client interactions, or interactions between components. 
+*/
 import { mount } from '@vue/test-utils';
 import OptionsView from '../OptionsView.vue';
-//import { render, screen } from "@testing-library/vue"
 import { describe, expect, test, it } from 'vitest';
 
 describe('UsernameChangePage Component Unit Tests: ', () => {
@@ -17,7 +19,6 @@ describe('UsernameChangePage Component Unit Tests: ', () => {
     expect(wrapper.find('h2').exists()).toBeTruthy()
     expect(wrapper.find('img').exists()).toBeTruthy()
     expect(wrapper.find('button').exists()).toBeTruthy()
-
     expect(wrapper.find('.OptionsButton').exists()).toBeTruthy();
   })
 
@@ -26,13 +27,14 @@ describe('UsernameChangePage Component Unit Tests: ', () => {
     var logoutButton = await wrapper.find('#Logout');
     await logoutButton.trigger('click');
     console.log(wrapper.emitted().click.MouseEvent);
+    // Can't check emission here due to lack of ability to communicate with background scripts.
   })
 
   it("clicking change username", async() =>  {
     var wrapper = mount(OptionsView, {propsData: {UsersID: "TesterAccount"}});
     var changeUserButton = await wrapper.find('#ChangeUser');
     await changeUserButton.trigger('click');
-    //expect(wrapper.emitted().changeUsername).toBeTruthy();
+    expect(wrapper.text()).toContain('username')
   })
 })
     

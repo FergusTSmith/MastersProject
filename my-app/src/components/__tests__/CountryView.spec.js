@@ -1,6 +1,10 @@
+/* The unit tests for this application were inspired by the following tutorial: [1] P. Mohan, ‘How to Test Your Vue Components Using the Jest Testing Framework | DigitalOcean’, Mar. 21, 2020. https://www.digitalocean.com/community/tutorials/vuejs-vue-testing (accessed Sep. 02, 2022). */
+
+/* This file provides the Unit Tests for the CountryView.vue component.
+ Please note that the tests are limited in coverage due to Vite's inability to imitate server client interactions, or interactions between components. 
+*/
 import { mount } from '@vue/test-utils';
 import CountryView from '../CountryView.vue';
-//import { render, screen } from "@testing-library/vue"
 import { describe, expect, test, it } from 'vitest';
 
 const passiveCountryLabels = ["France", "United Kingdom", "United States"];

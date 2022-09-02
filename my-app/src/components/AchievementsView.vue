@@ -23,6 +23,7 @@ export default {
             required: true
         }
     },
+    // Only methods for this component are view controllers that delegate work to PassiveMode.vue
     methods: {
         backToPassive(){
             this.$emit('backToPassive')

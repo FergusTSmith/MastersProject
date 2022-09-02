@@ -57,16 +57,15 @@ export default {
             console.log("Test")
             chrome.runtime.sendMessage({ message: 'pauseBlocking'}, function(response){
                 if(response === 'unblocked'){
-                    alert("TrackerHunt will begin blocking connections to web-trackers");
+                    alert("TrackerHunt will begin blocking connections to web-trackers. Tracking cookies tracked during gameplay will now be first-party cookies.");
                     console.log("unblocked")
                     return true;
                 }else if(response === 'paused'){
-                    alert("TrackerHunt web-request blocking has been paused");
+                    alert("TrackerHunt web-request blocking has been paused. Tracking cookies identified in gameplay will now be third-party cookies");
                     console.log("paused")
                     return true;
                 }
                 return true;
-                
             })
         },
         // Changes username by delegating to the HomepageView.vue component. 

@@ -9,8 +9,8 @@
   <li v-for="item in orderedHosts" :key="item" class="TrackedCountry">
       {{ item.URL }} - {{ item.count }}
   </li>
-  <button @click="exitToHomePage">HomePage</button>
-  <button @click="HostToPassive">Back</button>
+  <button id="Home" @click="exitToHomePage">HomePage</button>
+  <button id="Back" @click="HostToPassive">Back</button>
 </template>
 
 <script>

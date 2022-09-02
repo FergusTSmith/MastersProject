@@ -1,12 +1,14 @@
-/* Following This tutorial: https://www.digitalocean.com/community/tutorials/vuejs-vue-testing */
+/* The unit tests for this application were inspired by the following tutorial: [1] P. Mohan, ‘How to Test Your Vue Components Using the Jest Testing Framework | DigitalOcean’, Mar. 21, 2020. https://www.digitalocean.com/community/tutorials/vuejs-vue-testing (accessed Sep. 02, 2022). */
 
+/* This file provides the Unit Tests for the SoloGamePage.vue component.
+ Please note that the tests are limited in coverage due to Vite's inability to imitate server client interactions, or interactions between components. 
+*/
 import { mount } from '@vue/test-utils';
 import SoloGame from '../SoloGamePage.vue';
-//import { render, screen } from "@testing-library/vue"
 import { describe, expect, test, it } from 'vitest';
 
 const categoryList = [{name: "Shopping", count: 13}, {name: "News", count: 8}, {name: "Business", count: 20}, ]
-var timer = 120;
+var timer = 120; 
 var gameMode = "Classic";
 var gameOver = false;
 var timeLeft = 120;
@@ -45,19 +47,12 @@ describe('Solo Game Component Unit Tests: ', () => {
     var startGameButton = await wrapper.find('#StartSoloGame');
     await startGameButton.trigger('click');
     expect(wrapper.emitted().gameSetup).toBeTruthy;
-
-    //Come back to to test that clicking start causes the timer to start ticking down
-
   })
 
   it("Clicking End game", async() => {
     var wrapper = mount(SoloGame, {propsData: { categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: gameOver, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
-
     var endGameButton = await wrapper.find('#EndGameButton');
     await endGameButton.trigger('click');
-
-    //expect(wrapper.emitted().endGame).toBeTruthy();
-
     console.log(wrapper.text());
     await wrapper.find('.CategoryText');
 
@@ -74,16 +69,12 @@ describe('Solo Game Component Unit Tests: ', () => {
   it("Information Boxes test"), async() => {
     var wrapper = mount(SoloGame, {propsData: { categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: gameOver, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     var informationButton = wrapper.find('#Info');
-
     await informationButton.trigger('click');
-
     expect(wrapper.emitted().displayInformation).toBeTruthy();
     expect(wrapper.test()).toContain("In Classic mode, points are awarded");
-
     var wrapper = mount(SoloGame, {propsData: { categoryList: categoryList, timer: timer, GameMode: "Bingo", gameOver: gameOver, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     informationButton = wrapper.find('#Info');
     await informationButton.trigger('click');
-
     expect(wrapper.emitted().displayInformation).toBeTruthy();
     expect(wrapper.test()).toContain("In Bingo mode, users are challenged");
 

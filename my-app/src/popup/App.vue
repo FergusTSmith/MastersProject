@@ -7,7 +7,7 @@
 ------------->
 
 <script setup>
-  // Import statements for the relevant child-components of App.vue
+// Import statements for the relevant child-components of App.vue
 import IntroPage from '@/components/IntroPage.vue';
 import SetUsername from '@/components/SetUsername.vue';
 import HomePageView from '@/components/HomePageView.vue'
@@ -216,7 +216,6 @@ export default {
 }}
 
 // Class Helpers:
-
 class User {
   constructor(userID){
     this.userID = userID;

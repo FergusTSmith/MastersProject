@@ -1,8 +1,10 @@
-/* Following This tutorial: https://www.digitalocean.com/community/tutorials/vuejs-vue-testing */
+/* The unit tests for this application were inspired by the following tutorial: [1] P. Mohan, ‘How to Test Your Vue Components Using the Jest Testing Framework | DigitalOcean’, Mar. 21, 2020. https://www.digitalocean.com/community/tutorials/vuejs-vue-testing (accessed Sep. 02, 2022). */
 
+/* This file provides the Unit Tests for the SoloLobby.vue component.
+ Please note that the tests are limited in coverage due to Vite's inability to imitate server client interactions, or interactions between components. 
+*/
 import { mount } from '@vue/test-utils';
 import SoloLobby from '../SoloLobby.vue';
-//import { render, screen } from "@testing-library/vue"
 import { describe, expect, test, it } from 'vitest';
 
 const testScores = [{username: "Goose96", Score: 23, createdAt: "01/01/2000"}, {username: "Goose96", Score: 48, createdAt: "01/01/2000"}, {username: "Goose96", Score: 67, createdAt: "01/01/2000"}, {username: "Goose96", Score: 120, createdAt: "01/01/2000"}]
@@ -29,11 +31,9 @@ describe('HomePage Component Unit Tests: ', () => {
   it("clicking GameMode buttons", async() => {
     var wrapper = mount(SoloLobby, {propsData: { personalSoloHS: testScores}});
     var classicRadio = await wrapper.find('#Classic')
-    //classicRadio.element.selected = true;
     await classicRadio.setChecked()
     expect(classicRadio.element.checked).toBeTruthy();
     var bingoRadio = wrapper.find('#Bingo')
-    //bingoRadio.element.selected = true;
     await bingoRadio.setChecked();
     expect(classicRadio.element.checked).toBeFalsy();
     expect(bingoRadio.element.checked).toBeTruthy();

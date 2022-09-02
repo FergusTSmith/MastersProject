@@ -1,6 +1,6 @@
 var achievements = [];
 
-// Inspired by https://gamedev.stackexchange.com/questions/139136/implementing-achievement-system-in-javascript
+// The code for achievements in this instance was inspired and adapted from: [1] D. Bandel, ‘Implementing Achievement System in Javascript - Game Development Stack Exchange’. https://gamedev.stackexchange.com/questions/139136/implementing-achievement-system-in-javascript (accessed Jul 20, 2022).
 // This part of the program defines an Achievement class, and creates some achievements to be complete in passive mode.
  
 class Achievement {
@@ -23,10 +23,9 @@ class Achievement {
                 }
             ]
         });
-        //console.log('achieve() fired' - this.name);
-
     }
 }
+// Adding the achievements to the array
 
 achievements.push(new Achievement("From Russia with Love", "Get tracked by a Russian Tracker")); // 0
 achievements.push(new Achievement("The Silk Road", "Get tracked by a Asian Tracker")); // 1
@@ -40,4 +39,5 @@ achievements.push(new Achievement("20 Countries", "Get tracked by 20 different c
 achievements.push(new Achievement("Night of 1000 cookies", "Get tracked by 1000 tracker cookies")); // 9
 achievements.push(new Achievement("Stalker", "Get tracked by the same country 10 times")); // 10
 
+// Finally, saving these in local chrome storage to be retrieved by the front end. 
 chrome.storage.local.set({ achievements: achievements});

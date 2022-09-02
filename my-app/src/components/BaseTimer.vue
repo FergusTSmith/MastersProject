@@ -56,7 +56,7 @@ export default {
       }
     }
 }</script>
-<!------Below code taken adapted from - M Rybczonek, "How to Create an Animated Countdown Timer With Vue", Medium.com, Available at: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f, Accessed 02/08/2022-->
+//<!------Below code taken adapted from - M Rybczonek, "How to Create an Animated Countdown Timer With Vue", Medium.com, Available at: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f, Accessed 02/08/2022-->
 <template>
   <div class="base-timer">
     <svg
@@ -81,26 +81,23 @@ export default {
 </template>
 
 
-/* https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f */
+/* Below styling code taken adapted from - M Rybczonek, "How to Create an Animated Countdown Timer With Vue", Medium.com, Available at: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f, Accessed 02/08/2022 */
 <style scoped lang="scss">
 .base-timer {
   position: relative;
   margin-left: 45px;
   width: 75px;
   height: 75px;
-
   &__circle {
     fill: none;
     stroke: none;
   }
-
   &__path-elapsed {
     stroke-width: 7px;
     stroke:grey;
   }
   &__label {
     position: absolute;    
-    
     width: 75px;
     height: 75px;
     top: 0;   
@@ -113,15 +110,9 @@ export default {
   &__path-remaining {
     stroke-width: 6px;
     stroke-linecap: round;
-
     transform: rotate(90deg);
     transform-origin: center;
-
     transition: 1s linear all;
-
-    //stroke: #20C20E;
-    //stroke-dasharray: 200 283;
-
     &.green {
       color: #20C20E;
       stroke: #20C20E

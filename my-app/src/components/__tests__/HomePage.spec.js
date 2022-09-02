@@ -1,8 +1,10 @@
-/* Following This tutorial: https://www.digitalocean.com/community/tutorials/vuejs-vue-testing */
+/* The unit tests for this application were inspired by the following tutorial: [1] P. Mohan, ‘How to Test Your Vue Components Using the Jest Testing Framework | DigitalOcean’, Mar. 21, 2020. https://www.digitalocean.com/community/tutorials/vuejs-vue-testing (accessed Sep. 02, 2022). */
 
+/* This file provides the Unit Tests for the HomePage.vue component.
+ Please note that the tests are limited in coverage due to Vite's inability to imitate server client interactions, or interactions between components. 
+*/
 import { mount } from '@vue/test-utils';
 import HomePage from '../HomePageView.vue';
-//import { render, screen } from "@testing-library/vue"
 import { describe, expect, test, it } from 'vitest';
 
 var gamesPlayed = 100;
@@ -13,7 +15,7 @@ var UserGoogleID = "1245145"
 var userSoloContinue = false;
 var userMultiContinue = false;
 var multiGameDetails = {};
-var USersInLobby = [{userID: "Goose96", googleID: "1245145"}]
+var UsersInLobby = [{userID: "Goose96", googleID: "1245145"}]
 
 describe('HomePage Component Unit Tests: ', () => {
     

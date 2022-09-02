@@ -318,8 +318,8 @@ export default {
 
             // These are the variables from which Bingo Mode countries were chosen in development. The choice has been made to maintain these as the countries, as these are more realistic to find than 3 random countries from below. 
             easyCountries: ["United States", "United Kingdom", "Canada"],
-            medEasyCountries: ["Ireland", "Germany", "Netherlands", "Belgium", "Spain", "Austria", "France", "Italy"],
-            hardCountries: ["China", "Russia", "Japan", "Singapore"],
+            medEasyCountries: [ "Ireland", "Germany", "Netherlands", "Belgium", "Spain", "Belarus", "France", "Czechia", "Poland", "Austria"],
+            hardCountries: ["China", "Russia", "Bulgaria", "Japan", "Mexico", "South Korea", "Singapore"],
 
             // These arrays are used in classic mode to determine the points multiplyer for a certain country
             CountriesInAsia: ["Japan", "Indonesia", "India", "China", "Thailand", "South Korea", "Philippines", "Singapore", "Vietnam", "Malaysia", "Hong Kong", "Saudi Arabia", "Pakistan", "Myanmar", "Cambodia", "Taiwan", "Laos", "Iran", "Sri Lanka", "Israel", "Maldives", "Afghanistan", "Bangladesh", "Nepal", "Qatar", "Mongolia", "Brunei", "Lebanon", "North Korea", "Iraq", "Uzbekistan", "Syria", "Macao", "Christmas Islands", "United Arab Emirates", "Jordan", "Armenia", "Timor-Leste", "Kyrgzstan", "Yemen", "Paliestine", "Bhutan", "Kuwait", "Turkmenistan", "Bahrain", "Tajikistan", "Oman"],
@@ -369,7 +369,7 @@ export default {
                 ]
             },
 
-            // These variables are used to split up the chart data into two different arrays for the labels and the 
+            // These variables are used to split up the chart data into two different arrays for the labels and the counts. This is because the Chart.js package requires these separately. 
             categoryLabels: [],
             categoryCounts: [],
 
@@ -467,7 +467,7 @@ export default {
                     }
                 }
             }
-            //Close the Lobby
+            // Close the Lobby
             this.$socket.emit('closeLobby', this.playersLobby)
             this.gameOver = true;
             if(this.GameMode === 'Bingo'){
@@ -559,7 +559,7 @@ export default {
             }
             this.initiateListener();
         },
-        // Helper method adapted from: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+        // Helper method adapted from: ‘Math.random() - JavaScript | MDN’. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random (accessed Aug 01, 2022).
         generateRandomIntHelper(max){
             return Math.floor(Math.random() * max)
         },
