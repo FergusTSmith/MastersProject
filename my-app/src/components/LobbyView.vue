@@ -95,6 +95,11 @@ export default {
                 console.log(this.LobbyUsers);
             }
             console.log(listOfUsers)
+        },
+        redirectPlayer(userID){
+            if(this.UsersID === userID){
+                this.exitToHomePageReset();
+            }
         }
     },
     // Data that is required from the HomePageView.vue component. 
@@ -187,6 +192,7 @@ export default {
                 }
             }
             this.$socket.emit('playerLeft', newLobbyUsers, this.playersLobby, userID)
+            this.$socket.emit('redirectPlayer', userID);
             this.$emit('updateLobbyUsers', newLobbyUsers)
         },
         // Method initiates a multiplayer game, then sends the game details to other lobby users. 

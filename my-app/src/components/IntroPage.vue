@@ -44,7 +44,6 @@ export default {
         // Ensures that we retrieve the leaderboards early, so that there is minimal lag when rendering this. 
         getHighScores(){
             this.$socket.emit('retrieveLeaderBoards');
-            console.log("TEst2");
       },
     }
 }</script>

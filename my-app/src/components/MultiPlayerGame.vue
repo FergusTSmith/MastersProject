@@ -29,7 +29,7 @@
             <label class="Guide">Countries To Locate:</label>
             <ol>
                 <li class="CountriesToFind" v-for="item in countriesToFind" ref="CountriesToFind" :class="{found:item.found}" :key="item">
-                    <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + item.country + '.jpeg'"/>{{ item.country }}
+                    <img class="CountryFlag" v-bind:src="'./staticimages/CountryFlags/' + shortenName(item.country) + '.jpeg'"/>{{ item.country }}
                 </li>  
             </ol>
             <label class="Guide">Countries Located</label>
@@ -669,6 +669,10 @@ export default {
                 this.WinningUser = this.ProfileOfUser.userID
             }
         },
+        // This logic is for displaying flags, and prevents errors whenever the country name has a space in it.
+        shortenName(countryName){
+            return countryName.replace(/\s/g, '')
+        }
     },
     computed: {
         // Below code has been adapted from a tutorial: - M Rybczonek, "How to Create an Animated Countdown Timer With Vue", Medium.com, Available at: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f, Accessed 02/08/2022

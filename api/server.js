@@ -179,6 +179,9 @@ db.sequelize.sync().then((req) => {
                 }   
             }
         })
+        socket.on('redirectPlayer', (userID) => {
+            io.emit('redirectPlayer', userID);
+        })
         // This event is for when a lobby is created, and will be to receive the game details from the lobby creator and send these to all the other lobby users.
         socket.on('gameModeAndTime', (lobbyID, gameMode, timer) => {
             console.log('Attempting to update gamemode')
