@@ -97,8 +97,10 @@ export default {
             console.log(listOfUsers)
         },
         redirectPlayer(userID){
+            console.log("test")
             if(this.UsersID === userID){
                 this.exitToHomePageReset();
+                console.log("Test passed")
             }
         }
     },
