@@ -342,7 +342,8 @@ export default {
     },
     // Logic occurs before each time the page is re-rendered. This ensures that the user is taken to the correct game page if required, rather than the home page. This also retrieves the high scores before the user attempts to go to the leaderboard, reducing perceived lag. 
     beforeUpdate(){
-        this.getHighScores();
+        //this.getHighScores();
+        console.log("Test2");
         if(this.userSoloContinue){
             this.HomePage = false;
             this.SoloPage = true;

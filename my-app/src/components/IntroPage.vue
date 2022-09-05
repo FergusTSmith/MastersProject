@@ -20,7 +20,7 @@ export default {
         // GoogleLogin is the key method in the file. This is responsible for communicating with the background scripts in order to get the users details and sign them in. 
         googleLogin(){
             var vm = this;
-            this.getHighScores();
+            //this.getHighScores();
             chrome.runtime.sendMessage({ message: 'login'}, function(response) {
                 if (response === 'success') {
                     chrome.runtime.sendMessage({ message: 'googleID'}, function(response){
@@ -44,6 +44,7 @@ export default {
         // Ensures that we retrieve the leaderboards early, so that there is minimal lag when rendering this. 
         getHighScores(){
             this.$socket.emit('retrieveLeaderBoards');
+            console.log("TEst2");
       },
     }
 }</script>
