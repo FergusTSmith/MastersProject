@@ -6,13 +6,13 @@
 
 <template>
     <p class="HelpText">Passive Mode Achievements are unlocked while passively browsing. A notification will be received when this is achieved.</p>
-  <li class="Achievements" v-for="item in achievements" :key="item">
-      <p class="AchivementTitle" :class="{achieved:(item.achieved==='Unlocked')}">{{ item.name }} | {{ item.achieved }}</p>
-      <p class="HelpText" :class="{achieved:(item.achieved==='Unlocked')}">{{ item.text }}</p>
-      <hr/>
-  </li>
-  <button id="Back" @click="backToPassive">Back</button>
-  <button id="Home" @click="exitToHomePage">HomePage</button>
+    <li class="Achievements" v-for="item in achievements" :key="item">
+        <p class="AchivementTitle" :class="{achieved:(item.achieved==='Unlocked')}">{{ item.name }} | {{ item.achieved }}</p>
+        <p class="HelpText" :class="{achieved:(item.achieved==='Unlocked')}">{{ item.text }}</p>
+        <hr/>
+    </li>
+    <button id="Back" @click="backToPassive">Back</button>
+    <button id="Home" @click="exitToHomePage">HomePage</button>
 </template>
 
 <script>

@@ -57,7 +57,7 @@
                 {{ item.userID }} - {{ item.score }}
             </li>
         </div>
-        <p class="CookieText">During this session, {{numberOfCookies.numberOfCookies}} tracking cookies have been set on your device.</p>
+        <p class="CookieText">During this session, {{numberOfCookies.numberOfCookies}} tracking cookies have been set on your device. If blocking is enabled, these are first-party cookies.</p>
         <p class="ErrorText" v-if="playerLeaveMessage != 'false'"> {{ playerLeaveMessage }}</p>
         <div class="buttonBar">
             <button id="Start" v-if="isLobbyCreator && !(gameStarted)" @click="gameSetup" type="button">Start</button>

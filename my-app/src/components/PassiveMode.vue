@@ -110,7 +110,7 @@ export default {
             this.PassivePage = true;
         },
         backToPassive(){
-            this.AchievementsPage = false;
+            this.AchievementPage = false;
             this.PassivePage = true;
         }
     },
