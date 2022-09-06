@@ -19,6 +19,7 @@ var uniqueIDforUser = '';
 // This is an event listener that listens to messages sent from the front end. 
 
 // This responds to messages providing logic for logging in, retrieving google IDs, and logging out. 
+// All code below has been adapted from the following tutorial: /* An Object Is A, 2020, "How to Use Google Login with Chrome Extensions(MV2) | OAuth2/OpenID Connect", Uploaded August 7th 2020, Available At: https://www.youtube.com/watch?v=H-anyDrYHyg
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if(request.message === 'login'){
         if(isSignedIn()){
@@ -47,7 +48,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     sendResponse({response: 'success', userID: user_id});
                     console.log("We have successfully completed the login test");
                     
-                    //Get user identity - https://www.youtube.com/watch?v=_26ptq-6o_s&ab_channel=RustyZone
+                    // Adapted from a tutorial: How to identify your Chrome Extension users with chrome identity, (Jun. 20, 2021). Accessed: Sep. 06, 2022. [Online Video]. Available: https://www.youtube.com/watch?v=_26ptq-6o_s
                     chrome.identity.getProfileUserInfo({'accountStatus': 'ANY'}, function(info){
                         console.log(info)
                         uniqueIDforUser = info.id;

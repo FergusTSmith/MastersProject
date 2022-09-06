@@ -23,6 +23,7 @@ import UsernameChangeVue from './UsernameChange.vue';
 export default {
     data(){
         return {
+            // View Controllers
             UsernamePage: false,
             Options: true
         }

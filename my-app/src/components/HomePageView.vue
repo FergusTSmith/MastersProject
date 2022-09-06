@@ -90,7 +90,6 @@ export default {
             console.log("Successfully connected to lobby")
             var lobbyID = lobbyDetails[0];
             var listOfUsers = lobbyDetails[1];
-            console.log(lobbyID);
             this.playersLobby = lobbyID;
             this.UsersInLobby = listOfUsers;
             this.noOfUsersInLobby++;
@@ -110,11 +109,9 @@ export default {
             var inviteUsername = MessageDetails[0];
             var invitingUser = MessageDetails[1];
             var lobbyID = MessageDetails[2];
-            console.log('Client received the invitation request.')
             // Only show this to the user who is being invited
             if(this.UsersID === inviteUsername){
                 var inviteAccepted = confirm("You have been invited to Lobby " + lobbyID + " by user " + invitingUser + ".\n Do you wish to accept?");
-                console.log(inviteAccepted);
                 if(inviteAccepted){
                     this.enterLobby(lobbyID);
                     this.isLobbyCreator = false;
@@ -126,18 +123,10 @@ export default {
             console.log('we reached updating users')
             var listOfUsers = lobbyDetails[0]
             var lobbyID = lobbyDetails[1]
-            console.log(lobbyDetails)
-            console.log(this.playersLobby === lobbyID)
-            console.log(listOfUsers);
-            console.log(this.UsersInLobby);
-
             if(this.playersLobby === lobbyID){
                 this.UsersInLobby = listOfUsers;
                 this.noOfUsersInLobby = this.UsersInLobby.length;
-                console.log('we updated the users');
-                console.log(this.UsersInLobby);
             }
-            console.log(listOfUsers)
         },
     },
     // Props that have to be passed from App.vue
@@ -228,7 +217,7 @@ export default {
         // View controller for passive mode. This, also, retrieves the required data structures from Chrome local storage for presentation to the user. 
         passiveMode(){
             var vm = this;
-            // The following logic gets and instantiates the passiveHosts, totalRequests, passiveCategoryList, passiveCountryList and achievements.
+            // The following logic gets and instantiates the passiveHosts, totalRequests, passiveCategoryList, passiveCountryList and achievements from local Chrome storage.
             chrome.storage.local.get(["passiveHosts"], function(result){
                 vm.passiveModeHosts = result.passiveHosts;
                 var totalHosts = 0;
@@ -317,7 +306,6 @@ export default {
         // Generic method for returning to the Home Page that also resets the relevant user data. 
         exitToHomePageReset(){
             this.exitToHomePage();
-            console.log("Should be at the home screen")
             this.HomePage = true;
             this.$emit('Homepage')
         },
@@ -331,9 +319,9 @@ export default {
         resetSoloStatus(){
             this.$emit('resetSoloStatus')
         },
+        // Method to reset the variable that indicates we are rejoining a multiplayer game
         ClearMultiVariable(){
             this.$emit('ClearMultiVariable')
-            console.log("Home");
         },
         // Method for changing username, delegated to App.vue as this controls the UsersID attribute. 
         changeUsername($event){
@@ -342,8 +330,6 @@ export default {
     },
     // Logic occurs before each time the page is re-rendered. This ensures that the user is taken to the correct game page if required, rather than the home page. This also retrieves the high scores before the user attempts to go to the leaderboard, reducing perceived lag. 
     beforeUpdate(){
-        //this.getHighScores();
-        console.log("Test2");
         if(this.userSoloContinue){
             this.HomePage = false;
             this.SoloPage = true;
@@ -354,7 +340,6 @@ export default {
             this.noOfUsersInLobby = this.UsersInLobby.length
             this.HomePage = false;
             this.LobbyPage = true;
-            console.log("Multi Test")
         }
     },
 }

@@ -9,7 +9,7 @@
       <img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/>
       <h5>Who is watching you?</h5>
       <button class="loginButton" @click="googleLogin" ref="LoginButton">Login</button>
-      <!-----<button class="DevLogin" @click="DevLogin">Dev</button>-This is here for testing purposes, as the Puppeteer software cannot navigate the OAuth2.0 window--->
+      <!-----<button class="DevLogin" @click="DevLogin">Dev</button>-This is here for testing purposes, as the Puppeteer software cannot navigate the OAuth2.0 window. This should be enabled when Puppeteer is run--->
       <p class="HelpText">To use TrackerHunt, sign in with Google and ensure you are signed in on your browser</p>
 </template>
 
@@ -20,7 +20,6 @@ export default {
         // GoogleLogin is the key method in the file. This is responsible for communicating with the background scripts in order to get the users details and sign them in. 
         googleLogin(){
             var vm = this;
-            //this.getHighScores();
             chrome.runtime.sendMessage({ message: 'login'}, function(response) {
                 if (response === 'success') {
                     chrome.runtime.sendMessage({ message: 'googleID'}, function(response){

@@ -157,62 +157,42 @@ export default {
         }
         },
         // View controllers
-     usernameToIntro(){
-      this.UsernamePage = false;
-      this.IntroPageView = true;
-     },
-    exitToHomePage(){
-      this.LobbyPage = false;
-      this.JoinLobbyPage = false;
-      this.LeaderBoardPage = false;
-      this.SoloPage = false;
-      this.OptionsPage = false;
-      this.HomePage = true;
-      this.SoloPage = false;
-      this.SoloGame = false;
-      this.MultiPlayer = false;
-      this.UsernameChangePage = false;
-      this.PassivePage = false;
-      this.HostPage = false;
-      this.CountryPage = false;
-      this.AchievementPage = false;
+        usernameToIntro(){
+          this.UsernamePage = false;
+          this.IntroPageView = true;
+        },
+        // The following method is a legacy method from when this application had a more naive design. App.vue used to serve as a parent to all components and an overall view controller
+        exitToHomePage(){
+          this.LobbyPage = false;
+          this.JoinLobbyPage = false;
+          this.LeaderBoardPage = false;
+          this.SoloPage = false;
+          this.OptionsPage = false;
+          this.HomePage = true;
+          this.SoloPage = false;
+          this.SoloGame = false;
+          this.MultiPlayer = false;
+          this.UsernameChangePage = false;
+          this.PassivePage = false;
+          this.HostPage = false;
+          this.CountryPage = false;
+          this.AchievementPage = false;
 
-      this.gameStarted = false;
-    },
-    exitToHomePageReset(){
-      this.reset();
-      this.exitToHomePage();
-    },
-    reset(){
-      this.isLobbyCreator = false;
-      this.userProfile.ready = "Not Ready";
-      this.userProfile.BingoCountries = [];
-      this.UsersInLobby = [];
-      this.userScore = 0;
-      this.timer = 0;
-      this.allPlayersReady = false;
-      this.didYouWin = false;
-      this.WinningUser = '';
-      this.VisitedCountries = [];
-      this.noOfUsersInLobby = 0;
-      this.gameStarted = false;
-      this.userLeaveMessage = "";
-      this.countriesToVisit = [];
-      this.noOfCountriesBingo = 0;
-    },
-    // Logout functionality
-    logout(){
-      this.HomePage = false;
-      this.IntroPageView = true;
-    },
-    // Resets the flags that are used to rejoin games
-    resetSoloStatus(){
-      this.userSoloContinue = false;
-    },
-    ClearMultiVariable(){
-      this.userMultiContinue = false;
-      console.log("Cleaned");
-    }
+          this.gameStarted = false;
+        },
+      // Logout functionality
+      logout(){
+        this.HomePage = false;
+        this.IntroPageView = true;
+      },
+      // Resets the flags that are used to rejoin games
+      resetSoloStatus(){
+        this.userSoloContinue = false;
+      },
+      ClearMultiVariable(){
+        this.userMultiContinue = false;
+        console.log("Cleaned");
+      }
 }}
 
 // Class Helpers:
@@ -330,17 +310,18 @@ div.RadioButtons{
   width: 200px;
   height: 30px;
 }
-
+/* Style below adapted from this tutorial: M Heath, "Customize Radio Button with CSS", markheath.net, Available at: https://markheath.net/post/customize-radio-button-css, Accessed 02/08/2022 */
 div.RadioButtons input[type="radio"] {
   opacity: 0.011;
   position: fixed;
   width: 0;
 }
-
+/* Style below adapted from this tutorial: M Heath, "Customize Radio Button with CSS", markheath.net, Available at: https://markheath.net/post/customize-radio-button-css, Accessed 02/08/2022 */
 div.RadioButtons input[type="radio"]:checked + label {
   background: #20C20E;
   border-radius: 4px;
 }
+/* Style below adapted from this tutorial: M Heath, "Customize Radio Button with CSS", markheath.net, Available at: https://markheath.net/post/customize-radio-button-css, Accessed 02/08/2022 */
 div.RadioButtons label {
   display: inline-block;
   padding: 1px 1px;
@@ -350,6 +331,8 @@ div.RadioButtons label {
   border-radius: 4px;
   margin-right: 5px;
 }
+/* Style below adapted from this tutorial: M Heath, "Customize Radio Button with CSS", markheath.net, Available at: https://markheath.net/post/customize-radio-button-css, Accessed 02/08/2022 */
+
 div.RadioButtons input[type="radio"]:focus + label {
   border: 2px  #444
 }

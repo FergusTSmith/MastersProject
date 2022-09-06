@@ -3,6 +3,8 @@ This is the repository for my MSc Software Development Final Project - 2134403S
 
 If you have downloaded this Zip from Moodle, there are likely some modules missing. This is because the node_modules folders had to be removed from the folder, as these made the folder too large to upload.
 
+These are UNLIKELY to be required to run this project. This is because no users required these folders when conducting user testing. However, in the event they are required:
+
 In total, there are three "node_modules" folders that will be missing:
 1) my-app -> node_modules
 2) api -> node_modules

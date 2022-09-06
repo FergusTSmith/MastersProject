@@ -53,6 +53,7 @@ import AchievementsView from '@/components/AchievementsView.vue';
 import HostsView from '@/components/HostsView.vue';
 import CountryView from '@/components/CountryView.vue';
 export default {
+    // These props are retrieved and passed by hte HomePageView.vue component.
     props: {
         passiveModeTotalTrackers: {
             type: Number,

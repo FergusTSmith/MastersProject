@@ -32,6 +32,7 @@ export default {
         }
     },
     computed: {
+        // Using the lodash package to order the hosts by number
         orderedHosts(){
             return _.orderBy(this.passiveModeHosts, 'count', 'desc')
         }

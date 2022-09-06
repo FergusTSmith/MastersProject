@@ -45,7 +45,7 @@ p.HelpText {
   font-size: 9px;
   color: lightgrey;
 }
-
+/* Ensures that any achieved achievements are coloured green */
 .achieved {
     color: #20C20E;
 }

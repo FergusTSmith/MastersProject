@@ -23,6 +23,7 @@
         <br/><br/>
     </div>
     <br/>
+    <!---- Radio Buttons adapted from tutorial: M Heath, "Customize Radio Button with CSS", markheath.net, Available at: https://markheath.net/post/customize-radio-button-css, Accessed 02/08/2022-->
     <div class="RadioButtons">
         <p v-if="isLobbyCreator" class="HelpText">Choose length of round:</p>
         <input id="twoMins" v-if="isLobbyCreator" class="Radio" type="radio" value="120" name="time" ref="Timebutton"  @change="onTimeChange($event)"/><label for="twoMins" v-if="isLobbyCreator">2 min</label>
@@ -70,8 +71,6 @@ export default {
         // Same as the above, except this allows the users to all see the countries to visit. 
         receiveCountriesToVisit(lobbyAndCountries){
             var lobby = lobbyAndCountries[0];
-            console.log(lobbyAndCountries)
-            
             if(this.playersLobby === lobby && !(this.isLobbyCreator)){
                 this.countriesToFind = lobbyAndCountries[1];
             }
@@ -82,25 +81,16 @@ export default {
         },
         // Generic event that is fired each time a change in the lobby users occurs. 
         updateUsers(lobbyDetails){
-            console.log('we reached updating users')
             var listOfUsers = lobbyDetails[0]
             var lobbyID = lobbyDetails[1]
-            console.log(lobbyDetails)
-            console.log(this.playersLobby === lobbyID)
-            console.log(listOfUsers);
-            console.log(this.UsersInLobby);
             if(this.playersLobby === lobbyID){
                 this.LobbyUsers = listOfUsers;
-                console.log('we updated the users');
-                console.log(this.LobbyUsers);
             }
-            console.log(listOfUsers)
         },
+        // If player is kicked, this redirects them to the Homepage.
         redirectPlayer(userID){
-            console.log("test")
             if(this.UsersID === userID){
                 this.exitToHomePageReset();
-                console.log("Test passed")
             }
         }
     },
@@ -216,6 +206,7 @@ export default {
     },
     data(){
         return {
+            // Instantiation of variables required for the LobbyView component and any children.
             playerInvite: false,
             show: false,
             MultiPlayer: false,

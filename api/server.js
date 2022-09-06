@@ -25,7 +25,6 @@ class Lobby {
         this.lobbyUsers = [];
         this.numberOfUsers = 0;
     }
-
     addUser(userID){
         if(this.numberOfUsers >= 4){
             console.log("Error. Lobby is currently full");
@@ -37,7 +36,6 @@ class Lobby {
             }
         }
     }
-
     removeUser(userID){
         for(var i = 0; i < this.numberOfUsers; i++){
             if(this.lobbyUsers[i] === userID){
@@ -48,12 +46,9 @@ class Lobby {
             }
         }
     }
-
-    
 }
 
-// Adding Support for a socket connection: https://www.thirdrocktechkno.com/blog/node-js-socket-io-chrome-extension-integration/
-
+// Adding Support for a socket connection, adapted from: [1] K. Shah, ‘Node JS + Socket.IO + Chrome Extension Integration | Thirdock Techkno’, ThirdRock, May 07, 2017. https://www.thirdrocktechkno.com/blog/node-js-socket-io-chrome-extension-integration/ (accessed Jul. 06, 2022).
 // Creating an HTTP Server to open a socket using Express
 
 const PORT = 3080;
@@ -61,7 +56,7 @@ var availableLobbies = [];
 var numberOfLobbies = 0;
 var playersInASoloGame = [];
 
-// This creates the database tables if not already created, and connects to the database
+// This creates the database tables if not already created, and connects to the database - K. Shah, ‘Node JS + Socket.IO + Chrome Extension Integration | Thirdock Techkno’, ThirdRock, May 07, 2017. https://www.thirdrocktechkno.com/blog/node-js-socket-io-chrome-extension-integration/ (accessed Sep. 06, 2022).
 db.sequelize.sync().then((req) => {
     const socketServ = app.listen(PORT, function(){
         console.log('Server started on port ' + PORT);
@@ -80,8 +75,7 @@ db.sequelize.sync().then((req) => {
     
     // Below are the socket.IO events that the server will react to.
 
-
-    // This event fires uppon connection
+    // This event fires upon connection
     io.on('connection', (socket) => {
         console.log('Test complete. Socket connection has been established' + socket.id);
         socket.emit('testMessage');
@@ -152,7 +146,6 @@ db.sequelize.sync().then((req) => {
                         console.log(availableLobbies)
                     }
                 }
-            
             }
             // Code to make sure that any random lobbies with no users are deleted:
             console.log(availableLobbies)
@@ -179,8 +172,8 @@ db.sequelize.sync().then((req) => {
                 }   
             }
         })
+        // Event ensures a player is redirected to the homepage after being kicked from a lobby
         socket.on('redirectPlayer', (userID) => {
-            console.log("redirecting player");
             io.emit('redirectPlayer', userID);
         })
         // This event is for when a lobby is created, and will be to receive the game details from the lobby creator and send these to all the other lobby users.
@@ -212,7 +205,6 @@ db.sequelize.sync().then((req) => {
                 if(availableLobbies[i] != undefined){
                     if(availableLobbies[i].LobbyID === lobbyID){
                         socket.in(availableLobbies[i]).broadcast.emit('resendBingo', lobbyID, usersID);
-                        console.log("Resent Bingo Countries")
                     }
                 }
             }
@@ -233,7 +225,6 @@ db.sequelize.sync().then((req) => {
                     })
                 }else{
                     console.log("Error, user already in table")
-                    console.log(users);
                 }
             }))
         })
@@ -272,7 +263,7 @@ db.sequelize.sync().then((req) => {
          socket.on('gameWon', (usergoogleID) => {
             UserAccount.increment('wonGames', { by: 1, where: { googleID: usergoogleID}});
         })
-        // [Come back to]
+        // This event fires whenever we attempt to retrieve all the users within the database.
         socket.on('RetrieveUsers', () => {
             UserAccount.findAll().then((users) => {
                 chrome.storage.local.set({gameUsers: users})
@@ -312,6 +303,7 @@ db.sequelize.sync().then((req) => {
                 }
                 socket.emit('sendSoloClassic', SoloClassic, userID);
             });
+            // This code was created when Bingo mode high scores were counted. This has not been removed just to ensure that no functionality breaks as a result.
             GameDetails.findAll({ where: {gameType: 'Bingo', Multiplayer: false, username: userID}}).then((res) => {
                 SoloBingo = res; 
                 socket.emit('sendSoloBingo›', SoloBingo, userID);
@@ -467,7 +459,7 @@ db.sequelize.sync().then((req) => {
     
     var nodeServer = http.createServer(app);
     
-    // Adding support for mySQL - Create connection to MYSQL - https://www.youtube.com/watch?v=EN6Dx22cPRI&ab_channel=TraversyMedia
+    // Adding support for mySQL - Create connection to MYSQL - Adapted from: Using MySQL With Node.js, (Jul. 20, 2017). Accessed: Sep. 06, 2022. [Online Video]. Available: https://www.youtube.com/watch?v=EN6Dx22cPRI
     
     nodeServer.listen(3090, function(){
         console.log("The server is now running on port " + 3090)
@@ -477,39 +469,7 @@ db.sequelize.sync().then((req) => {
         res.send("This is a test");
         console.log("User has connected " + req.id);
     });
-    
-    app.get('/socket.io', function(req, res){
-        res.send("test passed")
-    })
-    
-    app.post('/socket.io', function(req, res){
-        res.send("Post test passed")
-    })
-    
     // Database methods - These were created before it was decided that a RESTful API would not be appropriate in this application. 
-    
-    app.get('/select', (req, res) => {
-        res.send('select')
-    });
-    
-    app.get('/insert', (req, res) => {
-        UserAccount.create({
-            username: "Goose",
-            gamesPlayed: 0,
-            wonGames: 0,
-            googleID: "test",
-        }).catch(err => {
-            if(err){
-                throw err;
-            }
-        })
-    
-        res.send('Mhmm');
-    });
-    
-    app.get('/delete', (req, res) => {
-        res.send('delete')
-    });
     
 });
 

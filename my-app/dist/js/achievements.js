@@ -1,7 +1,7 @@
-var achievements = [];
-
-// The code for achievements in this instance was inspired and adapted from: [1] D. Bandel, ‘Implementing Achievement System in Javascript - Game Development Stack Exchange’. https://gamedev.stackexchange.com/questions/139136/implementing-achievement-system-in-javascript (accessed Jul 20, 2022).
+// The code for achievements in this instance was inspired and adapted from: D. Bandel, ‘Implementing Achievement System in Javascript - Game Development Stack Exchange’. https://gamedev.stackexchange.com/questions/139136/implementing-achievement-system-in-javascript (accessed Jul 20, 2022).
 // This part of the program defines an Achievement class, and creates some achievements to be complete in passive mode.
+
+var achievements = [];
  
 class Achievement {
     constructor(name, text){
@@ -26,7 +26,6 @@ class Achievement {
     }
 }
 // Adding the achievements to the array
-
 achievements.push(new Achievement("From Russia with Love", "Get tracked by a Russian Tracker")); // 0
 achievements.push(new Achievement("The Silk Road", "Get tracked by a Asian Tracker")); // 1
 achievements.push(new Achievement("From Casablanca to Cape Town", "Get tracked by an African Tracker")); // 2

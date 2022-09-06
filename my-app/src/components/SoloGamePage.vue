@@ -478,6 +478,7 @@ export default {
         }
         return `${minutes}:${seconds}`;
       },
+      // Below code has been adapted from a tutorial: - M Rybczonek, "How to Create an Animated Countdown Timer With Vue", Medium.com, Available at: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f, Accessed 02/08/2022
       timePassed(){
         return this.startTime - this.timer;
       },

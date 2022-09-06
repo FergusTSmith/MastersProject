@@ -118,6 +118,7 @@ export default {
         resetSoloStatus(){
             this.$emit('resetSoloStatus')
         },
+        // This will display the information boxes to the user.
         displayInformation(){
             this.InformationBox = !(this.InformationBox);
         }

@@ -222,7 +222,6 @@ export default {
         sendGameDetails(MessageDetails){
             if(this.playersLobby === MessageDetails[0] && this.UsersID != MessageDetails[1]){
                 this.$socket.emit('sendingGameDetails', this.GameMode, this.timer, this.UsersInLobby, this.playersLobby, this.UsersID, this.allPlayersReady, this.countriesToFind)
-                console.log('should have sent the details by now!')
             }
         },
         // This is the primary logic for rejoining a game. This renders the game page according to the state of the game, then re-initiates the listener. 
@@ -255,6 +254,7 @@ export default {
                 this.gameStarted = true;
                 this.HomePage = false;
                 this.MultiPlayer = true;
+                // This clears the variable used to indicate to the program that we are rejoining a multiplayer game
                 this.$emit("ClearMultiVariable")
                 }
         },
@@ -563,7 +563,7 @@ export default {
         generateRandomIntHelper(max){
             return Math.floor(Math.random() * max)
         },
-        // This initiates the event listener, so that we detect if any countries are found by the extension scripts and incorporate this into the gameplay. 
+        // This initiates the event listener, so that we detect if any countries are found by the extension scripts and incorporate this into the gameplay. Each change to the countries discoeverd will cause us to update the score and UI for the user.
         initiateListener(){
             var vm = this;
             chrome.storage.onChanged.addListener(function(result) {
