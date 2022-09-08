@@ -191,6 +191,7 @@ export default {
         this.chartData.datasets[0].data = [(this.totalRequests-this.passiveModeTotalTrackers), this.passiveModeTotalTrackers]
         this.key++;
         var vm=this;
+        // This test was introduced due to the below statements causing unit test errors. The only instance "isTest" is ever set to true is when unit tests are being completed.
         if(!this.isTest){
             chrome.storage.local.get(["achievements"], function(result){
             vm.achievements = result.achievements;

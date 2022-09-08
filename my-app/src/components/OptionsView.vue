@@ -14,7 +14,7 @@
     </div>
 
     <div v-if="UsernamePage" id="UsernamePage">
-        <UsernameChangeVue :UsersID="UsersID" @changeUsername="changeUsername($event)"></UsernameChangeVue>
+        <UsernameChangeVue :UsersID="UsersID" @changeUsername="changeUsername($event)" @backToOptions="backToOptions"></UsernameChangeVue>
     </div>
 </template>
 
@@ -72,6 +72,11 @@ export default {
         // Changes username by delegating to the HomepageView.vue component. 
         changeUsername($event){
             this.$emit('changeUsername', $event)
+        },
+        // Brings the user back to the Options page. 
+        backToOptions(){
+            this.UsernamePage = false;
+            this.Options = true;
         }
     }
 }</script>
@@ -79,6 +84,5 @@ export default {
 <style>
 button.OptionsButton {
     width: 70%;
-
 }
 </style>

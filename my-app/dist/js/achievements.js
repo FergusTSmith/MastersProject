@@ -2,7 +2,8 @@
 // This part of the program defines an Achievement class, and creates some achievements to be complete in passive mode.
 
 var achievements = [];
- 
+
+// Defining the helper class for Achievements.
 class Achievement {
     constructor(name, text){
         this.name = name;

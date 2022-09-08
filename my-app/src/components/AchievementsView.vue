@@ -1,5 +1,6 @@
 <!----------
 - The AchievementsView.vue file exclusively concerns the displaying of a user's achievements on the achievement page. 
+- Achievements are not stored on the database, due to the fact that we don't want the user's achievements to become desynced with the countries they have been tracked by. 
 - Parent: PassiveMode.vue
 - Children: None
 ------------->

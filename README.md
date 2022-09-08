@@ -16,3 +16,7 @@ There are three solutions to remedy this and allow the program to work:
 3) Download the above three folders directly from my Google Drive. This is found at https://drive.google.com/drive/folders/1Sy9x9E60mc0LMQSmwIud2uCfniGAbcVt?usp=sharing 
 
 Unfortunately, the direct upload of all of these files to Moodle was not possible. 
+
+INSTALLATION:
+
+To install and run TrackerHunt, please see the TrackerHunt Setup Guide in the "supplementary materials" folder.

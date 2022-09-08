@@ -8,6 +8,7 @@ import { mount } from '@vue/test-utils';
 import HomePage from '../HomePageView.vue';
 import { describe, expect, test, it } from 'vitest';
 
+// Initialising prop data in order to mount the Component
 var gamesPlayed = 100;
 var gamesWon = 10;
 var UsersID = "Goose96";
@@ -19,12 +20,12 @@ var multiGameDetails = {};
 var UsersInLobby = [{userID: "Goose96", googleID: "1245145"}]
 
 describe('HomePage Component Unit Tests: ', () => {
-    
+  // First test ensures that this mounts correctly
   test('is a Vue instance', () => {
     const wrapper = mount(HomePage, {propsData: {gamesPlayed: gamesPlayed, gamesWon: gamesWon, UsersID: UsersID, userProfile: userProfile, UserGoogleID: UserGoogleID, userSoloContinue: userSoloContinue, userMultiContinue: userMultiContinue, multiGameDetails: multiGameDetails}});
     expect(wrapper).toBeTruthy();
   })
-
+  // Second test ensures that all expected DOM elements render correctly.
   it("All DOM Components render correctly", async() => {
     var UsersID = "TestUser"
     var wrapper = mount(HomePage, {propsData: { UsersID: UsersID}});
@@ -43,12 +44,13 @@ describe('HomePage Component Unit Tests: ', () => {
     expect(wrapper.find('div').exists()).toBeTruthy();
 
   })
-
+  // Originally created to determine whether the size of the logo was correct. As this can't be checked in Vitest, this was amended to just make sure that the image renders.
   it("size of logo is correct", () => {
     var wrapper = mount(HomePage);
     const image = wrapper.get('img');
+    expect(image).toBeTruthy();
   })
-
+  // Tests the clicking of the solo button. 
   it("clicking solo", async() => {
     const wrapper = mount(HomePage, {propsData: {gamesPlayed: gamesPlayed, gamesWon: gamesWon, UsersID: UsersID, userProfile: userProfile, UserGoogleID: UserGoogleID, userSoloContinue: userSoloContinue, userMultiContinue: userMultiContinue, multiGameDetails: multiGameDetails}});
     var soloBut = await wrapper.find('#Solo');
@@ -56,7 +58,7 @@ describe('HomePage Component Unit Tests: ', () => {
     console.log(wrapper.text());
     expect(wrapper.text()).toContain("Solo") // Vitest doesn't like when we change components during a test. Therefore, we can't test whether we land on the solo page with this.
   })
-
+  // Test the creation of a new lobby, and ensure that the DOM is updated.
   it("Create new lobby", async() => {
     const wrapper = mount(HomePage, {propsData: {gamesPlayed: gamesPlayed, gamesWon: gamesWon, UsersID: UsersID, userProfile: userProfile, UserGoogleID: UserGoogleID, userSoloContinue: userSoloContinue, userMultiContinue: userMultiContinue, multiGameDetails: multiGameDetails}});
     var newLobby = await wrapper.find("#NewLobby");
@@ -64,7 +66,7 @@ describe('HomePage Component Unit Tests: ', () => {
     console.log(wrapper.text());
     expect(wrapper.text()).toContain("Lobby ID:");
   })
-
+  // Test that clicking the passive mode button opens the passive mode page.
   it("Enter Passive Mode", async() => {
     var wrapper = mount(HomePage, {propsData: {gamesPlayed: gamesPlayed, gamesWon: gamesWon, UsersID: UsersID, userProfile: userProfile, UserGoogleID: UserGoogleID, userSoloContinue: userSoloContinue, userMultiContinue: userMultiContinue, multiGameDetails: multiGameDetails}});
     var passBut = await wrapper.find('#Passive');
@@ -72,29 +74,27 @@ describe('HomePage Component Unit Tests: ', () => {
     console.log(wrapper.text());
     expect(wrapper.text()).toContain("Passive Mode")
   })
-
+  // Test that clicking Join Lobby brings up the Join Lobby Page.
   it("Enter join lobby", async() => {
     const wrapper = mount(HomePage, {propsData: {gamesPlayed: gamesPlayed, gamesWon: gamesWon, UsersID: UsersID, userProfile: userProfile, UserGoogleID: UserGoogleID, userSoloContinue: userSoloContinue, userMultiContinue: userMultiContinue, multiGameDetails: multiGameDetails}});
     var lobby = await wrapper.find('#Lobby');
     await lobby.trigger('click');
     expect(wrapper.text()).toContain("Enter Lobby ID:")
   })
-
+  // Test that clicking Options opens the Options page.
   it("Enter options", async() => {
     const wrapper = mount(HomePage, {propsData: {gamesPlayed: gamesPlayed, gamesWon: gamesWon, UsersID: UsersID, userProfile: userProfile, UserGoogleID: UserGoogleID, userSoloContinue: userSoloContinue, userMultiContinue: userMultiContinue, multiGameDetails: multiGameDetails}});
     var options = await wrapper.find('#Options');
     await options.trigger('click');
     expect(wrapper.text()).toContain("Change Username");
   })
-
+  // Test that clicking the Leaderboards button will open the Leader Boards page.
   it("Enter Leader Boards", async() => {
     const wrapper = mount(HomePage, {propsData: {gamesPlayed: gamesPlayed, gamesWon: gamesWon, UsersID: UsersID, userProfile: userProfile, UserGoogleID: UserGoogleID, userSoloContinue: userSoloContinue, userMultiContinue: userMultiContinue, multiGameDetails: multiGameDetails}});
     var leaderBoard = await wrapper.find('#Leaderboards');
     await leaderBoard.trigger('click');
     console.log(wrapper.text())
     expect(wrapper.text()).toContain("LeaderBoards");
-
-    // This test may be broken. Doesn't appear to take us to the LB page. Really not sure what is causing this, very sporadically working with other tests.
   })
 
   

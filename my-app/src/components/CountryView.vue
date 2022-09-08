@@ -22,10 +22,6 @@
 import _ from 'lodash';
 import PassiveModeChart from './PassiveModeChart.vue';
 export default {
-    beforeMount() {
-        console.log(this.labelsArray);
-        console.log(this.dataArray)
-    },
     // The Labels and Counts props are for the chart data. This is just a way of structuring the information into labels and values so that it can be rendered by the chart.
     props: {
         passiveModeCountries: {
@@ -64,6 +60,7 @@ export default {
             labelsArray: [],
             dataArray: [],
             vm: this,
+            
             // Options and Data for the Chart:
             options: {
                 responsive: false,

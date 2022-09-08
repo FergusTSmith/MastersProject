@@ -11,6 +11,7 @@
     <p class="HelpText" v-if="InformationBox && isLobbyCreator">{{ ClassicInfo }}</p>
     <p class="HelpText" v-if="InformationBox && isLobbyCreator">{{ BingoInfo }}</p>
     <div class="RadioButtons">
+        <!---- Radio Buttons adapted from tutorial: M Heath, "Customize Radio Button with CSS", markheath.net, Available at: https://markheath.net/post/customize-radio-button-css, Accessed 02/08/2022-->
         <p v-if="isLobbyCreator" class="HelpText">Choose GameMode: <button @click="displayInformation" class="InformationBox" id="Info">i</button></p>
         <input id="Classic" v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label id="ClassicRadio" for="Classic" v-if="isLobbyCreator">Classic</label>
         <input id="Bingo" v-if="isLobbyCreator" class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label id="BingoRadio" for="Bingo" v-if="isLobbyCreator">Bingo</label>
@@ -53,7 +54,7 @@
 import MultiPlayerGame from '@/components/MultiPlayerGame.vue'
 
 export default {
-    // In created(), we assign the UsersInLobby prop to the LobbyUsers variable, to allow us to manipulate the data in this variable without mutating the prop directly, which is disallowed by vue.   
+    // In created(), we assign the UsersInLobby prop to the LobbyUsers variable, to allow us to manipulate the data in this variable without mutating the prop directly, which is disallowed by Vue.   
     created(){
         this.LobbyUsers = this.UsersInLobby
     },

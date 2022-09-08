@@ -7,6 +7,7 @@ import { mount } from '@vue/test-utils';
 import MultiGame from '../MultiPlayerGame.vue';
 import { describe, expect, test, it } from 'vitest';
 
+// Initialising prop data in order to mount the Component
 const categoryList = [{name: "Shopping", count: 13}, {name: "News", count: 8}, {name: "Business", count: 20}, ]
 var timer = 120;
 var gameMode = "Classic";
@@ -33,16 +34,14 @@ var UsersID = "Goose96";
 var multiGameDetails = {};
 var userMultiContinue = false;
 
-
-
 describe('Multiplayer Component Unit Tests: ', () => {
-    
+  // First test ensures that this mounts correctly.
   test('is a Vue instance', () => {
     var wrapper = mount(MultiGame, {propsData: {userMultiContinue: userMultiContinue, UsersID: UsersID, multiGameDetails: multiGameDetails, playersLobby: playersLobby, userProfile: userProfile, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator,  categoryList: categoryList, GameMode: gameMode, startTime: startTime}});
     expect(wrapper).toBeTruthy();
     expect(wrapper.emitted().ClearMultiVariable).toBeTruthy();
   })
-
+  // Second test ensures that all expected DOM elements are rendered correctly.
   it("All DOM Components render correctly", async() => {
     var wrapper = mount(MultiGame, {propsData: {APIEnabled: APIEnabled, finishedGame: finishedGame, allPlayersReady: allPlayersReady, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator, WinningUser: WinningUser, noOfCountries: noOfCountries, didYouWin: didYouWin, noOfCountriesBingo: noOfCountriesBingo, categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: gameOver, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     console.log(wrapper.text())
@@ -57,59 +56,53 @@ describe('Multiplayer Component Unit Tests: ', () => {
     expect(wrapper.text()).toContain("Countries To Locate:");
     expect(wrapper.text()).toContain("Countries Located");
   })
-
+  // Third test ensures the correct event is fired from clicking the start button
   it("clicking Start button", async() => {
     var wrapper = mount(MultiGame, {propsData: {APIEnabled: APIEnabled, finishedGame: finishedGame, allPlayersReady: allPlayersReady, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator, WinningUser: WinningUser, noOfCountries: noOfCountries, didYouWin: didYouWin, noOfCountriesBingo: noOfCountriesBingo, categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: gameOver, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     var startGameButton = await wrapper.find('#Start');
     await startGameButton.trigger('click');
     expect(wrapper.emitted().gameSetup).toBeTruthy;
   })
-
+  // This test ensures that clicking "Ready Up" has the expected event emitted.
   it("Clicking Ready Up", async() => { 
     var wrapper = mount(MultiGame, {propsData: {APIEnabled: APIEnabled, finishedGame: finishedGame, allPlayersReady: allPlayersReady, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator, WinningUser: WinningUser, noOfCountries: noOfCountries, didYouWin: didYouWin, noOfCountriesBingo: noOfCountriesBingo, categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: gameOver, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     var readyUp = await wrapper.find('#Ready');
     expect(wrapper.text()).toContain("Not Ready");
-
     await readyUp.trigger('click');
     expect(wrapper.emitted().playerReady).toBeTruthy;
   })
-
+  // This test ensures that clicking "Leave game" results in the expected functionality
   it("Clicking leave game", async() => {
     var wrapper = mount(MultiGame, {propsData: {APIEnabled: APIEnabled, finishedGame: finishedGame, allPlayersReady: allPlayersReady, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator, WinningUser: WinningUser, noOfCountries: noOfCountries, didYouWin: didYouWin, noOfCountriesBingo: noOfCountriesBingo, categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: gameOver, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
-
     var leaveGame = await wrapper.find('#Leave');
     await leaveGame.trigger('click');
-
-    //expect(wrapper.emitted().exitToHomePageReset).toBeTruthy(); This doesn't work as the emission is made from a separate method.
+    //expect(wrapper.emitted().exitToHomePageReset).toBeTruthy(); This doesn't work as the emission is made from a separate method. Therefore, we can't test whether the correct event is emitted. Instead we'll just test that we're still on the correct page.
     expect(wrapper.text()).toContain("Classic")
   })
-
+  // Ensures that Game Over DOM elemeents are rendered as expected.
   it("Checking Game Over DOM elements are rendered correctly"), async() => {
     var wrapper = mount(MultiGame, {propsData: {APIEnabled: APIEnabled, finishedGame: true, allPlayersReady: allPlayersReady, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator, WinningUser: WinningUser, noOfCountries: noOfCountries, didYouWin: true, noOfCountriesBingo: noOfCountriesBingo, categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: true, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     expect(wrapper.text()).toContain("You won!");
     expect(wrapper.text()).toContain("Your score was");
-
     var wrapper = mount(MultiGame, {propsData: {APIEnabled: APIEnabled, finishedGame: true, allPlayersReady: allPlayersReady, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator, WinningUser: "TesterAccount", noOfCountries: noOfCountries, didYouWin: false, noOfCountriesBingo: noOfCountriesBingo, categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: true, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     expect(wrapper.text()).toContain("Condolenses");
     expect(wrapper.text()).toContain("The winner of this game was");
   }
-
+  // Tests that clicking the information box will display information on the game mode
   it("Information Boxes test"), async() => {
     var wrapper = mount(MultiGame, {propsData: {APIEnabled: APIEnabled, finishedGame: true, allPlayersReady: allPlayersReady, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator, WinningUser: WinningUser, noOfCountries: noOfCountries, didYouWin: true, noOfCountriesBingo: noOfCountriesBingo, categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: true, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     var informationButton = wrapper.find('#Info');
-
     await informationButton.trigger('click');
-
     expect(wrapper.emitted().displayInformation).toBeTruthy();
     expect(wrapper.test()).toContain("In Classic mode, points are awarded");
 
     var wrapper = mount(MultiGame, {propsData: {APIEnabled: APIEnabled, finishedGame: true, allPlayersReady: allPlayersReady, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator, WinningUser: WinningUser, noOfCountries: noOfCountries, didYouWin: true, noOfCountriesBingo: noOfCountriesBingo, categoryList: categoryList, timer: timer, GameMode: "Bingo", gameOver: true, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     informationButton = wrapper.find('#Info');
     await informationButton.trigger('click');
-
     expect(wrapper.emitted().displayInformation).toBeTruthy();
     expect(wrapper.test()).toContain("In Bingo mode, users are challenged");
   }
+  // Lastly, ensuring that clicking the homepage has the expected functionality.
   it("Clicking Homepage", async() => {
     var wrapper = mount(MultiGame, {propsData: {APIEnabled: APIEnabled, finishedGame: true, allPlayersReady: allPlayersReady, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator, WinningUser: WinningUser, noOfCountries: noOfCountries, didYouWin: true, noOfCountriesBingo: noOfCountriesBingo, categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: true, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     await wrapper.setData({gameOver: true});

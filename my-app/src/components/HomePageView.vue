@@ -27,7 +27,7 @@
 
     <div v-if="OptionsPage"  id="Options-Page">
         <OptionsView :UsersID="UsersID" @changeUsername="changeUsername($event)" @passiveMode="passiveMode" @changeUsernamePage="changeUsernamePage" @logout="logout"></OptionsView>
-        <button @click="exitToHomePage" type="button">Home Page</button><br/>
+        <button @click="exitToHomePage" type="button">HomePage</button><br/>
     </div>
 
     <div v-if="JoinLobbyPage" id="Join-Lobby">
@@ -120,7 +120,6 @@ export default {
         },
         // A general event fired whenever a change is made to the users within a lobby. 
         updateUsers(lobbyDetails){
-            console.log('we reached updating users')
             var listOfUsers = lobbyDetails[0]
             var lobbyID = lobbyDetails[1]
             if(this.playersLobby === lobbyID){
@@ -196,7 +195,6 @@ export default {
     },
     methods: {
         // Establishing the methods of this class
-
         // View Controller for SoloMode
         solomode(){
             this.getHighScores()
@@ -211,7 +209,6 @@ export default {
             this.isLobbyCreator = true;
             this.playersLobby = newLobbyID;
             this.UsersInLobby[0] = this.userProfile;
-
             this.$socket.emit('CreateNewLobby', newLobbyID, this.userProfile);
         },
         // View controller for passive mode. This, also, retrieves the required data structures from Chrome local storage for presentation to the user. 
@@ -328,7 +325,7 @@ export default {
             this.$emit('changeUsername', $event)
         }
     },
-    // Logic occurs before each time the page is re-rendered. This ensures that the user is taken to the correct game page if required, rather than the home page. This also retrieves the high scores before the user attempts to go to the leaderboard, reducing perceived lag. 
+    // Logic occurs before each time the page is re-rendered. This ensures that the user is taken to the correct game page if required, rather than the home page. 
     beforeUpdate(){
         if(this.userSoloContinue){
             this.HomePage = false;

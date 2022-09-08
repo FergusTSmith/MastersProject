@@ -8,12 +8,12 @@ import JoinLobby from '../JoinLobby.vue';
 import { describe, expect, test, it } from 'vitest';
 
 describe('Join Lobby Component Unit Tests: ', () => {
-    
+    // Ensures that the wrapper is mounted correctly.
     test('is a Vue instance', () => {
       const wrapper = mount(JoinLobby);
       expect(wrapper).toBeTruthy();
     })
-  
+    // Ensures that all DOM elements that are expected are rendered.
     it("All DOM Components render correctly", async() => {
       var wrapper = mount(JoinLobby);
         expect(wrapper.text()).toContain("Enter Lobby ID")
@@ -21,7 +21,7 @@ describe('Join Lobby Component Unit Tests: ', () => {
         expect(wrapper.find('img').exists()).toBeTruthy()
         expect(wrapper.find('button').exists()).toBeTruthy()
     })
-  
+    // This tests that the joining lobby functionality works as expected, as well as the back button functionality.
     it("Clicking buttons and entering a new username", async() => {
         var wrapper = mount(JoinLobby);
         var join = await wrapper.find('#Join');

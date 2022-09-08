@@ -32,9 +32,12 @@ export default {
       circleArray(){
         return `${(this.timeFraction * 283).toFixed(0)} 283`;
       },
+      // - M Rybczonek, "How to Create an Animated Countdown Timer With Vue", Medium.com, Available at: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f, Accessed 02/08/2022
       timeFraction(){
         return (this.timeToGo / this.startTime) - (1/ this.timeToGo) * (1 - (this.timeToGo/this.startTime));
       },
+      // - M Rybczonek, "How to Create an Animated Countdown Timer With Vue", Medium.com, Available at: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f, Accessed 02/08/2022
+
       colours(){
         return {
           info: { 
@@ -46,9 +49,9 @@ export default {
           }
         }
       },
+      // - M Rybczonek, "How to Create an Animated Countdown Timer With Vue", Medium.com, Available at: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f, Accessed 02/08/2022
       colourOfTimer(){
         const { info, alert} = this.colours;
-
         if(this.timeToGo <= alert.threshold){
           return alert.colour;
         }else{
@@ -82,7 +85,7 @@ export default {
 </template>
 
 
-/* Below styling code taken adapted from - M Rybczonek, "How to Create an Animated Countdown Timer With Vue", Medium.com, Available at: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f, Accessed 02/08/2022 */
+/* Below styling code taken/adapted from - M Rybczonek, "How to Create an Animated Countdown Timer With Vue", Medium.com, Available at: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f, Accessed 02/08/2022 */
 <style scoped lang="scss">
 .base-timer {
   position: relative;

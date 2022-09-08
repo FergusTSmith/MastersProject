@@ -11,6 +11,7 @@
     <div v-if="(!gameOver)">
         <br/>
         <div class="timer">
+            <!--- M Rybczonek, "How to Create an Animated Countdown Timer With Vue", Medium.com, Available at: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f, Accessed 02/08/2022-->
             <BaseTimer :timeToGo="timeLeft" :formattedTimeToGo="formattedTimeLeft" :startTime="startTime" :alertTime="30"></BaseTimer>
         </div>
         <br/>
@@ -652,7 +653,7 @@ export default {
                 vm.noOfCountries = result.countryList.length;
             })
             var allFound = true;
-            // Waiting was included as a means of fixing a bug where the below code is fired before the above
+            // Waiting was included as a means of fixing a bug where the below code is fired before the above. The above is asynchronous, so we need to make sure it executes first.
             setTimeout(() => {console.log('done waiting'), 2000})
             for(var j = 0; j < this.countriesToFind.length; j++){
                 if(this.countriesToFind[j].found != true){
@@ -685,9 +686,11 @@ export default {
             }
             return `${minutes}:${seconds}`;
         },
+        // Below code has been adapted from a tutorial: - M Rybczonek, "How to Create an Animated Countdown Timer With Vue", Medium.com, Available at: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f, Accessed 02/08/2022
         timePassed(){
             return this.startTime - this.timer;
         },
+        // Below code has been adapted from a tutorial: - M Rybczonek, "How to Create an Animated Countdown Timer With Vue", Medium.com, Available at: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f, Accessed 02/08/2022
         timeLeft(){
             return this.startTime - (this.startTime - this.timer);
         },

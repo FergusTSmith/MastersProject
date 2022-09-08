@@ -17,7 +17,6 @@ var user_id = '';
 var uniqueIDforUser = '';
 
 // This is an event listener that listens to messages sent from the front end. 
-
 // This responds to messages providing logic for logging in, retrieving google IDs, and logging out. 
 // All code below has been adapted from the following tutorial: /* An Object Is A, 2020, "How to Use Google Login with Chrome Extensions(MV2) | OAuth2/OpenID Connect", Uploaded August 7th 2020, Available At: https://www.youtube.com/watch?v=H-anyDrYHyg
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -35,19 +34,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 url: create_uri_oauth2(),
                 interactive: true,
             }, function(redirect_url){
-
                 user_id = redirect_url.substring(redirect_url.indexOf('id_token=') + 9);
                 user_id = user_id.substring(0, user_id.indexOf('&'));
-
                 const user_information = KJUR.jws.JWS.readSafeJSONString(b64utoutf8(user_id.split(".")[1]));
                 user_info = user_information;
                 console.log(user_id)
-                
                 if((user_information.iss === 'https://accounts.google.com' || user_information.iss === 'accounts.google.com') && user_information.aud === CLIENT_ID){
                     isUserSignedIn = true;
                     sendResponse({response: 'success', userID: user_id});
                     console.log("We have successfully completed the login test");
-                    
                     // Adapted from a tutorial: How to identify your Chrome Extension users with chrome identity, (Jun. 20, 2021). Accessed: Sep. 06, 2022. [Online Video]. Available: https://www.youtube.com/watch?v=_26ptq-6o_s
                     chrome.identity.getProfileUserInfo({'accountStatus': 'ANY'}, function(info){
                         console.log(info)
@@ -69,7 +64,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }else if (request.message === 'reset'){
         detectedHosts = [];
         detectedCountries = [];
-
         chrome.storage.local.set({ countryList: detectedCountries });
         sendResponse('success');
     }else if (request.message === 'logout'){
@@ -84,21 +78,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // A helper function for the above algorithms to return whether or not the user is currently signed in. This is adapted from:
 /* An Object Is A, 2020, "How to Use Google Login with Chrome Extensions(MV2) | OAuth2/OpenID Connect", Uploaded August 7th 2020, Available At: https://www.youtube.com/watch?v=H-anyDrYHyg
 */
-
 function isSignedIn(){
     return isUserSignedIn;
 }
-
 // This is a helper method that creates the URL for the user to login to Google. This is adapted from:
 /* An Object Is A, 2020, "How to Use Google Login with Chrome Extensions(MV2) | OAuth2/OpenID Connect", Uploaded August 7th 2020, Available At: https://www.youtube.com/watch?v=H-anyDrYHyg
 */
-
 function create_uri_oauth2(){
     let nonce = encodeURIComponent(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
-
-    let url = 
-    `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&response_type=${RESPONSE_TYPE}&redirect_uri=${REDIRECT_URI}&state=${STATE}&scope=${SCOPE}&prompt=${PROMPT}&nonce=${nonce}`
-
+    let url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&response_type=${RESPONSE_TYPE}&redirect_uri=${REDIRECT_URI}&state=${STATE}&scope=${SCOPE}&prompt=${PROMPT}&nonce=${nonce}`
     console.log(url);
     return url;
 }

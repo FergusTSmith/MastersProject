@@ -12,7 +12,7 @@
     <input ref="NewUsername" type="text">
     <br/>
     <button id="Save" @click="changeUsername" type="button">Save</button>
-    <button id="Back" @click="exitToHomePage" type="button">Back</button>
+    <button id="Back" @click="backToOptions" type="button">Back</button>
 </template>
 
 <script>
@@ -20,12 +20,14 @@ export default {
     methods: {
         // Methods primarily delegate to OptionsView.vue
         changeUsername(){
-            if(this.$refs.NewUsername.value != null){
+            if(this.$refs.NewUsername.value != null && this.$refs.NewUsername.value != ''){
                 this.$emit('changeUsername', this.$refs.NewUsername.value);
+            }else{
+                alert("Error. Please enter a valid username");
             }
         },
-        exitToHomePage(){
-            this.$emit('exitToHomePage');
+        backToOptions(){
+            this.$emit('backToOptions');
         },
     },
     props: {

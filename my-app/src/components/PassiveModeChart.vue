@@ -13,6 +13,11 @@
     </Doughnut>
 </template>
 <script>
+/*
+ This was adapted from two tutorials:
+- D Berning, "How To Use Chart.js with Vue.js", digitalocean.com, Available at: https://www.digitalocean.com/community/tutorials/vuejs-vue-chart-js, Accessed 02/08/2022
+- J Nieto, "Vue Chartjs Doughnut", codesandbox.io, Available at: https://codesandbox.io/s/j47zp73845?file=/src/components/DoughnutExample.vue--, Accessed 02/08/2022
+*/
 import { Doughnut } from 'vue-chartjs';
 import { Chart as ChartJS, ArcElement, Tooltip} from 'chart.js'
 ChartJS.register(ArcElement, Tooltip)

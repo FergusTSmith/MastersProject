@@ -7,15 +7,16 @@ import { mount } from '@vue/test-utils';
 import SoloLobby from '../SoloLobby.vue';
 import { describe, expect, test, it } from 'vitest';
 
+// Initialising prop data in order to mount the Component
 const testScores = [{username: "Goose96", Score: 23, createdAt: "01/01/2000"}, {username: "Goose96", Score: 48, createdAt: "01/01/2000"}, {username: "Goose96", Score: 67, createdAt: "01/01/2000"}, {username: "Goose96", Score: 120, createdAt: "01/01/2000"}]
 
 describe('HomePage Component Unit Tests: ', () => {
-    
+  // First test ensures that the component is mounted as expected.
   test('is a Vue instance', () => {
     const wrapper = mount(SoloLobby);
     expect(wrapper).toBeTruthy();
   })
-
+  // This test ensures that the correct DOM elements are rendered as expected.
   it("All DOM Components render correctly", async() => {
     var wrapper = mount(SoloLobby, {propsData: { personalSoloHS: testScores}});
     console.log(wrapper.text())
@@ -27,7 +28,7 @@ describe('HomePage Component Unit Tests: ', () => {
     expect(wrapper.text()).toContain("01/01/2000");
     expect(wrapper.text()).toContain("23")
   })
-
+  // This test ensures that the game mode radio buttons work as expected.
   it("clicking GameMode buttons", async() => {
     var wrapper = mount(SoloLobby, {propsData: { personalSoloHS: testScores}});
     var classicRadio = await wrapper.find('#Classic')
@@ -38,7 +39,7 @@ describe('HomePage Component Unit Tests: ', () => {
     expect(classicRadio.element.checked).toBeFalsy();
     expect(bingoRadio.element.checked).toBeTruthy();
   })
-
+  // This test ensures that the radio buttons for the round lengths work as expected.
   it("Clicking round length buttons", async() => {
     var wrapper = mount(SoloLobby, {propsData: { personalSoloHS: testScores}});
     var TwoMin = await wrapper.find('#twoMin');
@@ -49,7 +50,7 @@ describe('HomePage Component Unit Tests: ', () => {
     expect(FiveMin.element.checked).toBeTruthy();
     expect(TwoMin.element.checked).toBeFalsy();
   })
-
+  // This test ensures that the begin game and exit buttons work as expected.
   it("Clicking different buttons", async() => {
     var wrapper = mount(SoloLobby, {propsData: { personalSoloHS: testScores}});
     var beginGame = await wrapper.find('.BeginGame');
@@ -61,6 +62,7 @@ describe('HomePage Component Unit Tests: ', () => {
     await exitGame.trigger('click');
     expect(wrapper.emitted().exitToHomePage).toBeTruthy();
   })
+  // Last test ensures that the information boxes work as expected.
   it("Display boxes", async() => {
     var wrapper = mount(SoloLobby, {propsData: { personalSoloHS: testScores}});
     var infoButton = await wrapper.find('#Info');

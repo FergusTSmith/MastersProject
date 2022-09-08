@@ -11,12 +11,12 @@ const achievements = [{name: "From Paris to Berlin", achieved: "Not Unlocked"}]
 
 
 describe('HomePage Component Unit Tests: ', () => {
-    
+    // Tests that the wrapper successfully mounts
     test('is a Vue instance', () => {
       const wrapper = mount(AchievementsView);
       expect(wrapper).toBeTruthy();
     })
-  
+    // This just checks that all the DOM elements render correctly, and that the buttons emit the correct events.
     it("All DOM Components render correctly", async() => {
       var wrapper = mount(AchievementsView, {propsData: { achievements: achievements}});
       expect(wrapper.text()).toContain("Passive Mode Achievements are unlocked while passively browsing");

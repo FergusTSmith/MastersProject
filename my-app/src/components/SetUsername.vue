@@ -19,7 +19,7 @@ export default {
     methods: {
         // Only two methods, and these delegate the majority of the logic to the App.vue component
         setUsername(){
-            if(this.$refs.nickname.value === null){
+            if(this.$refs.nickname.value === null || this.$refs.nickname.value === ''){
                 return;
             }else{
                 var UsersID = this.$refs.nickname.value;

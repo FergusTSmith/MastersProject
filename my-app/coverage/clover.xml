@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1662642127460" clover="3.2.0">
-  <project timestamp="1662642127460" name="All files">
-    <metrics statements="2988" coveredstatements="2208" conditionals="202" coveredconditionals="167" methods="220" coveredmethods="131" elements="3410" coveredelements="2506" complexity="0" loc="2988" ncloc="2988" packages="1" files="16" classes="16"/>
+<coverage generated="1662642557650" clover="3.2.0">
+  <project timestamp="1662642557650" name="All files">
+    <metrics statements="2989" coveredstatements="2209" conditionals="202" coveredconditionals="167" methods="220" coveredmethods="131" elements="3411" coveredelements="2507" complexity="0" loc="2989" ncloc="2989" packages="1" files="16" classes="16"/>
     <file name="AchievementsView.vue" path="/Users/fergussmith/tracker-hunt/my-app/src/components/AchievementsView.vue">
       <metrics statements="52" coveredstatements="52" conditionals="4" coveredconditionals="4" methods="4" coveredmethods="4"/>
       <line num="1" count="1" type="stmt"/>
@@ -693,7 +693,7 @@
       <line num="41" count="1" type="stmt"/>
     </file>
     <file name="IntroPage.vue" path="/Users/fergussmith/tracker-hunt/my-app/src/components/IntroPage.vue">
-      <metrics statements="62" coveredstatements="46" conditionals="3" coveredconditionals="3" methods="5" coveredmethods="3"/>
+      <metrics statements="63" coveredstatements="47" conditionals="3" coveredconditionals="3" methods="5" coveredmethods="3"/>
       <line num="1" count="1" type="stmt"/>
       <line num="2" count="1" type="stmt"/>
       <line num="3" count="1" type="stmt"/>
@@ -714,11 +714,11 @@
       <line num="18" count="1" type="stmt"/>
       <line num="19" count="1" type="stmt"/>
       <line num="20" count="1" type="stmt"/>
-      <line num="21" count="1" type="cond" truecount="1" falsecount="0"/>
-      <line num="22" count="1" type="stmt"/>
+      <line num="21" count="1" type="stmt"/>
+      <line num="22" count="1" type="cond" truecount="1" falsecount="0"/>
       <line num="23" count="1" type="stmt"/>
       <line num="24" count="1" type="stmt"/>
-      <line num="25" count="0" type="stmt"/>
+      <line num="25" count="1" type="stmt"/>
       <line num="26" count="0" type="stmt"/>
       <line num="27" count="0" type="stmt"/>
       <line num="28" count="0" type="stmt"/>
@@ -731,15 +731,15 @@
       <line num="35" count="0" type="stmt"/>
       <line num="36" count="0" type="stmt"/>
       <line num="37" count="0" type="stmt"/>
-      <line num="38" count="1" type="stmt"/>
+      <line num="38" count="0" type="stmt"/>
       <line num="39" count="1" type="stmt"/>
       <line num="40" count="1" type="stmt"/>
-      <line num="41" count="0" type="stmt"/>
+      <line num="41" count="1" type="stmt"/>
       <line num="42" count="0" type="stmt"/>
       <line num="43" count="0" type="stmt"/>
-      <line num="44" count="1" type="stmt"/>
-      <line num="45" count="1" type="cond" truecount="1" falsecount="0"/>
-      <line num="46" count="1" type="stmt"/>
+      <line num="44" count="0" type="stmt"/>
+      <line num="45" count="1" type="stmt"/>
+      <line num="46" count="1" type="cond" truecount="1" falsecount="0"/>
       <line num="47" count="1" type="stmt"/>
       <line num="48" count="1" type="stmt"/>
       <line num="49" count="1" type="stmt"/>
@@ -756,6 +756,7 @@
       <line num="60" count="1" type="stmt"/>
       <line num="61" count="1" type="stmt"/>
       <line num="62" count="1" type="stmt"/>
+      <line num="63" count="1" type="stmt"/>
     </file>
     <file name="JoinLobby.vue" path="/Users/fergussmith/tracker-hunt/my-app/src/components/JoinLobby.vue">
       <metrics statements="40" coveredstatements="39" conditionals="5" coveredconditionals="4" methods="4" coveredmethods="4"/>

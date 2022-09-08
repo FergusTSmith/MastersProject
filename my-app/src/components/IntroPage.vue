@@ -9,7 +9,8 @@
       <img class="main-logo" src="staticimages/Logo.png" alt="TrackerHunt Logo"/>
       <h5>Who is watching you?</h5>
       <button class="loginButton" @click="googleLogin" ref="LoginButton">Login</button>
-      <button class="DevLogin" @click="DevLogin">Dev</button> <!---This is here for testing purposes, as the Puppeteer software cannot navigate the OAuth2.0 window. This should be enabled when Puppeteer is run--->
+      <!---This is here for testing purposes, as the Puppeteer software cannot navigate the OAuth2.0 window. This should be enabled when Puppeteer is run--->
+      <!-----<button class="DevLogin" @click="DevLogin">Dev</button> --->
       <p class="HelpText">To use TrackerHunt, sign in with Google and ensure you are signed in on your browser</p>
 </template>
 

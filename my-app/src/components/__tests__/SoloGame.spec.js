@@ -7,6 +7,7 @@ import { mount } from '@vue/test-utils';
 import SoloGame from '../SoloGamePage.vue';
 import { describe, expect, test, it } from 'vitest';
 
+// Initialising prop data in order to mount the Component
 const categoryList = [{name: "Shopping", count: 13}, {name: "News", count: 8}, {name: "Business", count: 20}, ]
 var timer = 120; 
 var gameMode = "Classic";
@@ -19,57 +20,52 @@ var numberOfCookies = 0;
 var gameStarted = false;
 var countriesToFind = [{name: "United States", found: false}, {name: "Russia", found: false}, {name: "Germany", found: false},]
 
-
 describe('Solo Game Component Unit Tests: ', () => {
-    
+  // First test ensures that the Component is mounted as expected.
   test('is a Vue instance', () => {
     const wrapper = mount(SoloGame);
     expect(wrapper).toBeTruthy();
   })
-
+  // Second test ensures that all expected DOM elements are rendered correctly.
   it("All DOM Components render correctly", async() => {
     var wrapper = mount(SoloGame, {propsData: { categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: gameOver, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     console.log(wrapper.text())
     expect(wrapper.text()).toContain("Solo Mode - Classic")
     expect(wrapper.find('button').exists()).toBeTruthy()
     expect(wrapper.text()).toContain("During this session");
-
     var BaseTimer = await wrapper.findComponent('BaseTimer');
     expect(BaseTimer.exists).toBeTruthy();
-
     var wrapper = mount(SoloGame, {propsData: { categoryList: categoryList, timer: timer, GameMode: "Bingo", gameOver: gameOver, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     expect(wrapper.text()).toContain("Countries To Locate:");
     expect(wrapper.text()).toContain("Countries Located");
   })
-
+  // This test ensures that the correct event is emitted by the Start button.
   it("clicking Start button", async() => {
     var wrapper = mount(SoloGame, {propsData: { categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: gameOver, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     var startGameButton = await wrapper.find('#StartSoloGame');
     await startGameButton.trigger('click');
     expect(wrapper.emitted().gameSetup).toBeTruthy;
   })
-
+  // This test ensures that the end game button works as expected.
   it("Clicking End game", async() => {
     var wrapper = mount(SoloGame, {propsData: { categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: gameOver, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     var endGameButton = await wrapper.find('#EndGameButton');
     await endGameButton.trigger('click');
     console.log(wrapper.text());
     await wrapper.find('.CategoryText');
-
     expect(wrapper.text()).toContain("GAME OVER");
     expect(wrapper.text()).toContain("Your score was:");
   })
-
+  // This ensures that the DOM elements on the Game Over screen are working as expected and the homepage button works.
   it("Checking Game Over DOM elements are rendered correctly & Homepage works"), async() => {
     var wrapper = mount(SoloGame, {propsData: { categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: true, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     expect(wrapper.text()).toContain("GAME OVER");
     expect(wrapper.text()).toContain("Your score was");
-
     var homeButton = await wrapper.find('#Home');
     await homeButton.trigger('click');
     expect(wrapper.emitted().exitToHomePageReset).toBeTruthy();
   }
-
+  // Last test ensures that the information boxes are working as expected.
   it("Information Boxes test"), async() => {
     var wrapper = mount(SoloGame, {propsData: { categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: gameOver, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     var informationButton = wrapper.find('#Info');

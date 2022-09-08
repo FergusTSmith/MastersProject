@@ -255,9 +255,15 @@ db.sequelize.sync().then((req) => {
         })
         // This event is fired upon changing username, and ensures that the change is reflected on the Database
         socket.on('newUsername', (usergoogleID, newID) => {
-            UserAccount.update({ username: newID }, {where: { googleID: usergoogleID }}).then((res) => {
-                console.log(res);
-            })
+            UserAccount.findAll({ where: { username: newID}}).then((users => {
+                if(users.length === 0){
+                    UserAccount.update({ username: newID }, {where: { googleID: usergoogleID }}).then((res) => {
+                        console.log(res);
+                    })
+                }else{
+                    console.log("Error, user already in table")
+                }
+            }))
         })
         // This event is fired for the game winner, and increments their "gamesWon" attribute on the database
          socket.on('gameWon', (usergoogleID) => {

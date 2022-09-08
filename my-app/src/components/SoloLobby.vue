@@ -10,6 +10,7 @@
         <p class="HelpText" v-if="InformationBox">{{ ClassicInfo }}</p>
         <p class="HelpText" v-if="InformationBox">{{ BingoInfo }}</p>
         <label class="HelpText">Choose Game Mode:<button @click="displayInformation" class="InformationBox" id="Info">i</button></label>
+        <!---- Radio Buttons adapted from tutorial: M Heath, "Customize Radio Button with CSS", markheath.net, Available at: https://markheath.net/post/customize-radio-button-css, Accessed 02/08/2022-->       
         <div class="RadioButtons">
             <input id="Classic" class="Radio" type="radio" name="GameType" value="Classic" @change="onGameModeChange"/><label for="Classic">Classic</label>
             <input id="Bingo" class="Radio" type="radio" name="GameType" value="Bingo" @change="onGameModeChange"/><label id="BingoTest" for="Bingo">Bingo</label>
@@ -102,7 +103,7 @@ export default {
             this.SoloGame = true;
             this.$socket.emit("playerInSoloGame", this.userProfile.googleID)
         },
-        // Below logic is for returnin gto the home page, or doing this and resetting
+        // Below logic is for returning to the home page, or doing this and resetting
         exitToHomePage(){
             this.$emit('exitToHomePage')
             this.SoloGame = false;
