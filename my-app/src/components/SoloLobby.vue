@@ -30,7 +30,7 @@
         </div>
         <br/>
         <button class="BeginGame" @click="soloGameInitiated" type="button">Begin Game</button>
-        <button @click="exitToHomePage" type="button">Cancel</button>
+        <button id="Exit" @click="exitToHomePage" type="button">Cancel</button>
     </div>
 
     <div v-if="SoloGame" id="Solo-Mode">

@@ -60,10 +60,14 @@ describe('Solo Game Component Unit Tests: ', () => {
     expect(wrapper.text()).toContain("Your score was:");
   })
 
-  it("Checking Game Over DOM elements are rendered correctly"), async() => {
+  it("Checking Game Over DOM elements are rendered correctly & Homepage works"), async() => {
     var wrapper = mount(SoloGame, {propsData: { categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: true, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
     expect(wrapper.text()).toContain("GAME OVER");
     expect(wrapper.text()).toContain("Your score was");
+
+    var homeButton = await wrapper.find('#Home');
+    await homeButton.trigger('click');
+    expect(wrapper.emitted().exitToHomePageReset).toBeTruthy();
   }
 
   it("Information Boxes test"), async() => {

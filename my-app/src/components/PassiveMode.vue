@@ -25,13 +25,13 @@
             </li>
         </ol>
         <p class="PassiveText">To see a complete list of hosts and counts: </p>
-        <button class="passiveButton" @click="PassiveToHost">PassiveMode Hosts</button>
+        <button id="Hosts" class="passiveButton" @click="PassiveToHost">PassiveMode Hosts</button>
         <p class="PassiveText">To see a complete list of countries and counts: </p>
-        <button class="passiveButton" @click="PassiveToCountry">PassiveMode Countries</button>
+        <button id="Countries" class="passiveButton" @click="PassiveToCountry">PassiveMode Countries</button>
         <p class="PassiveText">To view your achievements: </p>
-        <button class="passiveButton" @click="achievementPage">Achievements</button>
+        <button id="Achievements" class="passiveButton" @click="achievementPage">Achievements</button>
         <br/>
-        <button class="passiveButton" @click="exitToHomePage">HomePage</button>
+        <button id="Home" class="passiveButton" @click="exitToHomePage">HomePage</button>
     </div>
 
     <div v-if="AchievementPage">
@@ -172,6 +172,7 @@ export default {
             categoryCounts: [],
 
             key: 0,
+            isTest: false,
         }
     },
     computed: {
@@ -190,22 +191,24 @@ export default {
         this.chartData.datasets[0].data = [(this.totalRequests-this.passiveModeTotalTrackers), this.passiveModeTotalTrackers]
         this.key++;
         var vm=this;
-        chrome.storage.local.get(["achievements"], function(result){
+        if(!this.isTest){
+            chrome.storage.local.get(["achievements"], function(result){
             vm.achievements = result.achievements;
-        })
-        chrome.storage.local.get(["passiveCountryList"], function(result){
-            for(var i = 0; i < vm.passiveModeCountries.length; i++){
-                vm.passiveCountryCounts[i] = vm.passiveModeCountries[i].count;
-                vm.passiveCountryLabels[i] = vm.passiveModeCountries[i].name;
-            }
-            console.log(result);
-        })
-        chrome.storage.local.get(["passiveHosts"], function(result){
-            vm.passiveModeHosts = result.passiveHosts;
-        })
-        chrome.storage.local.get(["pastTrackingNumbers"], function(result){
-            vm.pastTrackingNumbers = result.pastTrackingNumbers;
-        })
+            })
+            chrome.storage.local.get(["passiveCountryList"], function(result){
+                for(var i = 0; i < vm.passiveModeCountries.length; i++){
+                    vm.passiveCountryCounts[i] = vm.passiveModeCountries[i].count;
+                    vm.passiveCountryLabels[i] = vm.passiveModeCountries[i].name;
+                }
+                console.log(result);
+            })
+            chrome.storage.local.get(["passiveHosts"], function(result){
+                vm.passiveModeHosts = result.passiveHosts;
+            })
+            chrome.storage.local.get(["pastTrackingNumbers"], function(result){
+                vm.pastTrackingNumbers = result.pastTrackingNumbers;
+            })
+        }
     }   
 }
 </script>

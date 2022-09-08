@@ -30,11 +30,6 @@ export default ({
         }
     },
     components: {Doughnut},
-    methods: {
-        update(){
-            this.$data._chart.update();
-        }
-    },
     name: 'PassiveModeChart',
 })
 </script>

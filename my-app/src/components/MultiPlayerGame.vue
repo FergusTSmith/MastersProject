@@ -102,7 +102,7 @@
                 {{ item.name }} | {{ item.count }}
             </li>
         </div>
-        <button @click="exitToHomePageReset" type="button">HomePage</button>
+        <button id="Home" @click="exitToHomePageReset" type="button">HomePage</button>
     </div>
 </template>
 <script>

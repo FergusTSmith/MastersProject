@@ -69,7 +69,7 @@
         <li v-for="item in categoryList" ref="ListOfCategories" :key="item.name" class="CategoryList">
             {{ item.name }} | {{ item.count }}
         </li>
-        <button @click="exitToHomePageReset" type="button">HomePage</button>
+        <button id="Home" @click="exitToHomePageReset" type="button">HomePage</button>
     </div>
 </template>
 <script>

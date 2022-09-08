@@ -56,7 +56,7 @@ describe('LobbyPage Component Unit Tests: ', () => {
     var leaveGame = await wrapper.find('#Leave')
     await leaveGame.trigger('click');
     console.log(wrapper.text());
-    expect(wrapper.text()).toContain("Goose96");
+    expect(wrapper.text()).toContain("Goose96"); // We can't actually change the wrapper to a different component, so it should still contain our name.
   })
 
   it("Clicking Invite Player", async() => {
@@ -92,6 +92,24 @@ describe('LobbyPage Component Unit Tests: ', () => {
     expect(FiveMin.element.checked).toBeTruthy();
     expect(TwoMin.element.checked).toBeFalsy();
   }
+
+  it("Clicking display information", async() => {
+    var wrapper = mount(LobbyView, {propsData: { UserID: UserID, playersLobby: playersLobby, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator }}); 
+    var infoButton = await wrapper.find('#Info');
+    await infoButton.trigger('click');
+    expect(wrapper.text()).toContain('In Classic mode, points are awarded')
+    await infoButton.trigger('click');
+    expect(wrapper.text()).not.toContain('In Classic mode, points are awarded')
+  })
+
+  it("Kicking a player", async() => {
+    var wrapper = mount(LobbyView, {propsData: { UserID: UserID, playersLobby: playersLobby, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator }}); 
+    var kickButton = await wrapper.find('#Kick');
+    console.log(wrapper.text())
+    await kickButton.trigger('click');
+    console.log(wrapper.text())
+    expect(wrapper.text()).toContain("TesterAccount"); // Can't actually kick them, as this would require a server event.
+  })
   
 })
     

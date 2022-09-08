@@ -18,7 +18,7 @@
     <div class="Players">
         <p class="HelpText">Connected Players:</p>
         <li v-for="(item, count) in UsersInLobby" class="LobbyUsers" :class="{ active: show === count}" :key="count" @mouseover="show = count" @mouseout="show = false">
-            {{ ++count }}. {{ item.userID }} <button v-if="(item.userID != this.UsersID) && this.isLobbyCreator" @click="kickPlayer(item.userID)">Kick</button> 
+            {{ ++count }}. {{ item.userID }} <button id="Kick" v-if="(item.userID != this.UsersID) && this.isLobbyCreator" @click="kickPlayer(item.userID)">Kick</button> 
         </li>
         <br/><br/>
     </div>
@@ -200,6 +200,7 @@ export default {
             this.$emit('ClearMultiVariable');
             console.log("Lobby");
         },
+        // Displays the game information for the user, or hides this if it is already displaying.
         displayInformation(){
             this.InformationBox = !(this.InformationBox);
         }

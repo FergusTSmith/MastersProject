@@ -2,6 +2,7 @@
 
 /* This file provides the Unit Tests for the HomePage.vue component.
  Please note that the tests are limited in coverage due to Vite's inability to imitate server client interactions, or interactions between components. 
+ Coverage in this file is lower, due to the inability to test socket methods.
 */
 import { mount } from '@vue/test-utils';
 import HomePage from '../HomePageView.vue';
@@ -49,10 +50,53 @@ describe('HomePage Component Unit Tests: ', () => {
   })
 
   it("clicking solo", async() => {
-    var wrapper = mount(HomePage, {propsData: { UsersID: UsersID}});
-    await wrapper.find('#Solo').trigger('click');
+    const wrapper = mount(HomePage, {propsData: {gamesPlayed: gamesPlayed, gamesWon: gamesWon, UsersID: UsersID, userProfile: userProfile, UserGoogleID: UserGoogleID, userSoloContinue: userSoloContinue, userMultiContinue: userMultiContinue, multiGameDetails: multiGameDetails}});
+    var soloBut = await wrapper.find('#Solo');
+    await soloBut.trigger('click');
     console.log(wrapper.text());
+    expect(wrapper.text()).toContain("Solo") // Vitest doesn't like when we change components during a test. Therefore, we can't test whether we land on the solo page with this.
   })
+
+  it("Create new lobby", async() => {
+    const wrapper = mount(HomePage, {propsData: {gamesPlayed: gamesPlayed, gamesWon: gamesWon, UsersID: UsersID, userProfile: userProfile, UserGoogleID: UserGoogleID, userSoloContinue: userSoloContinue, userMultiContinue: userMultiContinue, multiGameDetails: multiGameDetails}});
+    var newLobby = await wrapper.find("#NewLobby");
+    await newLobby.trigger('click');
+    console.log(wrapper.text());
+    expect(wrapper.text()).toContain("Lobby ID:");
+  })
+
+  it("Enter Passive Mode", async() => {
+    var wrapper = mount(HomePage, {propsData: {gamesPlayed: gamesPlayed, gamesWon: gamesWon, UsersID: UsersID, userProfile: userProfile, UserGoogleID: UserGoogleID, userSoloContinue: userSoloContinue, userMultiContinue: userMultiContinue, multiGameDetails: multiGameDetails}});
+    var passBut = await wrapper.find('#Passive');
+    await passBut.trigger('click');
+    console.log(wrapper.text());
+    expect(wrapper.text()).toContain("Passive Mode")
+  })
+
+  it("Enter join lobby", async() => {
+    const wrapper = mount(HomePage, {propsData: {gamesPlayed: gamesPlayed, gamesWon: gamesWon, UsersID: UsersID, userProfile: userProfile, UserGoogleID: UserGoogleID, userSoloContinue: userSoloContinue, userMultiContinue: userMultiContinue, multiGameDetails: multiGameDetails}});
+    var lobby = await wrapper.find('#Lobby');
+    await lobby.trigger('click');
+    expect(wrapper.text()).toContain("Enter Lobby ID:")
+  })
+
+  it("Enter options", async() => {
+    const wrapper = mount(HomePage, {propsData: {gamesPlayed: gamesPlayed, gamesWon: gamesWon, UsersID: UsersID, userProfile: userProfile, UserGoogleID: UserGoogleID, userSoloContinue: userSoloContinue, userMultiContinue: userMultiContinue, multiGameDetails: multiGameDetails}});
+    var options = await wrapper.find('#Options');
+    await options.trigger('click');
+    expect(wrapper.text()).toContain("Change Username");
+  })
+
+  it("Enter Leader Boards", async() => {
+    const wrapper = mount(HomePage, {propsData: {gamesPlayed: gamesPlayed, gamesWon: gamesWon, UsersID: UsersID, userProfile: userProfile, UserGoogleID: UserGoogleID, userSoloContinue: userSoloContinue, userMultiContinue: userMultiContinue, multiGameDetails: multiGameDetails}});
+    var leaderBoard = await wrapper.find('#Leaderboards');
+    await leaderBoard.trigger('click');
+    console.log(wrapper.text())
+    expect(wrapper.text()).toContain("LeaderBoards");
+
+    // This test may be broken. Doesn't appear to take us to the LB page. Really not sure what is causing this, very sporadically working with other tests.
+  })
+
   
 })
     

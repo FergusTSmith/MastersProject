@@ -40,6 +40,7 @@ describe('Multiplayer Component Unit Tests: ', () => {
   test('is a Vue instance', () => {
     var wrapper = mount(MultiGame, {propsData: {userMultiContinue: userMultiContinue, UsersID: UsersID, multiGameDetails: multiGameDetails, playersLobby: playersLobby, userProfile: userProfile, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator,  categoryList: categoryList, GameMode: gameMode, startTime: startTime}});
     expect(wrapper).toBeTruthy();
+    expect(wrapper.emitted().ClearMultiVariable).toBeTruthy();
   })
 
   it("All DOM Components render correctly", async() => {
@@ -108,8 +109,15 @@ describe('Multiplayer Component Unit Tests: ', () => {
 
     expect(wrapper.emitted().displayInformation).toBeTruthy();
     expect(wrapper.test()).toContain("In Bingo mode, users are challenged");
-
   }
+  it("Clicking Homepage", async() => {
+    var wrapper = mount(MultiGame, {propsData: {APIEnabled: APIEnabled, finishedGame: true, allPlayersReady: allPlayersReady, UsersInLobby: UsersInLobby, isLobbyCreator: isLobbyCreator, WinningUser: WinningUser, noOfCountries: noOfCountries, didYouWin: true, noOfCountriesBingo: noOfCountriesBingo, categoryList: categoryList, timer: timer, GameMode: gameMode, gameOver: true, timeLeft: timeLeft, startTime: startTime, userScore: userScore, VisitedCountries: VisitedCountries, numberOfCookies: numberOfCookies, gameStarted: gameStarted, countriesToFind: countriesToFind }});
+    await wrapper.setData({gameOver: true});
+    var homeButton = await wrapper.find('#Home');
+    await homeButton.trigger('click');
+    console.log(wrapper.text());
+    expect(wrapper.emitted().exitToHomePageReset).toBeTruthy();
+  })
   
 })
     

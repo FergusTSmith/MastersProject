@@ -26,7 +26,7 @@ describe('UsernameChangePage Component Unit Tests: ', () => {
     var wrapper = mount(OptionsView, {propsData: {UsersID: "TesterAccount"}});
     var logoutButton = await wrapper.find('#Logout');
     await logoutButton.trigger('click');
-    console.log(wrapper.emitted().click.MouseEvent);
+    expect(wrapper.emitted().click.MouseEvent);
     // Can't check emission here due to lack of ability to communicate with background scripts.
   })
 
@@ -35,6 +35,14 @@ describe('UsernameChangePage Component Unit Tests: ', () => {
     var changeUserButton = await wrapper.find('#ChangeUser');
     await changeUserButton.trigger('click');
     expect(wrapper.text()).toContain('username')
+  })
+
+  it("Clicking pause blocking", async() => {
+    var wrapper = mount(OptionsView, {propsData: {UsersID: "TesterAccount"}});
+    // Can't actually test this as we can't communicate with the background scripts.
+    var pause = await wrapper.find('#Pause');
+    await pause.trigger('click');
+    expect(wrapper.emitted().click.MouseEvent);
   })
 })
     

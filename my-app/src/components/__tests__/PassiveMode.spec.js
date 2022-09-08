@@ -11,6 +11,9 @@ var totalRequests = 1000;
 var passiveModeTotalTrackers = 100;
 var passiveModeUniqueHosts = 10;
 var passiveModeTotalCounties = 3;
+var passiveModeCountries = [{name: "United Kingdom", count: 1}];
+var passiveModeCategoryList = [{name: "Health", count: 1}];
+var passiveModeHosts = [{URL: 'Facebook.com', count: 1}]
 
 describe('PassiveMode Component Unit Tests: ', () => {
     
@@ -29,8 +32,43 @@ describe('PassiveMode Component Unit Tests: ', () => {
     expect(wrapper.text()).toContain("Total Requests: 1000");
     expect(wrapper.findComponent('PassiveModeChart')).toBeTruthy();
   })
+
+  it("Clicking different buttons", async() => {
+    var wrapper = mount(PassiveMode, {propsData: {passiveModeHosts:passiveModeHosts, passiveCategoryList:passiveModeCategoryList,passiveModeCountries:passiveModeCountries, totalRequests: totalRequests, passiveModeTotalTrackers: passiveModeTotalTrackers, passiveModeUniqueHosts: passiveModeUniqueHosts, passiveModeTotalCounties: passiveModeTotalCounties}});
+    await wrapper.setData({isTest: true})
+    var hostsButton = await wrapper.find('#Hosts');
+    await hostsButton.trigger('click');
+    expect(wrapper.text()).toContain("Complete list of Hosts")
+  })
+
+  it("Checking Achievements", async() => {
+    var wrapper = mount(PassiveMode, {propsData: {passiveModeHosts:passiveModeHosts, passiveCategoryList:passiveModeCategoryList,passiveModeCountries:passiveModeCountries, totalRequests: totalRequests, passiveModeTotalTrackers: passiveModeTotalTrackers, passiveModeUniqueHosts: passiveModeUniqueHosts, passiveModeTotalCounties: passiveModeTotalCounties}});
+    await wrapper.setData({isTest: true});    
+    var achievements = await wrapper.find('#Achievements')
+    await achievements.trigger('click');
+    expect(wrapper.text()).toContain("Achievements")
+    // Above test is broken due to the inability of Vitest to work with the extensions scripts. Therefore, an error will show instead of allowing us to test this. Will just give an error about chrome, due to the beforeUpdate() method.
+  })
+
+  it("Checking Countries", async() => {
+    var wrapper = mount(PassiveMode, {propsData: {passiveModeHosts:passiveModeHosts, passiveCategoryList:passiveModeCategoryList,passiveModeCountries:passiveModeCountries, totalRequests: totalRequests, passiveModeTotalTrackers: passiveModeTotalTrackers, passiveModeUniqueHosts: passiveModeUniqueHosts, passiveModeTotalCounties: passiveModeTotalCounties}});
+    await wrapper.setData({isTest: true})
+    var countries = await wrapper.find('#Countries');
+    await countries.trigger('click');
+    expect(wrapper.text()).toContain("Complete list of Countries")
+  })
+
+  it("Exit to homepage", async() => {
+    var wrapper = mount(PassiveMode, {propsData: {passiveModeHosts:passiveModeHosts, passiveCategoryList:passiveModeCategoryList,passiveModeCountries:passiveModeCountries, totalRequests: totalRequests, passiveModeTotalTrackers: passiveModeTotalTrackers, passiveModeUniqueHosts: passiveModeUniqueHosts, passiveModeTotalCounties: passiveModeTotalCounties}});
+    await wrapper.setData({isTest: true})
+    var homebutton = await wrapper.find('#Home');
+    await homebutton.trigger('click');
+    expect(wrapper.emitted().exitToHomePage).toBeTruthy();
+  })
+
+
 })
     
-// We can't really test any of the button functionality here, due to the fact that these are view controllers, and the wrapper doesn't update the view.
+
 
 

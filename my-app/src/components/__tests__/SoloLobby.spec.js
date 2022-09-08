@@ -49,6 +49,25 @@ describe('HomePage Component Unit Tests: ', () => {
     expect(FiveMin.element.checked).toBeTruthy();
     expect(TwoMin.element.checked).toBeFalsy();
   })
+
+  it("Clicking different buttons", async() => {
+    var wrapper = mount(SoloLobby, {propsData: { personalSoloHS: testScores}});
+    var beginGame = await wrapper.find('.BeginGame');
+    await beginGame.trigger('click');
+    expect(wrapper.text()).toContain("Solo Mode - Classic");
+
+    wrapper = mount(SoloLobby, {propsData: { personalSoloHS: testScores}});
+    var exitGame = await wrapper.find('#Exit');
+    await exitGame.trigger('click');
+    expect(wrapper.emitted().exitToHomePage).toBeTruthy();
+  })
+  it("Display boxes", async() => {
+    var wrapper = mount(SoloLobby, {propsData: { personalSoloHS: testScores}});
+    var infoButton = await wrapper.find('#Info');
+    await infoButton.trigger('click');
+    console.log(wrapper.text());
+    expect(wrapper.text()).toContain("In Classic mode, points are awarded");
+  })
   
 })
     
